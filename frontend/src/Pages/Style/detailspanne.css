@@ -1,0 +1,54 @@
+.pannedetails-container{
+width: calc(100% - 82px);
+  height: calc(100vh - 80px);
+  position: absolute;
+  background-color: #f8f9fd;
+  left: 82px;
+  top: 82px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  overflow-y: scroll;
+  padding: 30px;
+}
+
+.pannedetails-title{
+    text-align: left;
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.back-button{
+    background-color: #D4171B;
+    border-radius: 10px;
+    padding: 5px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px;
+}
+.icon{
+    color: #f8f9fd;
+    size: 25px;
+}
+
+.pannedetails-title h3{
+    color: #D4171B;
+}
+.pannedetails-info{
+    display: flex;
+    justify-content: space-between;
+}
+.pannedetails-info form{
+    padding-left:50px ;
+    padding-right: 50px;
+    justify-content: center;
+}
+.progress{
+    margin-top: 25px;
+}

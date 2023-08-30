@@ -8,7 +8,8 @@ import MyAsideBar from "../Components/asideBar";
 import MyNavBar from "../Components/navBar";
 import AdduserButton from '../Components/Buttons/AdduserButton';
 import UserRow from '../Components/Table/UserRow';
-
+import CostumSelectCentre from '../Components/Form/CostumSelectCentre';
+import CostumSelect from '../Components/Form/CostumSelect';
 const Users = () => {
     const [add, setAdd] = useState(false);
     const [act, setAct] = useState(false);
@@ -28,17 +29,10 @@ const Users = () => {
         <div className="patient-table-container">
           <div className="patient-table-header">
             <div className="table-header-item">
-              <label>Centre SAV</label>
-              <select
-                className="Wilaya-select"
-                name="Wilaya-age"
-                id="Wilaya-age"
-              >
-                <option value="All">Tous</option>
-                <option value="Medea">Medea</option>
-                <option value="Blida">Blida</option>
-                <option value="Alger">Alger-Hamiz</option>
-              </select>
+            <CostumSelectCentre label='Centre:'/>
+            </div>
+            <div className="table-header-item">
+            <CostumSelect label='Role:'/>
             </div>
             <div className="table-header-item">
               <label>Recherche</label>
@@ -63,11 +57,11 @@ const Users = () => {
           <div className="table-patients">
             <table>
               <tr className="table-patients-header">
-                <td className="table-patients-header-nom">Id</td>
                 <td className="table-patients-header-nom">Nom Complet</td>
                 <td className="table-patients-header-Email">Email</td>
-                <td className="table-patients-header-nom">N Tel</td>
-                <td className="table-patients-header-nom">Nom Utilisateur</td>
+                <td className="table-patients-header-nom">Telephone</td>
+                <td className="table-patients-header-nom">Role</td>
+                <td className="table-patients-header-nom">Centre</td>
                 <td className="table-patients-header-button"></td>
                 <td className="table-patients-header-button"></td>
 

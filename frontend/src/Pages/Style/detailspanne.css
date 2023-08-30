@@ -43,6 +43,7 @@ width: calc(100% - 82px);
 .pannedetails-info{
     display: flex;
     justify-content: space-between;
+    width: 100%;
 }
 .pannedetails-info form{
     padding-left:50px ;
@@ -51,4 +52,130 @@ width: calc(100% - 82px);
 }
 .progress{
     margin-top: 25px;
+    width: 100%;
+}
+
+.depose-btn,.primaryButton{
+    border-radius: 10px;
+    background-color: #D4171B;
+    color: #f8f9fd;
+    padding: 15px 50px;
+    width: 30vh;
+}
+
+.Cancel-btn{
+    border-radius: 10px;
+    background-color: #f8f9fd;
+    color:#D4171B ;
+    border: 1px solid #D4171B;
+    padding: 15px 50px;
+    width: 30vh;
+}
+
+.pannedetails-Button{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    padding:0px 50px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.Progress-btn button{
+    padding: 10px 25px;
+    background-color: #D4171B;
+    border: none;
+    margin: 10px;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .Progress-btn{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.progressbar{
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-input {
+    display: none;
+  }
+
+  .file-input-label {
+    background-color: #D4171B;
+    color: white;
+    margin-top: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+  }
+.image{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.inputButton{
+    padding: 10px 25px;
+    background-color: #D4171B;
+    border: none;
+    margin:0px 10px;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.userbtn{
+    height: 101px;
+    display: flex;
+    justify-content:center;
+    align-items:flex-end;
+}
+
+.userbtn input{
+        padding: 10px 25px;
+        background-color: #D4171B;
+        border: none;
+        margin:0px 10px;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        height: 47px;
+    } 
+
+@media only screen and (max-width:1215px){
+    
+    .pannedetails-info{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .pannedetails-Button{
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+    }
+    .depose-btn,.primaryButton,.Cancel-btn{
+        margin-top: 15px;
+        margin-right: 0px;
+        margin-left: 0px;
+        width: 40vh;
+    }
+
+    
+    
+    
+    
 }

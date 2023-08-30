@@ -7,9 +7,13 @@ import './Style/detailspanne.css'
 import Progress from '../Components/Progress';
 import { IoIosArrowBack } from "react-icons/io";
 import {useNavigate} from 'react-router-dom';
+import {BsCardImage} from"react-icons/bs"
+import{AiOutlineCloudUpload}from"react-icons/ai"
+import TablePanneRow from '../Components/Table/TablePanneRow';
+import PanneTest from '../Components/Table/PanneTest';
 
-const DetailsPanne = () => {
-
+const DetailsPanneSav = () => {
+    const [ProduitenPanne, setProduitenPanne] = useState([0]);
 
   const navigate = useNavigate();
 
@@ -33,7 +37,7 @@ const DetailsPanne = () => {
                     <IoIosArrowBack className='icon' size={33} fill='#fff'/>
                 </div>
                 
-                <h3>Details de panne</h3>
+                <h3>Details de panne :</h3>
             </div>
             <div className='pannedetails-info'>
                 <form>
@@ -52,15 +56,53 @@ const DetailsPanne = () => {
                 </form>
             </div>
             <div className='pannedetails-title progress'>
-                <h3>Progression</h3>
+                <h3>Progression :</h3>
             </div>
 
             <div className='pannedetails-info progressbar'>
                 <Progress labelArray={labelArray} currentStep={currentStep} updateStep={updateStep}></Progress>
+
             </div>
+
+            <div className='Progress-btn'>
+                <button className="primaryButton">Etape Precedente</button>
+                <div className="inputButton">
+                    <AiOutlineCloudUpload size={35} fill="#fff" />
+                    <label htmlFor="file-input" className="file-input-label">
+                        Joindre une Photo
+                    </label>
+                    <input id="file-input" className="file-input"type="file"baccept="image/*"/>
+                </div>
+                <button className="primaryButton">Etape Prochaine</button>
+            </div>
+            <div className='image'>
+                <BsCardImage size={330} fill='#DADADA'/>
+            </div>
+            
+            <div className='pannedetails-title Historique'>
+                <h3>Historique de reparation :</h3>
+            </div>
+
+            <div className='pannedetails-info'>
+            <div className="table-patients">
+            <table>
+              <tr className="table-patients-header">
+                <td className="table-patients-header-nom">Id</td>
+                <td className="table-patients-header-annee">Reference</td>
+                <td className="table-patients-header-annee">Date</td>
+                <td className="table-patients-header-willaya">Centre</td>
+                <td className="table-patients-header-region">Type de panne</td>
+              </tr>
+                <PanneTest />
+            </table>
+          </div>
+
+            </div>
+
+            
         </div>
     </>
   )
 }
 
-export default DetailsPanne
+export default DetailsPanneSav

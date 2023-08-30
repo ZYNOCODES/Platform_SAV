@@ -2390,7 +2390,7 @@ form {
 }
 
 
-.voir-btn-class,.update-btn-class {
+.voir-btn-class{
   height: 25px;
   border-radius: 15px;
   display: flex;
@@ -2403,7 +2403,15 @@ form {
   background-color: #DA171B;
 }
 .update-btn-class{
-  width: 105px;
+  padding:0px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  background-color: #DA171B;
+  border-radius: 15px;
+  width: 120px;
 }
 .Add-btn-class {
   height: 50px;

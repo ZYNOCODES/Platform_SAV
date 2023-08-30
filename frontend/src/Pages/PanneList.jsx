@@ -7,6 +7,8 @@ import Panne from '../Components/Table/Panne';
 import MyAsideBar from "../Components/asideBar";
 import MyNavBar from "../Components/navBar";
 import { useAuthContext } from '../hooks/useAuthContext';
+import CostumSelectCentre from '../Components/Form/CostumSelectCentre';
+import ProgressionSelect from '../Components/Form/ProgressionSelect';
 
 
 export const PanneList = () => {
@@ -52,48 +54,18 @@ export const PanneList = () => {
         <div className="patient-table-container">
           <div className="patient-table-header">
             <div className="table-header-item">
-              <label>Date</label>
-              <select
-                className="Annee-select"
-                name="Annee-age"
-                id="Annee-age"
-              >
-                <option value="All">Tous</option>
-                <option value="1999">1999</option>
-                <option value="2000">2000</option>
-                <option value="2001">2001</option>
-                <option value="2002">2002</option>
-                <option value="2003">2003</option>
-                <option value="2004">2004</option>
-                <option value="2022">2022</option>
-                <option value="2023">2023</option>
-              </select>
+              <label>Date :</label>
+              <input
+              type="Date"
+              className="class-search"
+              placeholder="Date"
+            />
             </div>
             <div className="table-header-item">
-              <label>Centre SAV</label>
-              <select
-                className="Wilaya-select"
-                name="Wilaya-age"
-                id="Wilaya-age"
-              >
-                <option value="All">Tous</option>
-                <option value="Medea">Medea</option>
-                <option value="Blida">Blida</option>
-                <option value="Alger">Alger-Hamiz</option>
-              </select>
+            <CostumSelectCentre label='Centre:'/>
             </div>
             <div className="table-header-item">
-              <label>Progression</label>
-              <select
-                className="Region-select"
-                name="Region-age"
-                id="Region-age"
-              >
-                <option value="All">Tous</option>
-                <option value="Medea">En attente</option>
-                <option value="Blida">Trensferer au centrale</option>
-                <option value="Alger">Reparé</option>
-              </select>
+              <ProgressionSelect label='Progression:'/>
             </div>
             <div className="table-header-item">
               <label>Recherche</label>

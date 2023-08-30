@@ -10,10 +10,10 @@ function UserRow(User){
       <td className="table-patients-td-annee">{User.Email}</td>
       <td className="table-patients-td-willaya">{User.NumTel}</td>
       <td className="table-patients-td-region">{User.NomUtil}</td>
-      <td className="table-patients-td table-patient-td-button">
+      <td className="btn-column">
         <Updatebutton/>
       </td>
-      <td className="table-patients-td table-patient-td-button">
+      <td className="btn-column">
         <Deletebutton/>
       </td>
     </tr>

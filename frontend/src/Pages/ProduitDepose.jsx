@@ -8,21 +8,15 @@ import Progress from '../Components/Progress';
 import { IoIosArrowBack } from "react-icons/io";
 import {useNavigate} from 'react-router-dom';
 
-const DetailsPanne = () => {
+const ProduitDepose = () => {
 
 
   const navigate = useNavigate();
-
+  const [act, setAct] = useState(false);
   const navigatetoPannelist =()=>{
     navigate('/liste_des_pannes');
   }
 
-    const labelArray = ['En attente de depot', 'En attente de reparation', 'En reparation', 'Repare en attente de pick up', 'Livre']
-    const [currentStep, updateCurrentStep] = useState(1);
-    const [act, setAct] = useState(false);
-    function updateStep(step) {
-        updateCurrentStep(step);
-    }
   return (
     <>
         <MyNavBar  act={act} setAct={setAct} />
@@ -51,16 +45,14 @@ const DetailsPanne = () => {
                     <FormInput label='Description:' placeholder=' Remplacement afficheur' type='text' />
                 </form>
             </div>
-            <div className='pannedetails-title progress'>
-                <h3>Progression</h3>
-            </div>
 
-            <div className='pannedetails-info progressbar'>
-                <Progress labelArray={labelArray} currentStep={currentStep} updateStep={updateStep}></Progress>
+            <div className='pannedetails-Button'>
+                <button className='Cancel-btn' type='cancel'>Annuler</button>
+                <button className='depose-btn' type='submit'>Deposer</button>
             </div>
         </div>
     </>
   )
 }
 
-export default DetailsPanne
+export default ProduitDepose;

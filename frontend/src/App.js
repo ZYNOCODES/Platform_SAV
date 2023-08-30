@@ -9,6 +9,9 @@ import Login from './Pages/Login';
 import DetailsPanne from './Pages/DetailsPanne';
 import Users from './Pages/Users';
 import { useAuthContext } from './hooks/useAuthContext';
+import ProduitDepose from './Pages/ProduitDepose';
+import DetailsPanneSav from './Pages/DetailsPanneSav';
+import CreateNewUser from './Pages/CreateNewUser';
 function App() {
   const [act, setAct] = useState(false);
   const { user } = useAuthContext();
@@ -28,6 +31,10 @@ function App() {
               )
             }/>
           <Route path='/Utilisateurs' element={user ? <Users/> : <Navigate to="/" />}/>
+
+          <Route path='/depose' element={<ProduitDepose/>}/>
+          <Route path='/DetailPanneSav' element={<DetailsPanneSav/>}/>
+          <Route path='/NouveauUser' element={<CreateNewUser/>}/>
         </Routes>
       </main>
     </BrowserRouter>

@@ -6,7 +6,7 @@ export default function AdduserButton() {
   const navigate = useNavigate();
 
   const navigatetoAdduser =()=>{
-    navigate('/Details');
+    navigate('/NouveauUser');
   }
   return (
     <div className="Add-btn-class">

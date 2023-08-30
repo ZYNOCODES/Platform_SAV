@@ -66,9 +66,9 @@
   
   .primaryButton {
     padding: 10px 25px;
-    background-color: green;
+    background-color: #D4171B;
     border: none;
-    margin: 10px;
+    margin:0px 10px;
     color: white;
     border-radius: 4px;
     cursor: pointer;
@@ -77,3 +77,14 @@
   .primaryButton:disabled {
     opacity: 0.5;
   }
+
+  @media only screen and (max-width:1024px){
+    
+    .stepWrapper {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+      justify-content: space-between;
+    }
+    
+}

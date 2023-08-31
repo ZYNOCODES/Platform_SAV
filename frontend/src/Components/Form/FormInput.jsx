@@ -6,7 +6,7 @@ const FormInput = (props) => {
   const handleChange = (event) => {
     if (props.onChange) {
       props.onChange(event.target.value);
-  }
+    }
   };
   return (
     <div className='forminput'>

@@ -9,9 +9,9 @@ export default function AdduserButton() {
     navigate('/NouveauUser');
   }
   return (
-    <div className="Add-btn-class">
+    <div className="Add-btn-class" onClick={navigatetoAdduser}>
       <FaPlus size={15} fill="#fff" />
-      <input type="submit" value="Nouveau" className="voir-btn" onClick={navigatetoAdduser}/>
+      <input type="submit" value="Nouveau" className="voir-btn" />
     </div>
   );
 }

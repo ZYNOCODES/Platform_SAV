@@ -14,7 +14,7 @@ function TablePanneRow ({Panne}){
       <td className="table-patients-td-nom">{Panne.Nom}{' '}{Panne.Prenom}</td>
       <td className="table-patients-td-annee">{Panne.DateDepot}</td>
       <td className="table-patients-td-willaya">{Panne.CentreDepot}</td>
-      <td className="table-patients-td-region">{Panne.progrès}</td>
+      <td className="table-patients-td-region">{Panne.Progres}</td>
       <td className="table-patients-td table-patient-td-button">
         <VoirButton/>
       </td>

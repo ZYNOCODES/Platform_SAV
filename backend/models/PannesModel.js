@@ -44,7 +44,7 @@ const Panne = sequelize.define('pannes', {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  progrès: {
+  Progres: {
     type: DataTypes.INTEGER,
     allowNull: true,
     defaultValue: 0,

@@ -2,13 +2,20 @@ import './FormInput.css'
 import React from 'react'
 
 const ProgressionSelect = (props) => {
+  const handleChange = (event) => {
+    if (props.onChange) {
+      props.onChange(event.target.value);
+    }
+  };
   return (
     <div className='forminput'>
       <label>{props.label}</label>
-      <select>
-        <option>En attente de depot</option>
-        <option>Deposé en attente de reparation</option>
-        <option>En reparation</option>
+      <select
+      onChange={handleChange}>
+        <option>All</option>
+        <option>0</option>
+        <option>1</option>
+        <option>2</option>
         <option>Reparé en attente de livraison</option>
         <option>Livré</option>
       </select>

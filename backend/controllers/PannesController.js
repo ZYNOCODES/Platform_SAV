@@ -4,13 +4,28 @@ const validator = require('validator');
 class PanneController {
   static async index(req, res) {
     // Handle request to get all Pannes
+    const { Role, CentreDepot } = req.query;
     try {
-      const Pannes = await Panne.findAll();
-      if (Pannes.length > 0) {
-        res.json(Pannes);
+      if(Role === 'Admin'){
+        const Pannes = await Panne.findAll();
+        if (Pannes.length > 0) {
+          res.json({Pannes: Pannes});
+        }else{
+          res.json({message: 'No pannes found'});
+        }
       }else{
-        res.json({message: 'No pannes found'});
+        const Pannes = await Panne.findAll({
+          where: {
+            CentreDepot: CentreDepot,
+          }
+        });
+        if (Pannes.length > 0) {
+          res.json({Pannes: Pannes});
+        }else{
+          res.json({message: 'No pannes found'});
+        }
       }
+      
       
     } catch (error) {
       console.error(error);

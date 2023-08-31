@@ -21,7 +21,7 @@ export default function MyAsideBar() {
     <div className="asidebar">
       <aside className="aside">
         <ul>
-          {user && user.CentreDepot === "DRMarketing" &&(
+          {user && user.Role === "Admin" &&(
             <li className="mb-6">
               <NavLink to="/Dashboard">
               <div
@@ -48,8 +48,8 @@ export default function MyAsideBar() {
               </div>
             </NavLink>
           </li>
-
-          <li className="mb-6">
+          {user && user.Role === "Admin" &&(
+            <li className="mb-6">
             <NavLink to="/Utilisateurs">
             <div
                 className={`link flex items-center justify-items-center ${
@@ -61,6 +61,8 @@ export default function MyAsideBar() {
               </div>
             </NavLink>
           </li>
+          )}
+          
 
           <li>
             <NavLink to="">

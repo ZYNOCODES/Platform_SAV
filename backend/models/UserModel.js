@@ -28,11 +28,11 @@ const User = sequelize.define('users', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  Wilaya: {
+  Role: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  CentreDepot: {
+  Centre: {
     type: DataTypes.STRING,
     allowNull: false,
   },

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import MyAsideBarActive from '../Components/asideBarActive'
 import { useNavigate } from 'react-router-dom';
 import { useState} from "react";
@@ -10,15 +10,62 @@ import AdduserButton from '../Components/Buttons/AdduserButton';
 import UserRow from '../Components/Table/UserRow';
 import CostumSelectCentre from '../Components/Form/CostumSelectCentre';
 import CostumSelect from '../Components/Form/CostumSelect';
+import { useAuthContext } from '../hooks/useAuthContext';
 const Users = () => {
     const [add, setAdd] = useState(false);
     const [act, setAct] = useState(false);
-    const history = useNavigate("/liste_des_pannes");
     const [search, setSearch] = useState("");
-    const [Centre, setCentre] = useState("All");
-    const [Progression, setProgression] = useState("All");
-    const [Date, setDate] = useState("All");
-    const [Users, setUsers] = useState([0]);
+    const [centre, setcentre] = useState("All");
+    const [role, setRole] = useState();
+    const [UsersData, setUsersData] = useState([]);
+    const { user } = useAuthContext();
+
+    const handleCentreInputChange = (newValue) => {
+      setcentre(newValue);
+    };
+    const handleRoleInputChange = (newValue) => {
+      setRole(newValue);
+    };
+    useEffect(() => {
+      const fetchUsersData = async () => {
+        try {
+          const response = await fetch(`http://localhost:8000/User`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${user?.token}`,
+            },
+          });
+    
+          if (response.ok) {
+            const data = await response.json();
+            setUsersData(data);
+          } else {
+            console.error("Error receiving Panne data:", response.statusText);
+          }
+        } catch (error) {
+          console.error("Error fetching Panne data:", error);
+        }
+      };
+    
+      fetchUsersData();
+    }, [user?.id, UsersData]);
+    const matchSearch = (item, search) => {
+      const lowerSearch = search.toLowerCase();
+      return (
+        item.Telephone.toString().includes(lowerSearch) ||
+        item.Nom.toLowerCase().includes(lowerSearch) ||
+        item.Prenom.toLowerCase().includes(lowerSearch)
+      );
+    };
+
+    const matchRole = (item, role) => {
+      return role === "SAV" || item.Role.includes(role);
+    };
+    
+    const matchCentre = (item, centre) => {
+      return centre === "All" || item.Centre.toLowerCase().includes(centre.toLowerCase());
+    };
   return (
     <>
     <MyNavBar  act={act} setAct={setAct} />
@@ -29,10 +76,10 @@ const Users = () => {
         <div className="patient-table-container">
           <div className="patient-table-header">
             <div className="table-header-item">
-            <CostumSelectCentre label='Centre:'/>
+            <CostumSelectCentre label='Centre:' onChange={handleCentreInputChange}/>
             </div>
             <div className="table-header-item">
-            <CostumSelect label='Role:'/>
+            <CostumSelect label='Role:' onChange={handleRoleInputChange} value={role}/>
             </div>
             <div className="table-header-item">
               <label>Recherche</label>
@@ -43,10 +90,7 @@ const Users = () => {
               onChange={(e) => setSearch(e.target.value)}
             />
             </div>
-
-            
-
-<div className="table-header-item">
+          <div className="table-header-item">
             <div className='add-user-btn'>
                 <AdduserButton/>
             </div>
@@ -64,9 +108,21 @@ const Users = () => {
                 <td className="table-patients-header-nom">Centre</td>
                 <td className="table-patients-header-button"></td>
                 <td className="table-patients-header-button"></td>
-
               </tr>
-              <UserRow/>
+              {UsersData?.filter((item) => {
+                const isMatchingSearch = matchSearch(item, search);
+
+                if (item.Role && item.CentreDepot && item.Progres) {
+                  const isMatchingRole = matchRole(item, role);
+                  const isMatchingCentre = matchCentre(item, centre);
+              
+                  return isMatchingSearch && isMatchingCentre && isMatchingRole;
+                } else {
+                  return isMatchingSearch;
+                }
+              }).map((user) => (
+                <UserRow User={user}/>
+              ))}
             </table>
           </div>
         </div>

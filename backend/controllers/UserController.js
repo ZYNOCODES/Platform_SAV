@@ -33,9 +33,10 @@ const Login = async (req, res) => {
             //create token
             const token = createToken(user.id);
             var id = user.id;
-            var CentreDepot = user.CentreDepot;
+            var Role = user.Role;
+            var Centre = user.Centre;
             //return user
-            res.status(200).json({id, CentreDepot, token});
+            res.status(200).json({id, Role, Centre, token});
         }
     }catch(err){
         res.status(400).json({message: err.message});
@@ -44,14 +45,14 @@ const Login = async (req, res) => {
 
 //signup
 const Signup = async (req, res) => {
-    const { Email, Password, Nom, Prenom, Telephone, Wilaya, CentreDepot} = req.body;
+    const { Email, Password, ResetPassword, Nom, Prenom, Telephone, Role, Centre} = req.body;
     try{
         // hash password
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(Password, salt);
 
         //validation
-        if(!Email || !Password || !Nom || !Prenom || !Telephone || !Wilaya || !CentreDepot ){
+        if(!Email || !Password || !Nom || !Prenom || !Telephone || !Role || !Centre ){
             return res
               .status(400)
               .json({ message: "Tous les champs doivent être remplis" });
@@ -59,6 +60,10 @@ const Signup = async (req, res) => {
         //check if email is valid
         if(!validator.isEmail(Email)){
             return res.status(400).json({message: "L'Email n'est pas valide"});
+        }
+        //check if password match
+        if(Password != ResetPassword){
+            return res.status(400).json({ message: "Les mots de passe ne correspondent pas" });
         }
         //check if password is strong
         if(!validator.isStrongPassword(Password)){
@@ -82,8 +87,8 @@ const Signup = async (req, res) => {
                 Nom: Nom,
                 Prenom: Prenom,
                 Telephone: Telephone,
-                Wilaya: Wilaya,
-                CentreDepot: CentreDepot,
+                Role: Role,
+                Centre: Centre,
             });
             if(!user){
                 return res.status(400).json({ message: "Utilisateur non enregistré" });
@@ -91,9 +96,7 @@ const Signup = async (req, res) => {
                 //create token
                 const token = createToken(user.id);
                 //return user
-                var id = user.is;
-                res.status(200).json({id, CentreDepot, token, 
-                    message:"Connecté avec succès"});
+                res.status(200).json({message:"Utilisateur enregistré avec succès"});
             }
         }
         
@@ -128,10 +131,10 @@ const GetUser = async (req, res) => {
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
         // return user
-        res.status(200).json(user);
+        res.status(200).json({user: user});
     }catch (error) {
         console.error(error);
-        res.status(500).send('Error getting user');
+        res.status(500).send('Error getting {user: user}');
     }
     
 }
@@ -158,7 +161,7 @@ const DeleteUser = async (req, res) => {
 
 //update a user
 const UpdateUser = async (req, res) => {
-    const { id, Nom, Prenom, Telephone, Wilaya, CentreDepot} = req.body;
+    const { id, Nom, Prenom, Telephone, Wilaya, Centre} = req.body;
     try {
         //get user by id
         const user = await User.findByPk(id);
@@ -171,7 +174,7 @@ const UpdateUser = async (req, res) => {
         user.Prenom = Prenom;
         user.Telephone = Telephone;
         user.Wilaya = Wilaya;
-        user.CentreDepot = CentreDepot;
+        user.Centre = Centre;
         // save user
         await user.save();
         // return updated user

@@ -60,7 +60,7 @@ const Users = () => {
     };
 
     const matchRole = (item, role) => {
-      return role === "SAV" || item.Role.includes(role);
+      return role === "All" || item.Role.includes(role);
     };
     
     const matchCentre = (item, centre) => {

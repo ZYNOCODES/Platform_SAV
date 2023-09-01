@@ -58,27 +58,7 @@ export const PanneList = () => {
       };
     
       fetchPannesData();
-    }, [user.Role, user.CentreDepot, ProduitenPanne]);
-    const matchSearch = (item, search) => {
-      const lowerSearch = search.toLowerCase();
-      return (
-        item.id.toString().includes(lowerSearch) ||
-        item.Nom.toLowerCase().includes(lowerSearch) ||
-        item.Prenom.toLowerCase().includes(lowerSearch)
-      );
-    };
-    
-    const matchDateDepot = (item, datedepot) => {
-      return datedepot === "All" || item.DateDepot.includes(datedepot);
-    };
-    
-    const matchCentreDepot = (item, centredepot) => {
-      return centredepot === "All" || item.CentreDepot.toLowerCase().includes(centredepot.toLowerCase());
-    };
-    
-    const matchProgres = (item, progres) => {
-      return progres === "All" || item.Progres.toString().includes(progres);
-    };
+    }, [user?.Role, user.CentreDepot, ProduitenPanne, user?.Centre, user?.token]);
   return (
     <>
     <MyNavBar  act={act} setAct={setAct} />
@@ -132,7 +112,8 @@ export const PanneList = () => {
                     item.Prenom.toLowerCase().includes(search.toLowerCase())||
                     item.DateDepot.toLowerCase().includes(search.toLowerCase())||
                     item.Progres.toString().includes(search.toLowerCase())||
-                    item.CentreDepot.toLowerCase().includes(search.toLowerCase())) &&
+                    item.CentreDepot.toLowerCase().includes(search.toLowerCase())||
+                    item.ReferanceProduit.toString().includes(search.toLowerCase())) &&
                   (datedepot == null || item.DateDepot.includes(datedepot)) &&
                   (progres === "All" || item.Progres.toString().includes(progres.toString())) &&
                   (centredepot === "All" || item.CentreDepot.toLowerCase().includes(centredepot.toLowerCase()))

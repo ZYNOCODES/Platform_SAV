@@ -11,7 +11,9 @@ width: calc(100% - 82px);
   overflow-y: scroll;
   padding: 30px;
 }
-
+.Historique-container{
+    width: 100%;
+}
 .pannedetails-title{
     text-align: left;
     width: 100%;

@@ -32,7 +32,6 @@ const DetailsPanne = () => {
                 <div className='back-button' onClick={navigatetoPannelist}>
                     <IoIosArrowBack className='icon' size={33} fill='#fff'/>
                 </div>
-                
                 <h3>Details de panne</h3>
             </div>
             <div className='pannedetails-info'>

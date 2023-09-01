@@ -1,17 +1,11 @@
 import React from 'react'
 import { FaRegEye } from "react-icons/fa";
-import {useNavigate} from 'react-router-dom';
 
-export default function VoirButton() {
-  const navigate = useNavigate();
-
-  const navigatetoPannedetails =()=>{
-    navigate('/Details');
-  }
+export default function VoirButton({Redirect}) {
   return (
-    <div className="voir-btn-class">
+    <div className="voir-btn-class" onClick={Redirect}>
       <FaRegEye size={15} fill="#fff" />
-      <input type="submit" value="Voir" className="voir-btn" onClick={navigatetoPannedetails}/>
+      <input type="submit" value="Voir" className="voir-btn"/>
     </div>
   );
 }

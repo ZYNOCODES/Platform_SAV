@@ -5,6 +5,7 @@ class PanneController {
   static async index(req, res) {
     // Handle request to get all Pannes
     const { Role, CentreDepot } = req.query;
+    console.log(Role);
     try {
       if(Role === 'Admin'){
         const Pannes = await Panne.findAll();
@@ -36,20 +37,17 @@ class PanneController {
     // Handle request to get all Pannes whred by ID
     const { id } = req.params;
     try {
-      const Pannes = await Panne.findAll({
-        where: {
-          id: id,
-        }
-      });
-      if (Pannes.length > 0) {
+      const Pannes = await Panne.findByPk(id);
+      if (Pannes) {
         res.json(Pannes);
-      }else{
-        res.json({message: 'No panne found'});
+      } else {
+        res.json({ message: 'No panne found' });
       }
     } catch (error) {
-      console.error(error);
-      res.status(500).send('Error getting panne whred by ID');
+      console.error('Error:', error);
+      res.status(500).send('Error getting panne by ID');
     }
+    
   }
   static async GetBySAV(req, res) {
     // Handle request to get all Pannes whred by SAV
@@ -71,24 +69,40 @@ class PanneController {
     }
   }
   static async GetByRefProduct(req, res) {
-    // Handle request to get all Pannes whred by SAV
-    const { ReferanceProduit } = req.body;
+    // Handle request to get all Pannes filtered by ReferanceProduit
+    const { Ref, id } = req.params;
+  
     try {
-      const Pannes = await Panne.findAll({
+      const currentPanne = await Panne.findOne({
         where: {
-          ReferanceProduit: ReferanceProduit,
-        }
+          id: id,
+        },
       });
-      if (Pannes.length > 0) {
-        res.json(Pannes);
-      }else{
-        res.json({message: 'No panne found'});
+  
+      if (!currentPanne) {
+        return res.json({ message: 'Panne not found' });
+      }
+  
+      const allPannes = await Panne.findAll({
+        where: {
+          ReferanceProduit: Ref,
+        },
+      });
+  
+      const filteredPannes = allPannes.filter((panne) => panne.id !== currentPanne.id);
+  
+      if (filteredPannes.length > 0) {
+        res.json({ Pannes: filteredPannes });
+      } else {
+        res.json({ message: 'No panne found without the current panne' });
       }
     } catch (error) {
       console.error(error);
-      res.status(500).send('Error getting panne whred by SAV');
+      res.status(500).json({ message: 'Internal server error' });
     }
   }
+  
+  
   static async Create(req, res) {
     // Handle request to create a new Panne
     const { Nom, Prenom, Email, Telephone, 
@@ -120,6 +134,25 @@ class PanneController {
 
   static async Update(req, res) {
     // Handle request to update a Panne
+    const { id } = req.params;
+    const { progres } = req.body;
+    try {
+      //get user by id
+      const panne = await Panne.findByPk(id);
+      //check if panne exist
+      if (!panne) {
+          return res.status(404).json({ error: 'panne not found' });
+      }
+      // assign panne new values
+      panne.Progres = progres;
+      // save panne
+      await panne.save();
+      // return updated panne
+      res.json({panne: panne, message: 'La panne a été déposée avec succès.'});
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Error updating panne');
+    }
   }
 
   static async Remove(req, res) {

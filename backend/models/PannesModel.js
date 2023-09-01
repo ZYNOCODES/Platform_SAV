@@ -44,6 +44,10 @@ const Panne = sequelize.define('pannes', {
     type: DataTypes.DATE,
     allowNull: false,
   },
+  Description: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   Progres: {
     type: DataTypes.INTEGER,
     allowNull: true,

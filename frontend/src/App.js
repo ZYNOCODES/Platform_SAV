@@ -32,9 +32,8 @@ function App() {
               )
             }/>
           <Route path='/Utilisateurs' element={user ? <Users/> : <Navigate to="/" />}/>
-
-          <Route path='/depose' element={<ProduitDepose/>}/>
-          <Route path='/DetailPanneSav' element={<DetailsPanneSav/>}/>
+          <Route path='/EnAttenteDeDepot/:id' element={<ProduitDepose/>}/>
+          <Route path='/DetailPanneSav/:id' element={<DetailsPanneSav/>}/>
           <Route path='/NouveauUser' element={<CreateNewUser/>}/>
           <Route path='/UpdateUser/:id' element={<UpdateUser/>}/>
         </Routes>

@@ -109,7 +109,7 @@ const UpdateUser = () => {
     }
   }
 
-  const Redirect =()=>{
+  const GoBackPressed =()=>{
     navigate(-1);
   }
   return (
@@ -134,7 +134,7 @@ const UpdateUser = () => {
                     <FormInput label='Confirmation du mot de pass:' placeholder='Confirmer Le Mot De Pass' type='password'onChange={handleResetPasswordInputChange}/>
                     
                     <div className='userbtn'>
-                        <input className="InputButton-User" type='button' value={'Annuler'} onClick={Redirect}/>
+                        <input className="InputButton-User" type='button' value={'Annuler'} onClick={GoBackPressed}/>
                         <input className="InputButton-User" type='button' value={'Modifier'} onClick={UpdateUser}/>
                     </div>
                 </form>

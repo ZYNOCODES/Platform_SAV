@@ -26,7 +26,6 @@ const DetailsPanne = () => {
   return (
     <>
         <MyNavBar  act={act} setAct={setAct} />
-        <MyAsideBar />
         <div className='pannedetails-container'>
             <div className='pannedetails-title'>
                 <div className='back-button' onClick={navigatetoPannelist}>

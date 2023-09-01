@@ -1,24 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import MyAsideBar from "../Components/asideBar";
 import MyNavBar from "../Components/navBar";
 import { useState} from "react";
 import FormInput from '../Components/Form/FormInput';
 import './Style/detailspanne.css'
-import Progress from '../Components/Progress';
 import { IoIosArrowBack } from "react-icons/io";
-import {useNavigate} from 'react-router-dom';
+import {useParams, useNavigate} from 'react-router-dom';
 import CostumSelect from '../Components/Form/CostumSelect';
 import CostumSelectCentre from '../Components/Form/CostumSelectCentre';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuthContext } from '../hooks/useAuthContext';
 
-const CreateNewUser = () => {
+const UpdateUser = () => {
   const [act, setAct] = useState(false);
-
   const notifyFailed = (message) => toast.error(message);
   const notifySuccess = (message) => toast.success(message);
   const navigate = useNavigate();
+  const {id} = useParams();
   const { user } = useAuthContext();
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
@@ -28,7 +27,7 @@ const CreateNewUser = () => {
   const [Telephone, setTelephone] = useState("");
   const [Role, setRole] = useState("");
   const [Centre, setCentre] = useState("");
-
+  const [UserData, setUserData] = useState([]);
   const handleEmailInputChange = (newValue) => {
     setEmail(newValue);
   };
@@ -53,29 +52,63 @@ const CreateNewUser = () => {
   const handleCentreInputChange = (newValue) => {
     setCentre(newValue);
   };
+  //Get user data from server
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/User/${id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
   
-  async function submitSignup(e) {
-    e.preventDefault();
-    const reponse = await fetch("http://localhost:8000/User/signup", {
-      method: "POST",
+        if (response.ok) {
+          const data = await response.json();
+          setUserData(data.user);
+        } else {
+          console.error("Error receiving Panne data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching Panne data:", error);
+      }
+    };
+  
+    fetchUserData();
+  }, [id, UserData, user?.token]);
+  const UpdateUser = async () =>{
+    const reponse = await fetch("http://localhost:8000/User", {
+      method: "PATCH",
       headers: {
         "content-type": "application/json",
-        Authorization: `Bearer ${user?.token}`,
       },
       body: JSON.stringify({ 
-        Email, Password, Nom, Prenom, Telephone, Role, Centre, ResetPassword
+        id: UserData.id,
+        Nom : Nom,
+        Prenom : Prenom,
+        Email : Email,
+        Telephone : Telephone,
+        Role : Role,
+        Centre : Centre,
+        Password : Password,
+        ResetPassword : ResetPassword
       }),
     });
 
     const json = await reponse.json();
 
     if (!reponse.ok) {
-      notifyFailed(json.message);
+        notifyFailed(json.message);
     }
     if (reponse.ok) {
       notifySuccess(json.message);
+      setTimeout(() => {
+        navigate(-1)
+      }, 2000)
     }
   }
+
   const Redirect =()=>{
     navigate(-1);
   }
@@ -85,24 +118,24 @@ const CreateNewUser = () => {
         <MyAsideBar />
         <div className='pannedetails-container'>
             <div className='pannedetails-title'>
-                <h3>Ajouter un utilisateur :</h3>
+                <h3>Modifier se utilisateur :</h3>
             </div>
             <div className='pannedetails-info'>
                 <form>
-                    <FormInput label='Nom:' placeholder=' Enter Le Nom' type='text' onChange={handleNomInputChange}/>
-                    <FormInput label='Prenom:' placeholder='Entrer Le Prenom' type='text' onChange={handlePrenomInputChange}/>
-                    <FormInput label='Email:' placeholder="Enter L'adresse Email" type='Email' onChange={handleEmailInputChange}/>
-                    <FormInput label='Numero Tel:' placeholder=' Entrer Le Numero de Telephone' type='text' onChange={handleTelephoneInputChange}/>
+                    <FormInput label='Nom:' placeholder={UserData.Nom} type='text' onChange={handleNomInputChange}/>
+                    <FormInput label='Prenom:' placeholder={UserData.Prenom} type='text' onChange={handlePrenomInputChange}/>
+                    <FormInput label='Email:' placeholder={UserData.Email} type='Email' onChange={handleEmailInputChange}/>
+                    <FormInput label='Numero Tel:' placeholder={UserData.Telephone} type='text' onChange={handleTelephoneInputChange}/>
                 </form>
                 <form>
-                    <CostumSelect label='Role:' onChange={handleRoleInputChange}/>
-                    <CostumSelectCentre label='Centre:' onChange={handleCentreInputChange}/>
+                    <CostumSelect label='Role:' value={UserData.Role} onChange={handleRoleInputChange}/>
+                    <CostumSelectCentre label='Centre:' value={UserData.Centre} onChange={handleCentreInputChange}/>
                     <FormInput label='Mot de pass:' placeholder='Entrer Le Mot de pass' type='password' onChange={handlePasswordInputChange}/>
                     <FormInput label='Confirmation du mot de pass:' placeholder='Confirmer Le Mot De Pass' type='password'onChange={handleResetPasswordInputChange}/>
                     
                     <div className='userbtn'>
                         <input className="InputButton-User" type='button' value={'Annuler'} onClick={Redirect}/>
-                        <input className="InputButton-User" type='submit' value={'Ajouter'} onClick={submitSignup}/>
+                        <input className="InputButton-User" type='button' value={'Modifier'} onClick={UpdateUser}/>
                     </div>
                 </form>
             </div>
@@ -112,4 +145,4 @@ const CreateNewUser = () => {
   )
 }
 
-export default CreateNewUser;
+export default UpdateUser;

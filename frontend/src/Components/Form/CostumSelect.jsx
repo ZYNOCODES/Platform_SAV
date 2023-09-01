@@ -1,7 +1,7 @@
 import './FormInput.css';
 import React from 'react';
 
-const CostumSelect = (props) => {
+function CostumSelect(props, {Newoption}) {
   const handleChange = (event) => {
     if (props.onChange) {
       props.onChange(event.target.value);
@@ -11,14 +11,15 @@ const CostumSelect = (props) => {
   return (
     <div className='forminput'>
       <label>{props.label}</label>
-      <select onChange={handleChange} value={props.value}>
-        <option>All</option>
-        <option>Admin</option>
-        <option>SAV</option>
-        <option>Directeur Marketing</option>
+      <select onChange={handleChange}>
+        {props.value && <option value={props.value}>{props.value}</option>}
+        <option value='All'>All</option>
+        <option value='Admin'>Admin</option>
+        <option value='SAV'>SAV</option>
+        <option value='Directeur Marketing'>Directeur Marketing</option>
       </select>
     </div>
   );
-};
+}
 
 export default CostumSelect;

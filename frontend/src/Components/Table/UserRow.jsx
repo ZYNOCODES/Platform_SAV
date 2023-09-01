@@ -1,4 +1,5 @@
 import React from 'react'
+import {useNavigate} from 'react-router-dom';
 import Updatebutton from '../Buttons/updatebutton'
 import Deletebutton from '../Buttons/deletebutton'
 import { ToastContainer, toast } from "react-toastify";
@@ -26,6 +27,11 @@ function UserRow(User){
       notifySuccess(json.message);
     }
   }
+  const navigate = useNavigate();
+
+  const Redirect =()=>{
+    navigate(`/UpdateUser/${User.User.id}`);
+  }
   return (
     <tr className="table-nouveau-ne-ligne">
       <td className="table-patients-td-nom">{User.User.Nom}{' '}{User.User.Prenom}</td>
@@ -34,7 +40,7 @@ function UserRow(User){
       <td className="table-patients-td-region">{User.User.Role}</td>
       <td className="table-patients-td-region">{User.User.Centre}</td>
       <td className="btn-column">
-        <Updatebutton/>
+        <Updatebutton Redirection={Redirect}/>
       </td>
       <td className="btn-column">
         <Deletebutton DeleteUser={DeleteUser}/>

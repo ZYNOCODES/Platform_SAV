@@ -125,17 +125,21 @@ export const PanneList = () => {
                 <td className="table-patients-header-button"></td>
               </tr>
               {ProduitenPanne?.filter((item) => {
-                const isMatchingSearch = matchSearch(item, search);
-
-                if (item.DateDepot && item.CentreDepot && item.Progres) {
-                  const isMatchingDatedepot = matchDateDepot(item, datedepot);
-                  const isMatchingCentredepot = matchCentreDepot(item, centredepot);
-                  const isMatchingProgres = matchProgres(item, progres);
-              
-                  return isMatchingSearch && isMatchingDatedepot && isMatchingCentredepot && isMatchingProgres;
-                } else {
-                  return isMatchingSearch;
+                if (
+                  (search.toLowerCase() === "" ||
+                    item.id.toString().includes(search.toLowerCase()) ||
+                    item.Nom.toLowerCase().includes(search.toLowerCase()) ||
+                    item.Prenom.toLowerCase().includes(search.toLowerCase())||
+                    item.DateDepot.toLowerCase().includes(search.toLowerCase())||
+                    item.Progres.toString().includes(search.toLowerCase())||
+                    item.CentreDepot.toLowerCase().includes(search.toLowerCase())) &&
+                  (datedepot == null || item.DateDepot.includes(datedepot)) &&
+                  (progres === "All" || item.Progres.toString().includes(progres.toString())) &&
+                  (centredepot === "All" || item.CentreDepot.toLowerCase().includes(centredepot.toLowerCase()))
+                ) {
+                  return item;
                 }
+                
               }).map((Panne) => (
                 <TablePanneRow Panne={Panne} />
               ))}

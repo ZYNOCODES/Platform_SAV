@@ -11,14 +11,16 @@ const CostumSelectCentre = (props) => {
     <div className='forminput'>
       <label>{props.label}</label>
       <select onChange={handleChange}>
-        <option>Direction General</option>
-        <option>Direction Marketing</option>
-        <option>Sav Alger Hamiz</option>
-        <option>Sav Blida</option>
-        <option>Sav Medea</option>
-        <option>Sav Tipaza</option>
-        <option>Sav Batna</option>
-        <option>Sav Oran</option>
+        {props.value && <option value={props.value}>{props.value}</option>}
+        <option value={"All"||"all"}>All</option>
+        <option value={"Direction General"||"direction general"}>Direction General</option>
+        <option value={"Alger"||"alger"}>Alger</option>
+        <option value={"Blida"||"blida"}>Blida</option>
+        <option value={"Medea"||"medea"}>Medea</option>
+        <option value={"Tipaza"||"tipaza"}>Tipaza</option>
+        <option value={"Batna"||"batna"}>Batna</option>
+        <option value={"Oran"||"oran"}>Oran</option>
+        <option value={"Chlef"||"chlef"}>Chlef</option>
       </select>
     </div>
     

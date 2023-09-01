@@ -12,6 +12,7 @@ import { useAuthContext } from './hooks/useAuthContext';
 import ProduitDepose from './Pages/ProduitDepose';
 import DetailsPanneSav from './Pages/DetailsPanneSav';
 import CreateNewUser from './Pages/CreateNewUser';
+import UpdateUser from './Pages/UpdateUser';
 function App() {
   const [act, setAct] = useState(false);
   const { user } = useAuthContext();
@@ -35,6 +36,7 @@ function App() {
           <Route path='/depose' element={<ProduitDepose/>}/>
           <Route path='/DetailPanneSav' element={<DetailsPanneSav/>}/>
           <Route path='/NouveauUser' element={<CreateNewUser/>}/>
+          <Route path='/UpdateUser/:id' element={<UpdateUser/>}/>
         </Routes>
       </main>
     </BrowserRouter>

@@ -161,8 +161,49 @@ const DeleteUser = async (req, res) => {
 
 //update a user
 const UpdateUser = async (req, res) => {
-    const { id, Nom, Prenom, Telephone, Wilaya, Centre} = req.body;
+    const { id, Nom, Prenom, Telephone, Role, Centre, Email, Password , ResetPassword} = req.body;
     try {
+
+        if(!Nom && !Prenom && !Telephone && !Role && !Centre && !Email && !Password ){
+            return res
+              .status(400)
+              .json({ message: "remplis au moin un champs pour modifier" });
+        }
+        //check email 
+        if(Email){
+            if(!validator.isEmpty(Email)){
+                //check if email is valid
+                if(!validator.isEmail(Email)){
+                    return res.status(400).json({message: "L'email n'est pas valide"});
+                }else{
+                    //check if email is already used
+                    const userexist = await User.findOne({
+                    where: {
+                        Email: Email
+                    }
+                    });
+                    if(userexist){
+                        return res.status(400).json({ message: "Email déjà utilisé" });
+                    }
+                }
+            }     
+        }
+        //check password 
+        if(Password){
+            if(!validator.isEmpty(Password)){
+                //check if password match
+                if(Password != ResetPassword){
+                    return res.status(400).json({ message: "Les mots de passe ne correspondent pas" });
+                }else{
+                    //check if password is strong
+                    if(!validator.isStrongPassword(Password)){
+                        return res
+                        .status(400)
+                        .json({ message: "Mot de passe pas assez fort" });
+                    }
+                }
+            }        
+        }
         //get user by id
         const user = await User.findByPk(id);
         //check if user exist
@@ -170,15 +211,22 @@ const UpdateUser = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
         // assign user new values
-        user.Nom = Nom;
-        user.Prenom = Prenom;
-        user.Telephone = Telephone;
-        user.Wilaya = Wilaya;
-        user.Centre = Centre;
+        if (Nom) user.Nom = Nom;
+        if (Prenom) user.Prenom = Prenom;
+        if (Telephone) user.Telephone = Telephone;
+        if (Role) user.Role = Role;
+        if (Centre) user.Centre = Centre;
+        if (Email) user.Email = Email;
+        if (Password){
+            // hash password
+            const salt = await bcrypt.genSalt(10);
+            const hash = await bcrypt.hash(Password, salt);
+            user.Password = hash;
+        }
         // save user
         await user.save();
         // return updated user
-        res.json(user);
+        res.json({user: user, message: 'User updated successfully'});
     } catch (error) {
       console.error(error);
       res.status(500).send('Error updating user');

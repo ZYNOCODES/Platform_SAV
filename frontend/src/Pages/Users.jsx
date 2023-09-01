@@ -16,7 +16,7 @@ const Users = () => {
     const [act, setAct] = useState(false);
     const [search, setSearch] = useState("");
     const [centre, setcentre] = useState("All");
-    const [role, setRole] = useState();
+    const [role, setRole] = useState("All");
     const [UsersData, setUsersData] = useState([]);
     const { user } = useAuthContext();
 
@@ -50,22 +50,7 @@ const Users = () => {
     
       fetchUsersData();
     }, [user?.id, UsersData]);
-    const matchSearch = (item, search) => {
-      const lowerSearch = search.toLowerCase();
-      return (
-        item.Telephone.toString().includes(lowerSearch) ||
-        item.Nom.toLowerCase().includes(lowerSearch) ||
-        item.Prenom.toLowerCase().includes(lowerSearch)
-      );
-    };
-
-    const matchRole = (item, role) => {
-      return role === "All" || item.Role.includes(role);
-    };
-    
-    const matchCentre = (item, centre) => {
-      return centre === "All" || item.Centre.toLowerCase().includes(centre.toLowerCase());
-    };
+  
   return (
     <>
     <MyNavBar  act={act} setAct={setAct} />
@@ -76,10 +61,30 @@ const Users = () => {
         <div className="patient-table-container">
           <div className="patient-table-header">
             <div className="table-header-item">
-            <CostumSelectCentre label='Centre:' onChange={handleCentreInputChange}/>
+            <div className='forminput'>
+              <label>Centre</label>
+              <select onChange={(e) => setcentre(e.target.value)}>
+                <option>All</option>
+                <option>Direction General</option>
+                <option>Alger</option>
+                <option>Blida</option>
+                <option>Medea</option>
+                <option>Tipaza</option>
+                <option>Batna</option>
+                <option>Oran</option>
+              </select>
+            </div>
             </div>
             <div className="table-header-item">
-            <CostumSelect label='Role:' onChange={handleRoleInputChange} value={role}/>
+            <div className='forminput'>
+              <label>Role</label>
+              <select onChange={(e) => setRole(e.target.value)}>
+                <option>All</option>
+                <option>Admin</option>
+                <option>SAV</option>
+                <option>Directeur Marketing</option>
+              </select>
+            </div>
             </div>
             <div className="table-header-item">
               <label>Recherche</label>
@@ -110,16 +115,20 @@ const Users = () => {
                 <td className="table-patients-header-button"></td>
               </tr>
               {UsersData?.filter((item) => {
-                const isMatchingSearch = matchSearch(item, search);
-
-                if (item.Role && item.CentreDepot && item.Progres) {
-                  const isMatchingRole = matchRole(item, role);
-                  const isMatchingCentre = matchCentre(item, centre);
-              
-                  return isMatchingSearch && isMatchingCentre && isMatchingRole;
-                } else {
-                  return isMatchingSearch;
-                }
+                if (
+                  (search.toLowerCase() === "" ||
+                    item.Nom.toLowerCase().includes(search.toLowerCase()) ||
+                    item.Prenom.toLowerCase().includes(search.toLowerCase()) ||
+                    item.Email.toLowerCase().includes(search.toLowerCase()) ||
+                    item.Telephone.toString().includes(search.toLowerCase())||
+                    item.Centre.toLowerCase().includes(search.toLowerCase())||
+                    item.Role.toLowerCase().includes(search.toLowerCase())) &&
+                  (centre === "All" ||
+                    item.Centre.toLowerCase().includes(centre.toLowerCase())) &&
+                  (role === "All" || item.Role.toLowerCase().includes(role.toLowerCase()))
+                ) {
+                  return item;
+                }                
               }).map((user) => (
                 <UserRow User={user}/>
               ))}

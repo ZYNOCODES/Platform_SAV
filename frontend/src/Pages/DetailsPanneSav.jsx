@@ -14,6 +14,7 @@ import PanneTest from '../Components/Table/PanneTest';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Tooglebtn from '../Components/Tooglebtn';
 
 const DetailsPanneSav = () => {
     const notifyFailed = (message) => toast.error(message);
@@ -106,7 +107,6 @@ const DetailsPanneSav = () => {
   return (
     <>
         <MyNavBar  act={act} setAct={setAct} />
-        <MyAsideBar />
         <div className='pannedetails-container'>
             <div className='pannedetails-title'>
                 <div className='back-button' onClick={GoBackPressed}>
@@ -136,16 +136,24 @@ const DetailsPanneSav = () => {
             <div className='pannedetails-info progressbar'>
                 <Progress labelArray={labelArray} currentStep={currentStep} updateStep={updateStep}></Progress>
             </div>
-            <div className='Progress-btn'>
-                <button className="primaryButton">Etape Precedente</button>
-                <div className="inputButton">
-                    <AiOutlineCloudUpload size={35} fill="#fff" />
+            <div className=' progress-toogle'>
+                <div className='left-toogle'>
+                    <Tooglebtn label='En attente de depot'/>
+                    <Tooglebtn label='En attente de reparation'/>
+                    <Tooglebtn label='En reparation au centre'/>
+                    
+                </div>
+                <div className='right-toogle'>
+                    <Tooglebtn label='Repare en attente de pickup'/>
+                    <Tooglebtn label='Livre'/>
+                    <div className="inputButton">
+                    <AiOutlineCloudUpload size={25} fill="#fff" />
                     <label htmlFor="file-input" className="file-input-label">
                         Joindre une Photo
                     </label>
                     <input id="file-input" className="file-input"type="file"baccept="image/*"/>
                 </div>
-                <button className="primaryButton">Etape Prochaine</button>
+                </div>
             </div>
             <div className='image'>
                 <BsCardImage size={330} fill='#DADADA'/>

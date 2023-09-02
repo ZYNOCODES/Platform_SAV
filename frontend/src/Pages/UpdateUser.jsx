@@ -115,10 +115,12 @@ const UpdateUser = () => {
   return (
     <>
         <MyNavBar  act={act} setAct={setAct} />
-        <MyAsideBar />
         <div className='pannedetails-container'>
-            <div className='pannedetails-title'>
-                <h3>Modifier se utilisateur :</h3>
+        <div className='pannedetails-title'>
+                <div className='back-button' onClick={GoBackPressed}>
+                    <IoIosArrowBack className='icon' size={33} fill='#fff'/>
+                </div>
+                <h3>Modifer Utilisateur :</h3>
             </div>
             <div className='pannedetails-info'>
                 <form>
@@ -133,11 +135,11 @@ const UpdateUser = () => {
                     <FormInput label='Mot de pass:' placeholder='Entrer Le Mot de pass' type='password' onChange={handlePasswordInputChange}/>
                     <FormInput label='Confirmation du mot de pass:' placeholder='Confirmer Le Mot De Pass' type='password'onChange={handleResetPasswordInputChange}/>
                     
-                    <div className='userbtn'>
-                        <input className="InputButton-User" type='button' value={'Annuler'} onClick={GoBackPressed}/>
-                        <input className="InputButton-User" type='button' value={'Modifier'} onClick={UpdateUser}/>
-                    </div>
                 </form>
+            </div>
+            <div className='pannedetails-Button'>
+                <button className='Cancel-btn' type='button' onClick={GoBackPressed}>Annuler</button>
+                <button className='depose-btn' type='submit' onClick={UpdateUser}>Modifer</button>
             </div>
             <ToastContainer />
         </div>

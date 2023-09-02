@@ -82,9 +82,11 @@ const CreateNewUser = () => {
   return (
     <>
         <MyNavBar  act={act} setAct={setAct} />
-        <MyAsideBar />
         <div className='pannedetails-container'>
             <div className='pannedetails-title'>
+            <div className='back-button' onClick={Redirect}>
+                    <IoIosArrowBack className='icon' size={33} fill='#fff'/>
+                </div>
                 <h3>Ajouter un utilisateur :</h3>
             </div>
             <div className='pannedetails-info'>
@@ -100,11 +102,14 @@ const CreateNewUser = () => {
                     <FormInput label='Mot de pass:' placeholder='Entrer Le Mot de pass' type='password' onChange={handlePasswordInputChange}/>
                     <FormInput label='Confirmation du mot de pass:' placeholder='Confirmer Le Mot De Pass' type='password'onChange={handleResetPasswordInputChange}/>
                     
-                    <div className='userbtn'>
-                        <input className="InputButton-User" type='button' value={'Annuler'} onClick={Redirect}/>
-                        <input className="InputButton-User" type='submit' value={'Ajouter'} onClick={submitSignup}/>
-                    </div>
+                    
                 </form>
+
+            </div>
+
+            <div className='pannedetails-Button'>
+                <button className='Cancel-btn' type='button' onClick={Redirect}>Annuler</button>
+                <button className='depose-btn' type='submit' onClick={submitSignup}>Ajouter</button>
             </div>
             <ToastContainer />
         </div>

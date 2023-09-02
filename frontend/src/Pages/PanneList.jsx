@@ -59,6 +59,8 @@ export const PanneList = () => {
     
       fetchPannesData();
     }, [user?.Role, user.CentreDepot, ProduitenPanne, user?.Centre, user?.token]);
+
+    console.log(ProduitenPanne)
   return (
     <>
     <MyNavBar  act={act} setAct={setAct} />

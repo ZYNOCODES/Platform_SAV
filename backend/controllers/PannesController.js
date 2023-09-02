@@ -5,7 +5,7 @@ class PanneController {
   static async index(req, res) {
     // Handle request to get all Pannes
     const { Role, CentreDepot } = req.query;
-    console.log(Role);
+    
     try {
       if(Role === 'Admin'){
         const Pannes = await Panne.findAll();

@@ -9,6 +9,7 @@ import { useAuthContext } from '../../hooks/useAuthContext';
 function TablePanneRow ({Panne}){
   const { user } = useAuthContext();
   const navigate = useNavigate();
+  
   const Redirect =()=>{
     if(Panne.Progres === 0 && user?.Role === "SAV"){
       navigate(`/EnAttenteDeDepot/${Panne.id}`);

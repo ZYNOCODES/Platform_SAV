@@ -25,9 +25,10 @@ const DetailsPanneSav = () => {
     const [PanneData, setPanneData] = useState();
     const {id} = useParams();
     const { user } = useAuthContext();
+    const [selectedImage, setSelectedImage] = useState(null);
     const [progress, setProgress] = useState(0);
     const [disabledButtons, setDisabledButtons] = useState([
-        false, false, false, false, false]);
+          false, false, false, false, false]);
     //Get panne data from server
     useEffect(() => {
         const fetchPanneData = async () => {
@@ -53,7 +54,7 @@ const DetailsPanneSav = () => {
     
         fetchPanneData();
     }, [id, PanneData, user?.token]);
-    //Get panne data from server
+    //Get all pannes data of a product from server
     useEffect(() => {
         const fetchAllPannesDataOfProduct = async () => {
           try {
@@ -95,31 +96,70 @@ const DetailsPanneSav = () => {
             notifyFailed(json.message);
         }
         if (reponse.ok) {
-            notifySuccess("Panne Updated");
+          if(val===1){
+            notifySuccess("Panne en attente de depot a été vérifiée avec succès.");
+          }else if(val===2){
+            notifySuccess("Panne en attente de réparation a été vérifiée avec succès."           );
+          }else if(val===3){
+            notifySuccess("Panne En reparation au centre a été vérifiée avec succès.");
+          }else if(val===4){
+            notifySuccess("Panne en attente de pickup a été vérifiée avec succès.");
+          }else if(val===5){
+            notifySuccess("Panne livrée a été vérifiée avec succès.");
+          }
         }
     }
-    //Update progress state when a toggle button is clicked
+    // Update progress state when a toggle button is clicked
     const handleProgressChange = (value) => {
-        // Create a copy of the disabledButtons array and update it
+      if (PanneData?.Progres > 0) {
         const updatedDisabledButtons = disabledButtons.map((_, index) => index < value - 1);
         setDisabledButtons(updatedDisabledButtons);
         setProgress(value);
         if (!disabledButtons[value - 1]) {
-          // Call UpdatePanne when the button is checked
           UpdatePanne(value);
-        } else {
-          // Call UpdatePanne with a value of 0 when the button is unchecked
-          UpdatePanne(0);
+        }else {
+          UpdatePanne(1);
         }
-      };
+      }
+    };
+    // Handle the specific behaviors based on PanneData?.Progres
+    useEffect(() => {
+      if (PanneData?.Progres > 0) {
+        switch (PanneData.Progres) {
+          case 5:
+            setDisabledButtons([true, true, true, true, true]);
+            break;
+          case 4:
+            setDisabledButtons([true, true, true, true, false]);
+            break;
+          case 3:
+            setDisabledButtons([true, true, true, false, false]);
+            break;
+          case 2:
+            setDisabledButtons([true, true, false, false, false]);
+            break;
+          case 1:
+            setDisabledButtons([true, false, false, false, false]);
+            break;
+          default:
+            // Reset the disabledButtons state if PanneData.Progres doesn't match any case
+            setDisabledButtons([false, false, false, false, false]);
+            break;
+        }
+      }
+    }, [PanneData?.Progres]);
     //Function to handle unchecking a button
     const handleUncheck = (value) => {
-        // Create a copy of the disabledButtons array and uncheck the current button
         const updatedDisabledButtons = [...disabledButtons];
         updatedDisabledButtons[value - 1] = false;
         setDisabledButtons(updatedDisabledButtons);
         setProgress(value);
     };
+    //Handle image change
+    const handleImageChange = (e) => {
+      const file = e.target.files[0];
+      setSelectedImage(file);
+    };    
     //Go back to previous page
     const GoBackPressed =()=>{
         navigate(-1);
@@ -155,25 +195,36 @@ const DetailsPanneSav = () => {
             </div>
             <div className=' progress-toogle'>
                 <div className='left-toogle'>
-                    <Tooglebtn label='En attente de depot' value={1} onChange={handleProgressChange} disabled={disabledButtons[0]} onClick={() => handleUncheck(0)} />
-                    <Tooglebtn label='En attente de reparation' value={2} onChange={handleProgressChange} disabled={disabledButtons[1]} onClick={() => handleUncheck(1)}/>
-                    <Tooglebtn label='En reparation au centre' value={3} onChange={handleProgressChange} disabled={disabledButtons[2]} onClick={() => handleUncheck(2)}/>
-                    
+                  <Tooglebtn label='En attente de depot' value={1} onChange={handleProgressChange} disabled={disabledButtons[0]} onClick={() => handleUncheck(0)} />
+                  <Tooglebtn label='en attente de réparation' value={2} onChange={handleProgressChange} disabled={disabledButtons[1]} onClick={() => handleUncheck(1)}/>
+                  <Tooglebtn label='En reparation au centre' value={3} onChange={handleProgressChange} disabled={disabledButtons[2]} onClick={() => handleUncheck(2)}/>
                 </div>
                 <div className='right-toogle'>
-                    <Tooglebtn label='Repare en attente de pickup' value={4} onChange={handleProgressChange} disabled={disabledButtons[3]} onClick={() => handleUncheck(3)}/>
-                    <Tooglebtn label='Livre' value={5} onChange={handleProgressChange} disabled={disabledButtons[4]} onClick={() => handleUncheck(4)}/>
-                    <div className="inputButton">
+                  <Tooglebtn label='en attente de pickup' value={4} onChange={handleProgressChange} disabled={disabledButtons[3]} onClick={() => handleUncheck(3)}/>
+                  <Tooglebtn label='Livre' value={5} onChange={handleProgressChange} disabled={disabledButtons[4]} onClick={() => handleUncheck(4)}/>
+                  <div className="inputButton">
                     <AiOutlineCloudUpload size={25} fill="#fff" />
                     <label htmlFor="file-input" className="file-input-label">
                         Joindre une Photo
                     </label>
-                    <input id="file-input" className="file-input"type="file"baccept="image/*"/>
-                </div>
+                    <input
+                      id="file-input"
+                      className="file-input"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
+                  </div>
                 </div>
             </div>
             <div className='image'>
-                <BsCardImage size={330} fill='#DADADA'/>
+              {selectedImage ? (
+                <img src={URL.createObjectURL(selectedImage)} 
+                alt="Selected"  
+                style={{ maxWidth: '350px', width: '100%' }}/>
+              ) : (
+                <BsCardImage size={330} fill='#DADADA' />
+              )}
             </div>
             {ProductData &&
                 <div className='Historique-container'>

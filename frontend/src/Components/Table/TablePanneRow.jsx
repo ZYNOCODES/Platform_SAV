@@ -13,8 +13,10 @@ function TablePanneRow ({Panne}){
   const Redirect =()=>{
     if(Panne.Progres === 0 && user?.Role === "SAV"){
       navigate(`/EnAttenteDeDepot/${Panne.id}`);
-    }else{
+    }else if(user?.Role === "SAV"){
       navigate(`/DetailPanneSav/${Panne.id}`)
+    }else{
+      navigate(`/Details/${Panne.id}`)
     }
   }
   return (

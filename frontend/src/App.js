@@ -22,8 +22,6 @@ function App() {
     <BrowserRouter>
       <main>
         <Routes>
-          <Route path='/liste_des_pannes' element={user ? <PanneList /> : <Navigate to="/" />} />
-          <Route path='/Details' element={user ? <DetailsPanne /> : <Navigate to="/" />} />
           <Route path='/' element={
               !user ? (
                 <Login />
@@ -31,7 +29,9 @@ function App() {
                 <Navigate to="/liste_des_pannes" />
               )
             }/>
+          <Route path='/liste_des_pannes' element={user ? <PanneList /> : <Navigate to="/" />} />
           <Route path='/Utilisateurs' element={user ? <Users/> : <Navigate to="/" />}/>
+          <Route path='/Details/:id' element={user ? <DetailsPanne /> : <Navigate to="/" />} />
           <Route path='/EnAttenteDeDepot/:id' element={<ProduitDepose/>}/>
           <Route path='/DetailPanneSav/:id' element={<DetailsPanneSav/>}/>
           <Route path='/NouveauUser' element={<CreateNewUser/>}/>

@@ -20,16 +20,14 @@ const DetailsPanneSav = () => {
     const notifyFailed = (message) => toast.error(message);
     const notifySuccess = (message) => toast.success(message);
     const [ProductData, setProductData] = useState([]);
-    const labelArray = ['Produit deposer', 'En attente de reparation', 'En reparation', 'Repare en attente de pick up', 'Livre']
-    const [currentStep, updateCurrentStep] = useState(1);
     const [act, setAct] = useState(false);
-    function updateStep(step) {
-        updateCurrentStep(step);
-    }
     const navigate = useNavigate();
     const [PanneData, setPanneData] = useState();
     const {id} = useParams();
     const { user } = useAuthContext();
+    const [progress, setProgress] = useState(0);
+    const [disabledButtons, setDisabledButtons] = useState([
+        false, false, false, false, false]);
     //Get panne data from server
     useEffect(() => {
         const fetchPanneData = async () => {
@@ -80,15 +78,14 @@ const DetailsPanneSav = () => {
       
         fetchAllPannesDataOfProduct();
       }, [id, user?.token, PanneData?.ReferanceProduit, ProductData]);
-      console.log(ProductData);
-    const UpdatePanne = async () =>{
+    const UpdatePanne = async (val) =>{
         const reponse = await fetch(`http://localhost:8000/Pannes/${id}`, {
           method: "PATCH",
           headers: {
             "content-type": "application/json",
           },
           body: JSON.stringify({ 
-            progres : 1,
+            progres : val,
           }),
         });
     
@@ -98,9 +95,32 @@ const DetailsPanneSav = () => {
             notifyFailed(json.message);
         }
         if (reponse.ok) {
-            notifySuccess(json.message);
+            notifySuccess("Panne Updated");
         }
     }
+    //Update progress state when a toggle button is clicked
+    const handleProgressChange = (value) => {
+        // Create a copy of the disabledButtons array and update it
+        const updatedDisabledButtons = disabledButtons.map((_, index) => index < value - 1);
+        setDisabledButtons(updatedDisabledButtons);
+        setProgress(value);
+        if (!disabledButtons[value - 1]) {
+          // Call UpdatePanne when the button is checked
+          UpdatePanne(value);
+        } else {
+          // Call UpdatePanne with a value of 0 when the button is unchecked
+          UpdatePanne(0);
+        }
+      };
+    //Function to handle unchecking a button
+    const handleUncheck = (value) => {
+        // Create a copy of the disabledButtons array and uncheck the current button
+        const updatedDisabledButtons = [...disabledButtons];
+        updatedDisabledButtons[value - 1] = false;
+        setDisabledButtons(updatedDisabledButtons);
+        setProgress(value);
+    };
+    //Go back to previous page
     const GoBackPressed =()=>{
         navigate(-1);
     }
@@ -133,19 +153,16 @@ const DetailsPanneSav = () => {
             <div className='pannedetails-title progress'>
                 <h3>Progression :</h3>
             </div>
-            <div className='pannedetails-info progressbar'>
-                <Progress labelArray={labelArray} currentStep={currentStep} updateStep={updateStep}></Progress>
-            </div>
             <div className=' progress-toogle'>
                 <div className='left-toogle'>
-                    <Tooglebtn label='En attente de depot'/>
-                    <Tooglebtn label='En attente de reparation'/>
-                    <Tooglebtn label='En reparation au centre'/>
+                    <Tooglebtn label='En attente de depot' value={1} onChange={handleProgressChange} disabled={disabledButtons[0]} onClick={() => handleUncheck(0)} />
+                    <Tooglebtn label='En attente de reparation' value={2} onChange={handleProgressChange} disabled={disabledButtons[1]} onClick={() => handleUncheck(1)}/>
+                    <Tooglebtn label='En reparation au centre' value={3} onChange={handleProgressChange} disabled={disabledButtons[2]} onClick={() => handleUncheck(2)}/>
                     
                 </div>
                 <div className='right-toogle'>
-                    <Tooglebtn label='Repare en attente de pickup'/>
-                    <Tooglebtn label='Livre'/>
+                    <Tooglebtn label='Repare en attente de pickup' value={4} onChange={handleProgressChange} disabled={disabledButtons[3]} onClick={() => handleUncheck(3)}/>
+                    <Tooglebtn label='Livre' value={5} onChange={handleProgressChange} disabled={disabledButtons[4]} onClick={() => handleUncheck(4)}/>
                     <div className="inputButton">
                     <AiOutlineCloudUpload size={25} fill="#fff" />
                     <label htmlFor="file-input" className="file-input-label">

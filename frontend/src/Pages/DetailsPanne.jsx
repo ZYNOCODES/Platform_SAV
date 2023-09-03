@@ -6,6 +6,8 @@ import FormInput from '../Components/Form/FormInput';
 import './Style/detailspanne.css'
 import Progress from '../Components/Progress';
 import { IoIosArrowBack } from "react-icons/io";
+import { AiOutlineCaretDown } from "react-icons/ai";
+
 import {useNavigate, useParams} from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { ToastContainer, toast } from "react-toastify";
@@ -80,7 +82,32 @@ const DetailsPanne = () => {
             </div>
             <div className='pannedetails-title progress'>
                 <h3>Progression</h3>
-                
+                <div className='progression-label'>
+
+                    <div className='progress-div'>
+                        <h4>En attente de  reparation </h4>
+                        <AiOutlineCaretDown/>
+                    </div>
+                    <div className='progress-div second-progress-div s-dv'>
+                        <h4>En reparation au centre</h4>
+                        <AiOutlineCaretDown/>
+
+                    </div>
+                    <div className='progress-div second-progress-div'>
+                        <h4>En Reparation au Centrale</h4>
+                        <AiOutlineCaretDown/>
+
+                    </div>
+
+                    <div className='progress-div third-progress-div'>
+                        <h4>Reparé en attente de pickup</h4>
+                        <AiOutlineCaretDown/>
+
+                    </div>
+
+                    
+                    
+                </div>
                 <div className='progressbar'>
                     {PanneData?.Progres == 5 ? (
                         <ProgressBar 
@@ -98,6 +125,8 @@ const DetailsPanne = () => {
                         />
                     ) : PanneData?.Progres == 0 ? (
                         <h2>Le produit en attente de dépôt</h2>
+                    ) : PanneData?.Progres == 5 ?(
+                        <h2>Le produit en pret a etre livré</h2>
                     ) : (
                         <ProgressBar 
                         baseBgColor = '#bebebe'
@@ -112,7 +141,7 @@ const DetailsPanne = () => {
                         labelAlignment = 'center'
                         labelClassName = 'progressbar-label'
                         />
-                    )
+                    ) 
                     }
                 </div>
             </div>

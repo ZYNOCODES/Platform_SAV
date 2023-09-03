@@ -52,9 +52,9 @@ export default function MyAsideBar() {
             <li className="mb-6">
             <NavLink to="/Utilisateurs">
             <div
-                className={`link flex items-center justify-items-center ${
-                  location.pathname === "/Dashboard" ? "aside-item-active" : ""
-                }`}
+               className={`link flex items-center justify-items-center ${
+                location.pathname === "/Utilisateurs" ? "aside-item-active" : ""
+              }`}
               >
                 <ImProfile className="w-6 h-6 ml-2" />
                 <span className="title">Utilisateurs</span>

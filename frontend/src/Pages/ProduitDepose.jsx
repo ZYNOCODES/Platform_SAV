@@ -73,12 +73,14 @@ const ProduitDepose = () => {
     return (
     <>
         <MyNavBar  act={act} setAct={setAct} />
-        <MyAsideBar />
         <div className='pannedetails-container'>
             <div className='pannedetails-title'>
+                <div className='back-button' onClick={GoBackPressed}>
+                    <IoIosArrowBack className='icon' size={33} fill='#fff'/>
+                </div>
                 <h3>Details de panne</h3>
             </div>
-            <div className='pannedetails-info'>
+            <div className='pannedetails-info form-section'>
                 <form>
                     <FormInput label='Nom :' value={PanneData?.Nom} readOnly type='text'/>
                     <FormInput label='Prenom :' value={PanneData?.Prenom} readOnly type='text' />
@@ -95,7 +97,7 @@ const ProduitDepose = () => {
                 </form>
             </div>
 
-            <div className='pannedetails-Button'>
+            <div className='pannedetails-Button1'>
                 <button className='Cancel-btn' type='button' onClick={GoBackPressed}>Annuler</button>
                 <button className='depose-btn' type='submit' onClick={UpdatePanne}>Deposer</button>
             </div>

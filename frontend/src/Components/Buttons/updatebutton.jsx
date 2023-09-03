@@ -1,11 +1,11 @@
 import React from 'react'
-import { RxUpdate } from "react-icons/rx";
+import { GrUpdate } from "react-icons/gr";
 
 
 const Updatebutton = ({Redirection}) => {
   return (
-    <div className="update-btn-class" onClick={Redirection}>
-      <RxUpdate size={15} fill='#fff'/>
+    <div className="voir-btn-class update-btn" onClick={Redirection}>
+      <GrUpdate size={15} fill='#fff'/>
       <input type="submit" value="Modifier" className="voir-btn" />
     </div>
   )

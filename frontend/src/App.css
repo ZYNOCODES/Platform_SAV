@@ -54,6 +54,10 @@ nav {
   border-bottom: 1px solid #e1e1e1;
 }
 
+.image img{
+  width: auto;
+  height: 120px;
+}
 .menu {
   display: none;
   flex-direction: column;
@@ -135,6 +139,8 @@ nav {
 .right-nav .doctor .doctor-name {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  text-align: left;
 }
 
 .right-nav .doctor .doctor-name h4 {
@@ -146,6 +152,7 @@ nav {
 .right-nav .doctor .doctor-name span {
   font-size: 15px;
   font-weight: 500;
+  margin: 0px;
   color: black;
 }
 
@@ -245,17 +252,21 @@ nav {
   height: calc(100vh - 80px);
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 30px;
   padding-top: 30px;
   list-style: none;
 }
+.aside ul li {
+  align-items: center;
+  display: flex;
+}
 
 .aside ul li .link {
-  position: relative;
+  display: flex;
+  align-items: center;
   color: black;
   font-size: 18px;
   width: 232px;
-  margin-left: 5px;
   text-transform: capitalize;
 }
 
@@ -270,7 +281,7 @@ position: absolute;
 }
 
 .aside ul li:hover {
-  line-height: 50px;
+  
   margin-left: 5px;
   background-color: #f69597;
   border-radius: 10px 0 0 10px;
@@ -281,8 +292,7 @@ position: absolute;
 .aside-item-active {
   height: auto;
   width: 20px;
-  padding-left: 5px;
-  padding: 15px;
+  padding: 5px;
   border-radius: 5px;
   background-color:#f69597;
 }
@@ -311,10 +321,7 @@ opacity: 0;
 
 
 .title {
-  position: relative;
-  margin-left: 30px;
-  margin-top: 0;
-  padding-top: 0px;
+  margin-left: 20px;
 }
 
 
@@ -1204,6 +1211,7 @@ form {
   padding-top: 5px;
 }
 
+
 .upcomping a:hover {
   text-decoration: underline;
 }
@@ -1211,11 +1219,22 @@ form {
 .dashboard-calendar-doctor-meet {
   display: flex;
   align-items: center;
-  gap: 20px;
-  background-color: rgba(240, 249, 253, 1);
+  background-color: #da171a29;
   border-radius: 10px;
   padding-left: 12px;
   height: 63px;
+  margin-bottom: 10px;
+}
+
+.dashboard-calendar-doctor-meet h2{
+  margin-left: 10px;
+
+}
+
+
+.h-96{
+  margin-top: 10px;
+  height: max-content;
 }
 
 .monthly-doctor {
@@ -1302,20 +1321,27 @@ form {
 .select-table-traitement {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 34px;
+}
+
+.select-chart select{
+  padding: 0px;
+  color: #DA171B;
 }
 
 .chart-select-icon {
   cursor: pointer;
 }
 
+
 .chart-header select,
 .select-table-traitement select {
   width: 169px;
   height: 40px;
   border-radius: 8px;
-  border: 2px solid #4f81ff;
-  color: #4f81ff;
+  border: 2px solid #DA171B;
+  color: #DA171B;
   background-color: transparent;
   cursor: pointer;
 }
@@ -2401,9 +2427,10 @@ form {
   cursor: pointer;
   background-color: #DA171B;
 }
-.update-btn-class{
-  padding:0px 10px;
+.update-btn,.delete-btn{
+  padding-left: 10px;
   display: flex;
+  padding-right: 10px;
   align-items: center;
   justify-content: center;
   gap: 5px;

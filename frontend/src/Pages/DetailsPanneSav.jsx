@@ -16,6 +16,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Tooglebtn from '../Components/Tooglebtn';
 import axios from 'axios'; 
+import imageframe from'../Components/assets/imageframe.png';
 
 const DetailsPanneSav = () => {
     const notifyFailed = (message) => toast.error(message);
@@ -192,7 +193,7 @@ const DetailsPanneSav = () => {
                 </div>
                 <h3>Details de panne :</h3>
             </div>
-            <div className='pannedetails-info'>
+            <div className='pannedetails-info form-section'>
             <form>
                     <FormInput label='Nom :' value={PanneData?.Nom} readOnly type='text'/>
                     <FormInput label='Prenom :' value={PanneData?.Prenom} readOnly type='text' />
@@ -216,34 +217,42 @@ const DetailsPanneSav = () => {
                   <Tooglebtn label='En attente de depot' value={1} onChange={handleProgressChange} disabled={disabledButtons[0]} onClick={() => handleUncheck(0)} />
                   <Tooglebtn label='en attente de réparation' value={2} onChange={handleProgressChange} disabled={disabledButtons[1]} onClick={() => handleUncheck(1)}/>
                   <Tooglebtn label='En reparation au centre' value={3} onChange={handleProgressChange} disabled={disabledButtons[2]} onClick={() => handleUncheck(2)}/>
+                  <Tooglebtn label='Reparé en attente de pickup' value={4} onChange={handleProgressChange} disabled={disabledButtons[3]} onClick={() => handleUncheck(3)}/>
+                  <Tooglebtn label='Livré au client' value={5} onChange={handleProgressChange} disabled={disabledButtons[4]} onClick={() => handleUncheck(4)}/>
+
                 </div>
                 <div className='right-toogle'>
-                  <Tooglebtn label='en attente de pickup' value={4} onChange={handleProgressChange} disabled={disabledButtons[3]} onClick={() => handleUncheck(3)}/>
-                  <Tooglebtn label='Livre' value={5} onChange={handleProgressChange} disabled={disabledButtons[4]} onClick={() => handleUncheck(4)}/>
-                  <form className="inputButton" encType='multipart/form-data'>
-                    <AiOutlineCloudUpload size={25} fill="#fff" />
-                    <label htmlFor="file-input" className="file-input-label">
-                        Joindre une Photo
-                    </label>
-                    <input
-                      id="file-input"
-                      className="file-input"
-                      name='image'
-                      type="file"
-                      onChange={(e) => setSelectedImage(e.target.files[0])}
-                    />
-                    
-                  </form>
-                </div>
-            </div>
-            <div className='image'>
-              {image ? (
-                <img onClick={uploadImage} src={URL.createObjectURL(image)}
-                alt="Selected"  
-                style={{ maxWidth: '350px', width: '100%' }}/>
-              ) : (
-                <BsCardImage size={330} fill='#DADADA' />
-              )}
+
+                  <div className='right-toogle-container'>
+                      <label>Joindre une Photo</label>
+                      <form className="inputButton" encType='multipart/form-data'>
+                        <AiOutlineCloudUpload size={25} fill="#fff" />
+                        <label htmlFor="file-input" className="file-input-label">
+                            Joindre une Photo
+                        </label>
+                        <input
+                          id="file-input"
+                          className="file-input"
+                          name='image'
+                          type="file"
+                          onChange={(e) => setSelectedImage(e.target.files[0])}
+                        />
+                      
+                      </form>
+
+                    </div>
+
+                    <div className='image'>
+                          {image ? (
+                              <img onClick={uploadImage} src={URL.createObjectURL(image)}
+                              alt="Selected"  
+                              style={{ maxWidth: '350px', width: '100%' ,height:'310px'}}/>
+                            ) : (
+                              <img src={imageframe} style={{ maxWidth: '350px', width: '100%' ,height:'250px', marginTop:'30px'}}/>
+                            )}
+                          </div>
+                  </div>
+                  
             </div>
             {ProductData &&
                 <div className='Historique-container'>

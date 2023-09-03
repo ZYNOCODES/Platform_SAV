@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react'
 import { useState } from "react";
 import Logo from './assets/Logo.png'
+import profilIcon from './assets/Ellipse4.png'
+
 import { useAuthContext } from "../hooks/useAuthContext";
+
 export default function MyNavBar({ act, setAct }) {
   const { user } = useAuthContext();
   const [UserData, setUserData] = useState(); 
@@ -35,12 +38,14 @@ export default function MyNavBar({ act, setAct }) {
       <nav>
         <div className="left-nav">
           <div className="image">
-            <img src={Logo} alt="logo" height={90}/>
+            <img src={Logo} alt="logo" height={20}/>
           </div>
         </div>
         <div className="right-nav">
           <div className="doctor">
-          <div className="doctor-pic"></div>
+          <div className="doctor-pic">
+            <img src={profilIcon} alt="icon"/>
+          </div>
             <div className="doctor-name">
               {user && <h4>{UserData?.Nom}{" "}{UserData?.Prenom}</h4>}
               {user && <span>{UserData?.Centre}</span>}

@@ -16,7 +16,8 @@
 .pannedetails-title{
     text-align: left;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 30px;
+    margin-bottom: 20px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -32,6 +33,7 @@
     justify-content: center;
     align-items: center;
     margin-right: 30px;
+    cursor: pointer;
 }
 .icon{
     color: #f8f9fd;
@@ -40,6 +42,8 @@
 
 .pannedetails-title h3{
     color: #D4171B;
+    font-size: 20px;
+    font-weight: 600;
 }
 .pannedetails-info{
     display: flex;
@@ -60,7 +64,7 @@
     border-radius: 10px;
     background-color: #D4171B;
     color: #f8f9fd;
-    padding: 15px 50px;
+    padding: 10px 50px;
     width: 30vh;
 }
 
@@ -69,10 +73,14 @@
     background-color: #f8f9fd;
     color:#D4171B ;
     border: 1px solid #D4171B;
-    padding: 15px 50px;
+    padding: 10px 50px;
     width: 30vh;
 }
 
+.form-section{
+    display: flex;
+    justify-content: center;
+}
 .pannedetails-Button{
     width: 100%;
     display: flex;
@@ -81,6 +89,22 @@
     padding:0px 50px;
     justify-content: space-between;
     align-items: center;
+}
+.pannedetails-Button1{
+    width: 100%;
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    justify-content: center;
+    gap: 100px;
+}
+
+
+.pannedetails-Button2{
+    width: 100%;
+    display: flex;
+    margin-top: 20px;
+    align-items: flex-end;
 }
 
 .Progress-btn button{
@@ -121,6 +145,7 @@
 .image{
     display: flex;
     width: 100%;
+    height: fit-content;
     justify-content: center;
     align-items: center;
 }
@@ -128,11 +153,12 @@
     padding: 5px 15px;
     background-color: #D4171B;
     border: none;
-    margin-top: 30px;
+    margin-left: 30px;
     color: white;
     border-radius: 4px;
     cursor: pointer;
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     font-size: 16px;
@@ -173,8 +199,26 @@
       .left-toogle{
     margin-right: 20px;
       }
+
       .right-toogle{
+        align-items:flex-start;
         margin-left: 20px;
+        height: 325px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+          }
+.right-toogle-container{
+    margin-top: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content:center;
+        align-items: center;
+          }
+
+          .right-toogle-container label{
+            margin-top: 0px;
           }
 
 @media only screen and (max-width:1215px){
@@ -189,6 +233,14 @@
         justify-content: center;
         flex-direction: column;
         align-items: center;
+        
+    }
+
+    .pannedetails-Button1{
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap:0px;
     }
     .depose-btn,.primaryButton,.Cancel-btn{
         margin-top: 15px;
@@ -196,6 +248,15 @@
         margin-left: 0px;
         width: 40vh;
     }
+    .progress-toogle{
+        display: flex;
+        flex-direction: column;
+    }
+    .right-toogle{
+        margin-top: 20px;
+        margin-left: 0px;
+    }
+
 
     
     

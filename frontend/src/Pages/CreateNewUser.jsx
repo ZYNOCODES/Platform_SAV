@@ -89,28 +89,26 @@ const CreateNewUser = () => {
                 </div>
                 <h3>Ajouter un utilisateur :</h3>
             </div>
-            <div className='pannedetails-info'>
+            <div className='pannedetails-info form-section'>
                 <form>
                     <FormInput label='Nom:' placeholder=' Enter Le Nom' type='text' onChange={handleNomInputChange}/>
                     <FormInput label='Prenom:' placeholder='Entrer Le Prenom' type='text' onChange={handlePrenomInputChange}/>
                     <FormInput label='Email:' placeholder="Enter L'adresse Email" type='Email' onChange={handleEmailInputChange}/>
                     <FormInput label='Numero Tel:' placeholder=' Entrer Le Numero de Telephone' type='text' onChange={handleTelephoneInputChange}/>
+                    
                 </form>
                 <form>
                     <CostumSelect label='Role:' onChange={handleRoleInputChange}/>
                     <CostumSelectCentre label='Centre:' onChange={handleCentreInputChange}/>
                     <FormInput label='Mot de pass:' placeholder='Entrer Le Mot de pass' type='password' onChange={handlePasswordInputChange}/>
                     <FormInput label='Confirmation du mot de pass:' placeholder='Confirmer Le Mot De Pass' type='password'onChange={handleResetPasswordInputChange}/>
-                    
-                    
                 </form>
 
             </div>
-
-            <div className='pannedetails-Button'>
-                <button className='Cancel-btn' type='button' onClick={Redirect}>Annuler</button>
-                <button className='depose-btn' type='submit' onClick={submitSignup}>Ajouter</button>
-            </div>
+            <div className='pannedetails-Button1'>
+                      <button className='Cancel-btn' type='button' onClick={Redirect}>Annuler</button>
+                      <button className='depose-btn' type='submit' onClick={submitSignup}>Ajouter</button>
+                   </div>
             <ToastContainer />
         </div>
     </>

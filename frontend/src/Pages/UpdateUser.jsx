@@ -122,7 +122,7 @@ const UpdateUser = () => {
                 </div>
                 <h3>Modifer Utilisateur :</h3>
             </div>
-            <div className='pannedetails-info'>
+            <div className='pannedetails-info form-section'>
                 <form>
                     <FormInput label='Nom:' placeholder={UserData.Nom} type='text' onChange={handleNomInputChange}/>
                     <FormInput label='Prenom:' placeholder={UserData.Prenom} type='text' onChange={handlePrenomInputChange}/>
@@ -137,7 +137,7 @@ const UpdateUser = () => {
                     
                 </form>
             </div>
-            <div className='pannedetails-Button'>
+            <div className='pannedetails-Button1'>
                 <button className='Cancel-btn' type='button' onClick={GoBackPressed}>Annuler</button>
                 <button className='depose-btn' type='submit' onClick={UpdateUser}>Modifer</button>
             </div>

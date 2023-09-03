@@ -228,7 +228,7 @@ const DetailsPanneSav = () => {
                       <form className="inputButton" encType='multipart/form-data'>
                         <AiOutlineCloudUpload size={25} fill="#fff" />
                         <label htmlFor="file-input" className="file-input-label">
-                            Joindre une Photo
+                            Joindre
                         </label>
                         <input
                           id="file-input"

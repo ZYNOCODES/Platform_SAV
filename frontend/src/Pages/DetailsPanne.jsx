@@ -10,7 +10,8 @@ import {useNavigate, useParams} from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Stepper from "../Components/swiper/Stepper";
+import Stepper from "../Components/Progress";
+import ProgressBar from "@ramonak/react-progress-bar";
 
 const DetailsPanne = () => {
     const [act, setAct] = useState(false);
@@ -79,10 +80,41 @@ const DetailsPanne = () => {
             </div>
             <div className='pannedetails-title progress'>
                 <h3>Progression</h3>
-            </div>
-
-            <div className='pannedetails-info progressbar'>
-                <Stepper />
+                
+                <div className='progressbar'>
+                    {PanneData?.Progres == 5 ? (
+                        <ProgressBar 
+                        baseBgColor = '#bebebe'
+                        bgColor = 'green'
+                        height = '30px'
+                        borderRadius = '10px'
+                        isLabelVisible = {true}
+                        animateOnRender = {true}
+                        maxCompleted={50}
+                        completed={PanneData?.Progres*10}
+                        customLabel = 'Le produit a été livré'
+                        labelAlignment = 'center'
+                        labelClassName = 'progressbar-label'
+                        />
+                    ) : PanneData?.Progres == 0 ? (
+                        <h2>Le produit en attente de dépôt</h2>
+                    ) : (
+                        <ProgressBar 
+                        baseBgColor = '#bebebe'
+                        bgColor = 'green'
+                        height = '30px'
+                        borderRadius = '10px'
+                        isLabelVisible = {true}
+                        animateOnRender = {true}
+                        maxCompleted={50}
+                        completed={PanneData?.Progres*10}
+                        customLabel = 'en cours de traitement'
+                        labelAlignment = 'center'
+                        labelClassName = 'progressbar-label'
+                        />
+                    )
+                    }
+                </div>
             </div>
         </div>
     </>

@@ -10,14 +10,17 @@ import {useNavigate, useParams} from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Stepper from "../Components/swiper/Stepper";
 
 const DetailsPanne = () => {
+    const [act, setAct] = useState(false);
     const notifyFailed = (message) => toast.error(message);
     const notifySuccess = (message) => toast.success(message);
     const navigate = useNavigate();
     const [PanneData, setPanneData] = useState();
     const {id} = useParams();
     const { user } = useAuthContext();
+    const [sampleFile, setSampleFile] = useState();
     //Get panne data from server
     useEffect(() => {
         const fetchPanneData = async () => {
@@ -47,13 +50,7 @@ const DetailsPanne = () => {
     const GoBackPressed =()=>{
         navigate(-1);
     }
-
-    const labelArray = ['En attente de depot', 'En attente de reparation', 'En reparation', 'Repare en attente de pick up', 'Livre']
-    const [currentStep, updateCurrentStep] = useState(1);
-    const [act, setAct] = useState(false);
-    function updateStep(step) {
-        updateCurrentStep(step);
-    }
+    
   return (
     <>
         <MyNavBar  act={act} setAct={setAct} />
@@ -85,7 +82,7 @@ const DetailsPanne = () => {
             </div>
 
             <div className='pannedetails-info progressbar'>
-                <Progress labelArray={labelArray} currentStep={currentStep} updateStep={updateStep}></Progress>
+                <Stepper />
             </div>
         </div>
     </>

@@ -1,14 +1,24 @@
 const express = require('express');
-const PanneController = require('../controllers/PannesController');
-
+const {
+    index,
+    GetByID,
+    GetByRefProduct,
+    Create,
+    Update,
+    Remove,
+    UplaodIMG,
+    upload
+} = require('../controllers/PannesController');
 const router = express.Router();
 
-router.get('/', PanneController.index);
-router.get('/:id', PanneController.GetByID);
-router.get('/All/:Ref/:id', PanneController.GetByRefProduct);
-router.post('/', PanneController.Create);
-router.put('/:id', PanneController.Update);
-router.delete('/:id', PanneController.Remove);
-router.patch('/:id', PanneController.Update);
+
+router.get('/', index);
+router.get('/:id', GetByID);
+router.get('/All/:Ref/:id', GetByRefProduct);
+router.post('/', Create);
+router.post('/IMG',upload, UplaodIMG);
+router.put('/:id', Update);
+router.delete('/:id', Remove);
+router.patch('/:id', Update);
 
 module.exports = router;

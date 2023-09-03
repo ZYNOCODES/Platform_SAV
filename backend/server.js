@@ -1,7 +1,11 @@
 require('dotenv').config();
 
 const express = require('express');
+const exphbs = require('express-handlebars'); // updated to 6.0.X
+const fileUpload = require('express-fileupload');
 const cors = require('cors');
+const path = require('path');
+const multer = require('multer');
 const bodyparser = require('body-parser');
 const sequelize = require('./config/database');
 const PannesRoute = require('./routes/PannesRoute');
@@ -11,11 +15,12 @@ const port = process.env.PORT || 8080;
 
 //express app
 const app = express();
- 
+
 //midleware
 app.use(cors());
-app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({limit: '50mb', extended: true}));
+app.use('/images', express.static('./images'))
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use((req, res, next) => {
     console.log(req.path, req.method);
     next();
@@ -36,5 +41,3 @@ sequelize
   .catch((error) => {
     console.error('Database connection error:', error);
   });
-  
-app.listen(5000, () => console.log('Express server is running at port : '+ 5000)); 

@@ -15,6 +15,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Tooglebtn from '../Components/Tooglebtn';
+import axios from 'axios'; 
 
 const DetailsPanneSav = () => {
     const notifyFailed = (message) => toast.error(message);
@@ -25,10 +26,32 @@ const DetailsPanneSav = () => {
     const [PanneData, setPanneData] = useState();
     const {id} = useParams();
     const { user } = useAuthContext();
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [image, setSelectedImage] = useState(null);
     const [progress, setProgress] = useState(0);
     const [disabledButtons, setDisabledButtons] = useState([
           false, false, false, false, false]);
+          //Upload image to server
+    const uploadImage = async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData();
+      formData.append('image', image);
+      formData.append('id', id);
+      
+      const result = await axios.post(
+        "http://localhost:8000/Pannes/IMG",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      if (result.status === 200) {
+        notifySuccess("Image a été téléchargée avec succès.");
+      } else {
+        notifyFailed("Erreur lors du téléchargement de l'image.");
+      }
+      
+    }   
     //Get panne data from server
     useEffect(() => {
         const fetchPanneData = async () => {
@@ -155,11 +178,6 @@ const DetailsPanneSav = () => {
         setDisabledButtons(updatedDisabledButtons);
         setProgress(value);
     };
-    //Handle image change
-    const handleImageChange = (e) => {
-      const file = e.target.files[0];
-      setSelectedImage(file);
-    };    
     //Go back to previous page
     const GoBackPressed =()=>{
         navigate(-1);
@@ -202,7 +220,7 @@ const DetailsPanneSav = () => {
                 <div className='right-toogle'>
                   <Tooglebtn label='en attente de pickup' value={4} onChange={handleProgressChange} disabled={disabledButtons[3]} onClick={() => handleUncheck(3)}/>
                   <Tooglebtn label='Livre' value={5} onChange={handleProgressChange} disabled={disabledButtons[4]} onClick={() => handleUncheck(4)}/>
-                  <div className="inputButton">
+                  <form className="inputButton" encType='multipart/form-data'>
                     <AiOutlineCloudUpload size={25} fill="#fff" />
                     <label htmlFor="file-input" className="file-input-label">
                         Joindre une Photo
@@ -210,16 +228,17 @@ const DetailsPanneSav = () => {
                     <input
                       id="file-input"
                       className="file-input"
+                      name='image'
                       type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
+                      onChange={(e) => setSelectedImage(e.target.files[0])}
                     />
-                  </div>
+                    
+                  </form>
                 </div>
             </div>
             <div className='image'>
-              {selectedImage ? (
-                <img src={URL.createObjectURL(selectedImage)} 
+              {image ? (
+                <img onClick={uploadImage} src={URL.createObjectURL(image)}
                 alt="Selected"  
                 style={{ maxWidth: '350px', width: '100%' }}/>
               ) : (

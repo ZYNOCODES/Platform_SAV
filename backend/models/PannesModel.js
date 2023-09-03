@@ -53,7 +53,10 @@ const Panne = sequelize.define('pannes', {
     allowNull: true,
     defaultValue: 0,
   },
-  
+  image: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 },{
   timestamps: true,
 });

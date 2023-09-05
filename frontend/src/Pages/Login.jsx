@@ -42,8 +42,6 @@ const Login = () => {
       //apdate the auth context
       dispatch({ type: "LOGIN", payload: json });
       setIsLoading(false);
-      //redirect to home page
-      navigate("/liste_des_pannes");
     }
   }
   return (

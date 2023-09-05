@@ -1,7 +1,7 @@
 import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
 
 
-export default function MyDashboradTop() {
+export default function MyDashboradTop( {Data}) {
   return (
     <div className="dashboard-top">
       <div className="dashboard-item">
@@ -9,12 +9,10 @@ export default function MyDashboradTop() {
           <a>
             Produits En attente depot
           </a>
-          {/* <AiOutlineArrowDown fill="#ff0000" />
-           */}
           <AiOutlineArrowUp fill="#008000" />
         </div>
         <div className="dashboard-nombre">
-          <h3>0</h3>
+          <h3>{Data.ProduitEnAttente}</h3>
           <h3 className="dashboard-pourcentage-good">0%</h3>
         </div>
       </div>
@@ -24,7 +22,7 @@ export default function MyDashboradTop() {
           <AiOutlineArrowUp fill="#008000" />
         </div>
         <div className="dashboard-nombre">
-          <h3>0</h3>
+          <h3>{Data.ProduitDeposes}</h3>
           <h3 className="dashboard-pourcentage-good">0%</h3>
         </div>
       </div>
@@ -34,7 +32,7 @@ export default function MyDashboradTop() {
           <AiOutlineArrowUp fill="#008000" />
         </div>
         <div className="dashboard-nombre">
-          <h3>0</h3>
+          <h3>{Data.ProduitRepares}</h3>
           <h3 className="dashboard-pourcentage-good">0%</h3>
         </div>
       </div>
@@ -43,11 +41,9 @@ export default function MyDashboradTop() {
           <a>
             Délai moyen de réparation
           </a>
-          <AiOutlineArrowDown fill="#008000" />
         </div>
         <div className="dashboard-nombre">
-          <h3>0</h3>
-          <h3 className="dashboard-pourcentage-good">0%</h3>
+          <h3>{Data.DelaiMoyenReparation}</h3>
         </div>
       </div>
     </div>

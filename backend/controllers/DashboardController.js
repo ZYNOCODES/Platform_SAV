@@ -2,37 +2,49 @@ const Dashboard = require('../models/DashboardModel');
 const StatisticsCentre = require('../models/StatisticsCentreModel');
 const validator = require('validator');
 
-//login
-const Create = async (req, res) => {
-    const { ProduitEnAttente, ProduitDeposes, ProduitRepares
-        , ProduitEnReparation, Produitlivre, DelaiMoyenReparation } = req.body;
-    try{
-        const newDashboard = new Dashboard({
-            ProduitEnAttente, ProduitDeposes, ProduitRepares
-            , ProduitEnReparation, Produitlivre, DelaiMoyenReparation
+// get all data from dashboard
+const GetAll = async (req, res) => {
+    const todayDate = new Date().toISOString().slice(0, 10);
+    try {
+        const dashboard = await Dashboard.findAll({
+            where: {
+                createdAt: todayDate
+            }
         });
-        await newDashboard.save();
-        res.status(201).json({message: "Dashboard created successfully"});
-    }catch(err){
-        console.log(err);
+        if (dashboard) {
+          res.status(200).json({Dashboard : dashboard});
+        }else{
+          res.json({message: 'No dashboard found'});
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error getting dashboard');
     }
 }   
 
-//signup
-const Update = async (req, res) => {
-    
-}
-
-//get all users
-const GetAll = async (req, res) => {
-    
-}
-
 //get a specific user
 const GetAllByCentre = async (req, res) => {
-    
+    const { centre } = req.params;
+    const todayDate = new Date().toISOString().slice(0, 10);
+    try {
+        const dashboard = await StatisticsCentre.findAll({
+            where: {
+                createdAt: todayDate,
+                Centre : centre
+            }
+        });
+        if (dashboard) {
+          res.status(200).json({Dashboard : dashboard});
+        }else{
+          res.status(500).json({message: 'No dashboard found'});
+        }
+    }catch(e) {
+        console.error(error);
+        res.status(500).send('Error getting dashboard by centre');
+    }
 }
 
 module.exports = {
-    
+    GetAll,
+    GetAllByCentre
 }

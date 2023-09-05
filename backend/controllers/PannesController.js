@@ -217,18 +217,16 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
         where: { Centre: centre, createdAt: todayDate },
       });
   
-      if (dashboard && dashboard.ProduitEnAttente > 0) {
+      if (dashboard) {
         await Dashboard.update(
-          { ProduitDeposes: dashboard.ProduitDeposes + 1,
-            ProduitEnAttente: dashboard.ProduitEnAttente - 1 },
+          { ProduitDeposes: dashboard.ProduitDeposes + 1 },
           { where: { createdAt: todayDate } }
         );
       }
   
-      if (sourceStatistics && sourceStatistics.ProduitEnAttente > 0) {
+      if (sourceStatistics) {
         await StatisticsCentre.update(
-          { ProduitDeposes: sourceStatistics.ProduitDeposes + 1,
-            ProduitEnAttente: sourceStatistics.ProduitEnAttente - 1 },
+          { ProduitDeposes: sourceStatistics.ProduitDeposes + 1 },
           { where: { Centre: centre, createdAt: todayDate } }
         );
       }
@@ -538,24 +536,20 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
           where: { Centre: centre, createdAt: todayDate },
         });
     
-        if (dashboard && dashboard.ProduitEnAttente > 0) {
+        if (dashboard) {
           await Dashboard.update(
-            { Produitlivre: dashboard.Produitlivre + 1,
-              ProduitEnAttente: dashboard.ProduitEnAttente - 1 },
+            { Produitlivre: dashboard.Produitlivre + 1 },
             { where: { createdAt: todayDate } }
           );
         }
         
-        if (sourceStatistics && sourceStatistics.ProduitEnAttente > 0) {
+        if (sourceStatistics) {
           await StatisticsCentre.update(
-            { Produitlivre: sourceStatistics.Produitlivre + 1,
-              ProduitEnAttente: sourceStatistics.ProduitEnAttente - 1 },
+            { Produitlivre: sourceStatistics.Produitlivre + 1 },
             { where: { Centre: centre, createdAt: todayDate } }
           );
         }
       }
-      // calculate average time
-      CalculateAverage(centre);
     }
   }else{
     if(oldProgres === 1){
@@ -570,16 +564,14 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
   
       if (dashboard && dashboard.ProduitDeposes > 0) {
         await Dashboard.update(
-          { ProduitDeposes: dashboard.ProduitDeposes - 1,
-            ProduitEnAttente: dashboard.ProduitEnAttente + 1 },
+          { ProduitDeposes: dashboard.ProduitDeposes - 1 },
           { where: { createdAt: todayDate } }
         );
       }
   
       if (sourceStatistics && sourceStatistics.ProduitDeposes > 0) {
         await StatisticsCentre.update(
-          { ProduitDeposes: sourceStatistics.ProduitDeposes - 1,
-            ProduitEnAttente: sourceStatistics.ProduitEnAttente + 1 },
+          { ProduitDeposes: sourceStatistics.ProduitDeposes - 1 },
           { where: { Centre: centre, createdAt: todayDate } }
         );
       }
@@ -595,8 +587,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
   
       if (dashboard && dashboard.ProduitRepares > 0) {
         await Dashboard.update(
-          { ProduitRepares: dashboard.ProduitRepares - 1,
-            ProduitEnAttente: dashboard.ProduitEnAttente + 1 },
+          { ProduitRepares: dashboard.ProduitRepares - 1 },
           { where: { createdAt: todayDate } }
         );
       }
@@ -620,8 +611,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
   
       if (dashboard && dashboard.ProduitEnReparation > 0) {
         await Dashboard.update(
-          { ProduitEnReparation: dashboard.ProduitEnReparation - 1,
-            ProduitEnAttente: dashboard.ProduitEnAttente + 1 },
+          { ProduitEnReparation: dashboard.ProduitEnReparation - 1 },
           { where: { createdAt: todayDate } }
         );
       }
@@ -645,8 +635,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
   
       if (dashboard && dashboard.EnAttenteDePickup > 0) {
         await Dashboard.update(
-          { EnAttenteDePickup: dashboard.EnAttenteDePickup - 1,
-            ProduitEnAttente: dashboard.ProduitEnAttente + 1 },
+          { EnAttenteDePickup: dashboard.EnAttenteDePickup - 1 },
           { where: { createdAt: todayDate } }
         );
       }
@@ -670,8 +659,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
   
       if (dashboard && dashboard.EnAttenteDePickup > 0) {
         await Dashboard.update(
-          { Produitlivre: dashboard.Produitlivre - 1,
-            ProduitEnAttente: dashboard.ProduitEnAttente + 1 },
+          { Produitlivre: dashboard.Produitlivre - 1 },
           { where: { createdAt: todayDate } }
         );
       }

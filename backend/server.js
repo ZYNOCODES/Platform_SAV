@@ -10,6 +10,7 @@ const bodyparser = require('body-parser');
 const sequelize = require('./config/database');
 const PannesRoute = require('./routes/PannesRoute');
 const UserRoute = require('./routes/users');
+const DashboardRoute = require('./routes/dashboard');
 
 const port = process.env.PORT || 8080;
 
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
 //routes
 app.use('/Pannes', PannesRoute);
 app.use('/User', UserRoute);
+app.use('/Dashboard', DashboardRoute);
 
 //connect to db
 sequelize

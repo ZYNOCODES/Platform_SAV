@@ -15,7 +15,6 @@ import CreateNewUser from './Pages/CreateNewUser';
 import UpdateUser from './Pages/UpdateUser';
 import Dashboard from './Pages/dashboard';
 function App() {
-  const [act, setAct] = useState(false);
   const { user } = useAuthContext();
 
   return (
@@ -23,21 +22,15 @@ function App() {
     <BrowserRouter>
       <main>
         <Routes>
-          <Route path='/' element={
-              !user ? (
-                <Login />
-              ) : (
-                <Navigate to="/liste_des_pannes" />
-              )
-            }/>
+          <Route path='/' element={!user ? <Login /> : <Navigate to="/Dashboard" />} />
+          <Route path='/Dashboard' element={user ? <Dashboard/> : <Navigate to="/" />} />
           <Route path='/liste_des_pannes' element={user ? <PanneList /> : <Navigate to="/" />} />
           <Route path='/Utilisateurs' element={user ? <Users/> : <Navigate to="/" />}/>
           <Route path='/Details/:id' element={user ? <DetailsPanne /> : <Navigate to="/" />} />
-          <Route path='/EnAttenteDeDepot/:id' element={<ProduitDepose/>}/>
-          <Route path='/DetailPanneSav/:id' element={<DetailsPanneSav/>}/>
-          <Route path='/NouveauUser' element={<CreateNewUser/>}/>
-          <Route path='/UpdateUser/:id' element={<UpdateUser/>}/>
-          <Route path='/Dashboard' element={<Dashboard/>}/>
+          <Route path='/EnAttenteDeDepot/:id' element={user ? <ProduitDepose/> : <Navigate to="/" />}/>
+          <Route path='/DetailPanneSav/:id' element={user ? <DetailsPanneSav/> : <Navigate to="/" />}/>
+          <Route path='/NouveauUser' element={user ? <CreateNewUser/> : <Navigate to="/" />}/>
+          <Route path='/UpdateUser/:id' element={user ? <UpdateUser/> : <Navigate to="/" />}/>
         </Routes>
       </main>
     </BrowserRouter>

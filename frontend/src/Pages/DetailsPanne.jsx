@@ -73,7 +73,7 @@ const DetailsPanne = () => {
             </div>
             <div className='pannedetails-title progress'>
                 <h3>Progression</h3>
-                {PanneData?.Progres !== 0 &&
+                {PanneData?.Progres !== 0 && PanneData?.Progres !== 5 &&
                     <div className='progression-label'>
                         <div className='progress-div'>
                             <h4>En attente de  reparation </h4>
@@ -89,6 +89,14 @@ const DetailsPanne = () => {
                         </div>
                         <div className='progress-div third-progress-div'>
                             <h4>Reparé en attente de pickup</h4>
+                            <AiOutlineCaretDown/>
+                        </div>
+                    </div>
+                }
+                {PanneData?.Progres === 5 &&
+                    <div className='progression-label'>
+                        <div className='progress-div'>
+                            <h4>Réparation terminé</h4>
                             <AiOutlineCaretDown/>
                         </div>
                     </div>

@@ -7,7 +7,6 @@ import{AiOutlineCaretRight} from"react-icons/ai";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 
 export default function MyDashboradCalendar() {
-  console.log(generateDate());
   const days = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
   const currentDate = dayjs();
   const [today, setToday] = useState(currentDate);

@@ -1,17 +1,42 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../App.css";
 import MyAsideBarActive from "../Components/asideBarActive";
 import MyDashboradCalendar from "../Components/dashboardCalendar";
 import MyChart from "../Components/charts/dashboardChart";
 import MyDashboradTop from "../Components/dashboradItems";
-import TableTraitement from "../Components/Table/tableDashboardTraitement";
-import SexeChart from "../Components/charts/dashboardChart2";
 import MyAsideBar from "../Components/asideBar";
 import MyNavBar from "../Components/navBar";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 function Dashboard() {
   const [act, setAct] = useState(false);
-
+  const { user } = useAuthContext();
+  const [DashboardData, setDashboardData] = useState();
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/Dashboard/`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          setDashboardData(data.Dashboard);
+        } else {
+          console.error("Error receiving Panne data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching Panne data:", error);
+      }
+    };
+  
+    fetchDashboardData();
+  }, [user?.Role, DashboardData, user?.Centre, user?.token]);
+  
   return (
     <>
       <MyNavBar  act={act} setAct={setAct} />
@@ -19,17 +44,16 @@ function Dashboard() {
       <div className="Dashboard">
         <MyAsideBarActive act={act} setAct={setAct}></MyAsideBarActive>
         <div className="dashboard-container">
-          <MyDashboradTop></MyDashboradTop>
+          {DashboardData?.map((DashboardData) => (
+            <MyDashboradTop Data= {DashboardData}></MyDashboradTop>
+          ))}
           <div className="dashboard-charts-calnedar">
             <MyChart></MyChart>
             <MyDashboradCalendar></MyDashboradCalendar>
           </div>
-          {/*<TableTraitement></TableTraitement>
-          <SexeChart></SexeChart>*/}
         </div>
       </div>
     </>
-    
   );
 }
 

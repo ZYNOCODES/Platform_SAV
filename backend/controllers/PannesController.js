@@ -1,4 +1,6 @@
 const Panne = require('../models/PannesModel');
+const Dashboard = require('../models/DashboardModel');
+const StatisticsCentre = require('../models/StatisticsCentreModel');
 const validator = require('validator');
 const multer = require('multer');
 const path = require('path');
@@ -50,7 +52,6 @@ const GetByID = async (req, res) => {
   }
   
 }
-
 const GetByRefProduct = async (req, res) => {
   // Handle request to get all Pannes filtered by ReferanceProduit
   const { Ref, id } = req.params;
@@ -84,7 +85,6 @@ const GetByRefProduct = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 }
-
 const Create = async (req, res) => {
   // Handle request to create a new Panne
   const { Nom, Prenom, Email, Telephone, 
@@ -113,7 +113,6 @@ const Create = async (req, res) => {
       res.status(500).send('Error creating panne');
   }
 }
-
 const Update = async (req, res) => {
   // Handle request to update a Panne
   const { id } = req.params;
@@ -125,10 +124,21 @@ const Update = async (req, res) => {
     if (!panne) {
         return res.status(404).json({ error: 'panne not found' });
     }
+    const oldProgres = panne.Progres;
     // assign panne new values
     panne.Progres = progres;
+    // current date
+    const todayDate = new Date().toISOString().slice(0, 10);
+    if(progres === 1){
+      panne.DateDepot = todayDate;
+    }
     // save panne
-    await panne.save();
+    await panne.save().then(async () => {
+      // update dashboard
+      const Date = panne.createdAt;
+      const centre = panne.CentreDepot;
+      UpdateDashboard(progres, oldProgres, Date, centre);
+    }).catch((error) => console.log(error));
     // return updated panne
     res.json({panne: panne, message: 'La panne a été déposée avec succès.'});
   } catch (error) {
@@ -136,7 +146,6 @@ const Update = async (req, res) => {
     res.status(500).send('Error updating panne');
   }
 }
-
 const Remove = async (req, res) => {
   // Handle request to delete a Panne
   const { id } = req.params;
@@ -196,6 +205,597 @@ const upload = multer({
     cb('Give proper files format to upload');
   }
 }).single('image');
+const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
+  if(progres !== 0){
+    if(progres === 1){
+      // update dashboard
+      const dashboard = await Dashboard.findOne({
+        where: { createdAt: todayDate },
+      });
+  
+      const sourceStatistics = await StatisticsCentre.findOne({
+        where: { Centre: centre, createdAt: todayDate },
+      });
+  
+      if (dashboard && dashboard.ProduitEnAttente > 0) {
+        await Dashboard.update(
+          { ProduitDeposes: dashboard.ProduitDeposes + 1,
+            ProduitEnAttente: dashboard.ProduitEnAttente - 1 },
+          { where: { createdAt: todayDate } }
+        );
+      }
+  
+      if (sourceStatistics && sourceStatistics.ProduitEnAttente > 0) {
+        await StatisticsCentre.update(
+          { ProduitDeposes: sourceStatistics.ProduitDeposes + 1,
+            ProduitEnAttente: sourceStatistics.ProduitEnAttente - 1 },
+          { where: { Centre: centre, createdAt: todayDate } }
+        );
+      }
+    }else if(progres === 2){
+      // update dashboard
+      const dashboard = await Dashboard.findOne({
+        where: { createdAt: todayDate },
+      });
+  
+      const sourceStatistics = await StatisticsCentre.findOne({
+        where: { Centre: centre, createdAt: todayDate },
+      });
+  
+      if (dashboard && dashboard.ProduitDeposes > 0) {
+        await Dashboard.update(
+          { ProduitRepares: dashboard.ProduitRepares + 1,
+            ProduitDeposes: dashboard.ProduitDeposes - 1 },
+          { where: { createdAt: todayDate } }
+        );
+      }
+      
+      if (sourceStatistics && sourceStatistics.ProduitDeposes > 0) {
+        await StatisticsCentre.update(
+          { ProduitRepares: sourceStatistics.ProduitRepares + 1,
+            ProduitDeposes: sourceStatistics.ProduitDeposes - 1 },
+          { where: { Centre: centre, createdAt: todayDate } }
+        );
+      }
+    }else if(progres === 3){
+      // update dashboard
+      if(oldProgres === 2){
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: todayDate },
+        });
+    
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: todayDate },
+        });
+    
+        if (dashboard && dashboard.ProduitRepares > 0) {
+          await Dashboard.update(
+            { ProduitEnReparation: dashboard.ProduitEnReparation + 1,
+              ProduitRepares: dashboard.ProduitRepares - 1 },
+            { where: { createdAt: todayDate } }
+          );
+        }
+        
+        if (sourceStatistics && sourceStatistics.ProduitRepares > 0) {
+          await StatisticsCentre.update(
+            { ProduitEnReparation: sourceStatistics.ProduitEnReparation + 1,
+              ProduitRepares: sourceStatistics.ProduitRepares - 1 },
+            { where: { Centre: centre, createdAt: todayDate } }
+          );
+        }
+      }else if(oldProgres === 1){
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: todayDate },
+        });
+    
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: todayDate },
+        });
+    
+        if (dashboard && dashboard.ProduitDeposes > 0) {
+          await Dashboard.update(
+            { ProduitEnReparation: dashboard.ProduitEnReparation + 1,
+              ProduitDeposes: dashboard.ProduitDeposes - 1 },
+            { where: { createdAt: todayDate } }
+          );
+        }
+        
+        if (sourceStatistics && sourceStatistics.ProduitDeposes > 0) {
+          await StatisticsCentre.update(
+            { ProduitEnReparation: sourceStatistics.ProduitEnReparation + 1,
+              ProduitDeposes: sourceStatistics.ProduitDeposes - 1 },
+            { where: { Centre: centre, createdAt: todayDate } }
+          );
+        }
+      }else if (oldProgres === 0){
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: todayDate },
+        });
+    
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: todayDate },
+        });
+    
+        if (dashboard && dashboard.ProduitEnAttente > 0) {
+          await Dashboard.update(
+            { ProduitEnReparation: dashboard.ProduitEnReparation + 1,
+              ProduitEnAttente: dashboard.ProduitEnAttente - 1 },
+            { where: { createdAt: todayDate } }
+          );
+        }
+        
+        if (sourceStatistics && sourceStatistics.ProduitEnAttente > 0) {
+          await StatisticsCentre.update(
+            { ProduitEnReparation: sourceStatistics.ProduitEnReparation + 1,
+              ProduitEnAttente: sourceStatistics.ProduitEnAttente - 1 },
+            { where: { Centre: centre, createdAt: todayDate } }
+          );
+        }
+      }
+    }else if(progres === 4){
+      // update dashboard
+      if(oldProgres === 3){
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: todayDate },
+        });
+    
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: todayDate },
+        });
+    
+        if (dashboard && dashboard.ProduitEnReparation > 0) {
+          await Dashboard.update(
+            { EnAttenteDePickup: dashboard.EnAttenteDePickup + 1,
+              ProduitEnReparation: dashboard.ProduitEnReparation - 1 },
+            { where: { createdAt: todayDate } }
+          );
+        }
+        
+        if (sourceStatistics && sourceStatistics.ProduitEnReparation > 0) {
+          await StatisticsCentre.update(
+            { EnAttenteDePickup: sourceStatistics.EnAttenteDePickup + 1,
+              ProduitEnReparation: sourceStatistics.ProduitEnReparation - 1 },
+            { where: { Centre: centre, createdAt: todayDate } }
+          );
+        }
+      }else if(oldProgres === 2){
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: todayDate },
+        });
+    
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: todayDate },
+        });
+    
+        if (dashboard && dashboard.ProduitRepares > 0) {
+          await Dashboard.update(
+            { EnAttenteDePickup: dashboard.EnAttenteDePickup + 1,
+              ProduitRepares: dashboard.ProduitRepares - 1 },
+            { where: { createdAt: todayDate } }
+          );
+        }
+        
+        if (sourceStatistics && sourceStatistics.ProduitRepares > 0) {
+          await StatisticsCentre.update(
+            { EnAttenteDePickup: sourceStatistics.EnAttenteDePickup + 1,
+              ProduitRepares: sourceStatistics.ProduitRepares - 1 },
+            { where: { Centre: centre, createdAt: todayDate } }
+          );
+        }
+      }else if(oldProgres === 1){
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: todayDate },
+        });
+    
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: todayDate },
+        });
+    
+        if (dashboard && dashboard.ProduitDeposes > 0) {
+          await Dashboard.update(
+            { EnAttenteDePickup: dashboard.EnAttenteDePickup + 1,
+              ProduitDeposes: dashboard.ProduitDeposes - 1 },
+            { where: { createdAt: todayDate } }
+          );
+        }
+        
+        if (sourceStatistics && sourceStatistics.ProduitDeposes > 0) {
+          await StatisticsCentre.update(
+            { EnAttenteDePickup: sourceStatistics.EnAttenteDePickup + 1,
+              ProduitDeposes: sourceStatistics.ProduitDeposes - 1 },
+            { where: { Centre: centre, createdAt: todayDate } }
+          );
+        }
+      }else if(oldProgres === 0){
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: todayDate },
+        });
+    
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: todayDate },
+        });
+    
+        if (dashboard && dashboard.ProduitEnAttente > 0) {
+          await Dashboard.update(
+            { EnAttenteDePickup: dashboard.EnAttenteDePickup + 1,
+              ProduitEnAttente: dashboard.ProduitEnAttente - 1 },
+            { where: { createdAt: todayDate } }
+          );
+        }
+        
+        if (sourceStatistics && sourceStatistics.ProduitEnAttente > 0) {
+          await StatisticsCentre.update(
+            { EnAttenteDePickup: sourceStatistics.EnAttenteDePickup + 1,
+              ProduitEnAttente: sourceStatistics.ProduitEnAttente - 1 },
+            { where: { Centre: centre, createdAt: todayDate } }
+          );
+        }
+      }
+    }else if(progres === 5){
+      // update dashboard
+      if(oldProgres === 4){
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: todayDate },
+        });
+    
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: todayDate },
+        });
+    
+        if (dashboard && dashboard.EnAttenteDePickup > 0) {
+          await Dashboard.update(
+            { Produitlivre: dashboard.Produitlivre + 1,
+              EnAttenteDePickup: dashboard.EnAttenteDePickup - 1 },
+            { where: { createdAt: todayDate } }
+          );
+        }
+        
+        if (sourceStatistics && sourceStatistics.EnAttenteDePickup > 0) {
+          await StatisticsCentre.update(
+            { Produitlivre: sourceStatistics.Produitlivre + 1,
+              EnAttenteDePickup: sourceStatistics.EnAttenteDePickup - 1 },
+            { where: { Centre: centre, createdAt: todayDate } }
+          );
+        }
+      }else if(oldProgres === 3){
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: todayDate },
+        });
+    
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: todayDate },
+        });
+    
+        if (dashboard && dashboard.ProduitEnReparation > 0) {
+          await Dashboard.update(
+            { Produitlivre: dashboard.Produitlivre + 1,
+              ProduitEnReparation: dashboard.ProduitEnReparation - 1 },
+            { where: { createdAt: todayDate } }
+          );
+        }
+        
+        if (sourceStatistics && sourceStatistics.ProduitEnReparation > 0) {
+          await StatisticsCentre.update(
+            { Produitlivre: sourceStatistics.Produitlivre + 1,
+              ProduitEnReparation: sourceStatistics.ProduitEnReparation - 1 },
+            { where: { Centre: centre, createdAt: todayDate } }
+          );
+        }
+      }else if(oldProgres === 2){
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: todayDate },
+        });
+    
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: todayDate },
+        });
+    
+        if (dashboard && dashboard.ProduitRepares > 0) {
+          await Dashboard.update(
+            { Produitlivre: dashboard.Produitlivre + 1,
+              ProduitRepares: dashboard.ProduitRepares - 1 },
+            { where: { createdAt: todayDate } }
+          );
+        }
+        
+        if (sourceStatistics && sourceStatistics.ProduitRepares > 0) {
+          await StatisticsCentre.update(
+            { Produitlivre: sourceStatistics.Produitlivre + 1,
+              ProduitRepares: sourceStatistics.ProduitRepares - 1 },
+            { where: { Centre: centre, createdAt: todayDate } }
+          );
+        }
+      }else if(oldProgres === 1){
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: todayDate },
+        });
+    
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: todayDate },
+        });
+    
+        if (dashboard && dashboard.ProduitDeposes > 0) {
+          await Dashboard.update(
+            { Produitlivre: dashboard.Produitlivre + 1,
+              ProduitDeposes: dashboard.ProduitDeposes - 1 },
+            { where: { createdAt: todayDate } }
+          );
+        }
+        
+        if (sourceStatistics && sourceStatistics.ProduitDeposes > 0) {
+          await StatisticsCentre.update(
+            { Produitlivre: sourceStatistics.Produitlivre + 1,
+              ProduitDeposes: sourceStatistics.ProduitDeposes - 1 },
+            { where: { Centre: centre, createdAt: todayDate } }
+          );
+        }
+      }else if(oldProgres === 0){
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: todayDate },
+        });
+    
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: todayDate },
+        });
+    
+        if (dashboard && dashboard.ProduitEnAttente > 0) {
+          await Dashboard.update(
+            { Produitlivre: dashboard.Produitlivre + 1,
+              ProduitEnAttente: dashboard.ProduitEnAttente - 1 },
+            { where: { createdAt: todayDate } }
+          );
+        }
+        
+        if (sourceStatistics && sourceStatistics.ProduitEnAttente > 0) {
+          await StatisticsCentre.update(
+            { Produitlivre: sourceStatistics.Produitlivre + 1,
+              ProduitEnAttente: sourceStatistics.ProduitEnAttente - 1 },
+            { where: { Centre: centre, createdAt: todayDate } }
+          );
+        }
+      }
+      // calculate average time
+      CalculateAverage(centre);
+    }
+  }else{
+    if(oldProgres === 1){
+      // update dashboard
+      const dashboard = await Dashboard.findOne({
+        where: { createdAt: todayDate },
+      });
+  
+      const sourceStatistics = await StatisticsCentre.findOne({
+        where: { Centre: centre, createdAt: todayDate },
+      });
+  
+      if (dashboard && dashboard.ProduitDeposes > 0) {
+        await Dashboard.update(
+          { ProduitDeposes: dashboard.ProduitDeposes - 1,
+            ProduitEnAttente: dashboard.ProduitEnAttente + 1 },
+          { where: { createdAt: todayDate } }
+        );
+      }
+  
+      if (sourceStatistics && sourceStatistics.ProduitDeposes > 0) {
+        await StatisticsCentre.update(
+          { ProduitDeposes: sourceStatistics.ProduitDeposes - 1,
+            ProduitEnAttente: sourceStatistics.ProduitEnAttente + 1 },
+          { where: { Centre: centre, createdAt: todayDate } }
+        );
+      }
+    }else if(oldProgres === 2){
+      // update dashboard
+      const dashboard = await Dashboard.findOne({
+        where: { createdAt: todayDate },
+      });
+  
+      const sourceStatistics = await StatisticsCentre.findOne({
+        where: { Centre: centre, createdAt: todayDate },
+      });
+  
+      if (dashboard && dashboard.ProduitRepares > 0) {
+        await Dashboard.update(
+          { ProduitRepares: dashboard.ProduitRepares - 1,
+            ProduitEnAttente: dashboard.ProduitEnAttente + 1 },
+          { where: { createdAt: todayDate } }
+        );
+      }
+      
+      if (sourceStatistics && sourceStatistics.ProduitRepares > 0) {
+        await StatisticsCentre.update(
+          { ProduitRepares: sourceStatistics.ProduitRepares - 1,
+            ProduitEnAttente: sourceStatistics.ProduitEnAttente + 1 },
+          { where: { Centre: centre, createdAt: todayDate } }
+        );
+      }
+    }else if(oldProgres === 3){
+      // update dashboard
+      const dashboard = await Dashboard.findOne({
+        where: { createdAt: todayDate },
+      });
+  
+      const sourceStatistics = await StatisticsCentre.findOne({
+        where: { Centre: centre, createdAt: todayDate },
+      });
+  
+      if (dashboard && dashboard.ProduitEnReparation > 0) {
+        await Dashboard.update(
+          { ProduitEnReparation: dashboard.ProduitEnReparation - 1,
+            ProduitEnAttente: dashboard.ProduitEnAttente + 1 },
+          { where: { createdAt: todayDate } }
+        );
+      }
+      
+      if (sourceStatistics && sourceStatistics.ProduitEnReparation > 0) {
+        await StatisticsCentre.update(
+          { ProduitEnReparation: sourceStatistics.ProduitEnReparation - 1,
+            ProduitEnAttente: sourceStatistics.ProduitEnAttente + 1 },
+          { where: { Centre: centre, createdAt: todayDate } }
+        );
+      }
+    }else if(oldProgres === 4){
+      // update dashboard
+      const dashboard = await Dashboard.findOne({
+        where: { createdAt: todayDate },
+      });
+  
+      const sourceStatistics = await StatisticsCentre.findOne({
+        where: { Centre: centre, createdAt: todayDate },
+      });
+  
+      if (dashboard && dashboard.EnAttenteDePickup > 0) {
+        await Dashboard.update(
+          { EnAttenteDePickup: dashboard.EnAttenteDePickup - 1,
+            ProduitEnAttente: dashboard.ProduitEnAttente + 1 },
+          { where: { createdAt: todayDate } }
+        );
+      }
+      
+      if (sourceStatistics && sourceStatistics.EnAttenteDePickup > 0) {
+        await StatisticsCentre.update(
+          { EnAttenteDePickup: sourceStatistics.EnAttenteDePickup - 1,
+            ProduitEnAttente: sourceStatistics.ProduitEnAttente + 1 },
+          { where: { Centre: centre, createdAt: todayDate } }
+        );
+      }
+    }else if(oldProgres === 5){
+      // update dashboard
+      const dashboard = await Dashboard.findOne({
+        where: { createdAt: todayDate },
+      });
+  
+      const sourceStatistics = await StatisticsCentre.findOne({
+        where: { Centre: centre, createdAt: todayDate },
+      });
+  
+      if (dashboard && dashboard.EnAttenteDePickup > 0) {
+        await Dashboard.update(
+          { Produitlivre: dashboard.Produitlivre - 1,
+            ProduitEnAttente: dashboard.ProduitEnAttente + 1 },
+          { where: { createdAt: todayDate } }
+        );
+      }
+      
+      if (sourceStatistics && sourceStatistics.Produitlivre > 0) {
+        await StatisticsCentre.update(
+          { Produitlivre: sourceStatistics.Produitlivre - 1,
+            ProduitEnAttente: sourceStatistics.ProduitEnAttente + 1 },
+          { where: { Centre: centre, createdAt: todayDate } }
+        );
+      }
+    }
+  }
+}
+async function CalculateAverage (Centre) {
+  try {
+    if(Centre){
+      const pannes = await Panne.findAll({
+        where: {
+          CentreDepot: Centre,
+          Progres: 5,
+        },
+      });
+      if (pannes.length === 0) {
+        return res.json({ message: 'No pannes found' });
+      }
+      // Check if the pannes have a start and end date
+      if(pannes.FinReparation && pannes.DateDepot){
+        // Calculate the average time
+        const timeArray = pannes.map((panne) => {
+          return calculateTime(panne.createdAt, panne.FinReparation);
+        });
+        const averageTime = calculateAverageTime(timeArray);
+        // get today date
+        const todayDate = new Date().toISOString().slice(0, 10);
+        // check if dashboard exist
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: Centre, createdAt: todayDate },
+        });
+        // update dashboard
+        if (sourceStatistics) {
+          await StatisticsCentre.update(
+            { DelaiMoyenReparation: averageTime},
+            { where: { Centre: centre, createdAt: todayDate } }
+          );
+        }
+      }
+    }
+    if(Centre){
+      const pannes = await Panne.findAll({
+        where: {
+          Progres: 5,
+        }
+      });
+  
+      if (pannes.length === 0) {
+        return res.json({ message: 'No pannes found' });
+      }
+      // Check if the pannes have a start and end date
+      if(pannes.FinReparation && pannes.DateDepot){
+        // Calculate the average time
+        const timeArray = pannes.map((panne) => {
+          return calculateTime(panne.DateDepot, panne.FinReparation);
+        });
+        const averageTime = calculateAverageTime(timeArray);
+        // get today date
+        const todayDate = new Date().toISOString().slice(0, 10);
+        // check if dashboard exist
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: todayDate },
+        });
+        // update dashboard
+        if (dashboard) {
+          await Dashboard.update(
+            { DelaiMoyenReparation:averageTime},
+            { where: { createdAt: todayDate } }
+          );
+        }
+      }
+    }
+  }catch(error){
+    console.error(error);
+    res.status(500).send('Error calculating average time');
+  }
+}
+function calculateTime(startDate, endDate) {
+  // Parse the input dates as JavaScript Date objects
+  const startTime = new Date(startDate);
+  const endTime = new Date(endDate);
+
+  // Calculate the time difference in milliseconds
+  const timeDifference = endTime - startTime;
+
+  // Calculate hours, minutes, and seconds
+  const hours = Math.floor(timeDifference / 3600000);
+  const minutes = Math.floor((timeDifference % 3600000) / 60000);
+  const seconds = Math.floor((timeDifference % 60000) / 1000);
+
+  // Format the result as "hour:minute:second"
+  const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+  return formattedTime;
+}
+function calculateAverageTime(timeArray) {
+  // Convert time strings to seconds
+  const timeInSecondsArray = timeArray.map(timeString => {
+    const parts = timeString.split(':');
+    return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseFloat(parts[2]);
+  });
+
+  // Calculate the sum of all times in seconds
+  const totalTimeInSeconds = timeInSecondsArray.reduce((total, time) => total + time, 0);
+
+  // Calculate the average time in seconds
+  const averageTimeInSeconds = totalTimeInSeconds / timeArray.length;
+
+  // Convert the average time back to the HH:mm:ss format
+  const hours = Math.floor(averageTimeInSeconds / 3600);
+  const minutes = Math.floor((averageTimeInSeconds % 3600) / 60);
+  const seconds = Math.floor(averageTimeInSeconds % 60);
+
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
 module.exports = {
   index,
   GetByID,

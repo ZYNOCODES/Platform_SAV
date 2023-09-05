@@ -17,9 +17,9 @@ const Login = async (req, res) => {
 
         }
         const user = await User.findOne({
-                where: {
-                    Email: Email
-                }
+            where: {
+                Email: Email
+            }
         });
         //check if user exist
         if(!user){
@@ -37,6 +37,7 @@ const Login = async (req, res) => {
             var Centre = user.Centre;
             //return user
             res.status(200).json({id, Role, Centre, token});
+            //update dashboard
         }
     }catch(err){
         res.status(400).json({message: err.message});

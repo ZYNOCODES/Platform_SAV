@@ -6,8 +6,8 @@ export default function MyDashboradTop() {
     <div className="dashboard-top">
       <div className="dashboard-item">
         <div className="dashboard-item-title">
-          <a href="#">
-            Nombre de tickets ouverts
+          <a>
+            Produits En attente depot
           </a>
           {/* <AiOutlineArrowDown fill="#ff0000" />
            */}
@@ -20,7 +20,7 @@ export default function MyDashboradTop() {
       </div>
       <div className="dashboard-item">
         <div className="dashboard-item-title">
-          <a href="#">Produits En attente depot</a>
+          <a>Produits deposés</a>
           <AiOutlineArrowUp fill="#008000" />
         </div>
         <div className="dashboard-nombre">
@@ -30,7 +30,7 @@ export default function MyDashboradTop() {
       </div>
       <div className="dashboard-item">
         <div className="dashboard-item-title">
-          <a href="#">Produits deposés</a>
+          <a>Produits reparés</a>
           <AiOutlineArrowUp fill="#008000" />
         </div>
         <div className="dashboard-nombre">
@@ -40,8 +40,8 @@ export default function MyDashboradTop() {
       </div>
       <div className="dashboard-item">
         <div className="dashboard-item-title">
-          <a href="#">
-            Produits reparés
+          <a>
+            Délai moyen de réparation
           </a>
           <AiOutlineArrowDown fill="#008000" />
         </div>

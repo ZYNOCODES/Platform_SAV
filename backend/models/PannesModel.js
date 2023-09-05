@@ -44,6 +44,10 @@ const Panne = sequelize.define('pannes', {
     type: DataTypes.DATE,
     allowNull: false,
   },
+  FinReparation:{
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
   Description: {
     type: DataTypes.STRING,
     allowNull: true,

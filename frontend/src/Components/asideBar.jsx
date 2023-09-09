@@ -1,13 +1,10 @@
 import { MdDashboard } from "react-icons/md";
 import {FaList} from  "react-icons/fa"
-import { BsFilePersonFill, BsFilePerson } from "react-icons/bs";
-import { BsFillCalendarFill } from "react-icons/bs";
 import { ImProfile } from "react-icons/im";
 import { FiLogOut } from "react-icons/fi";
 import { useLogout } from "../hooks/useLogout";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { NavLink, useLocation } from "react-router-dom";
-import { IoMdSettings } from "react-icons/io";
 export default function MyAsideBar() {
   const { logout } = useLogout();
   const { user } = useAuthContext();
@@ -34,8 +31,7 @@ export default function MyAsideBar() {
                 </div>
               </NavLink>
             </li>
-          )}
-          
+          )} 
           <li className="mb-6">
             <NavLink to="/liste_des_pannes">
             <div
@@ -62,21 +58,6 @@ export default function MyAsideBar() {
             </NavLink>
           </li>
           )}
-          
-
-          <li>
-            <NavLink to="">
-              <div
-                className={`link flex items-center justify-items-center ${
-                  location.pathname === "" ? "aside-item-active" : ""
-                }`}
-              >
-                <IoMdSettings className="w-6 h-6 ml-2" />
-                <span className="title">Parametres</span>
-              </div>
-            </NavLink>
-          </li>
-
           <li>
             <NavLink to="/">
               {user && (

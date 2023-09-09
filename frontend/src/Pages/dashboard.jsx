@@ -12,6 +12,7 @@ function Dashboard() {
   const [act, setAct] = useState(false);
   const { user } = useAuthContext();
   const [DashboardData, setDashboardData] = useState();
+  
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -36,7 +37,6 @@ function Dashboard() {
   
     fetchDashboardData();
   }, [user?.Role, DashboardData, user?.Centre, user?.token]);
-  
   return (
     <>
       <MyNavBar  act={act} setAct={setAct} />
@@ -44,9 +44,9 @@ function Dashboard() {
       <div className="Dashboard">
         <MyAsideBarActive act={act} setAct={setAct}></MyAsideBarActive>
         <div className="dashboard-container">
-          {DashboardData?.map((DashboardData) => (
+          {DashboardData ? (
             <MyDashboradTop Data= {DashboardData}></MyDashboradTop>
-          ))}
+          ) : <MyDashboradTop Data= {DashboardData}></MyDashboradTop>}
           <div className="dashboard-charts-calnedar">
             <MyChart></MyChart>
             <MyDashboradCalendar></MyDashboradCalendar>

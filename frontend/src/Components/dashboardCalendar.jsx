@@ -1,55 +1,93 @@
-import { React } from "react";
+import { React, useEffect } from "react";
 import { generateDate, months } from "../util/Calendar";
 import check from "../util/cn";
 import dayjs from "dayjs";
 import { useState } from "react";
 import{AiOutlineCaretRight} from"react-icons/ai";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+import { useAuthContext } from "../hooks/useAuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function MyDashboradCalendar() {
-  const days = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
-  const currentDate = dayjs();
-  const [today, setToday] = useState(currentDate);
-  const [selectDate, setSelectdate] = useState(currentDate);
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
+  const [Top3Products, setTop3Products] = useState();
+  const [Top3Pannes, setTop3Pannes] = useState();
 
+  useEffect(() => {
+    const fetchTop3Products = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/Pannes/Product/Top3`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
+    
+        if (response.ok) {
+          const data = await response.json();
+          setTop3Products(data.top3);
+        } else {
+          console.error("Error receiving Top3 Products data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching Top3 Products data:", error);
+      }
+    };
+    fetchTop3Products();
+  },[user?.token, Top3Products]);
+  useEffect(() => {
+    const fetchTop3Pannes = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/Pannes/Pannes/Top3`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        });
+    
+        if (response.ok) {
+          const data = await response.json();
+          setTop3Pannes(data.top3);
+        } else {
+          console.error("Error receiving Top3 Pannes data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching Top3 Pannes data:", error);
+      }
+    };
+    fetchTop3Pannes();
+  },[user?.token, Top3Pannes]);
+  const Redirection = (ReferanceProduit) => {
+    navigate(`/Details/${ReferanceProduit}`)
+  }
   return (
     <div className="dashboard-calendar-container">
       <div className="calendar-dashboard-header">
         <h2>Top 3 des produits :</h2>
       </div>
       <div className="w-96 h-96">
-        <div className="dashboard-calendar-doctor-meet">
+          {Top3Products?.map((product, index) => (
+            <div key={index} className="dashboard-calendar-doctor-meet" >
               <AiOutlineCaretRight size={30}/>
-              <h2>Television Stream R894k </h2>
-          </div>
-          <div className="dashboard-calendar-doctor-meet">
-              <AiOutlineCaretRight size={30}/>
-              <h2>Climatiseur 3468</h2>
-          </div>
-          <div className="dashboard-calendar-doctor-meet">
-              <AiOutlineCaretRight size={30}/>
-
-              <h2>Frigo stream 4457 2018</h2>
-          </div>
+              <h2>{product.ReferanceProduit}</h2>
+              <h2>{product.Count} fois</h2>
+            </div>
+          ))}
       </div>
       <div className="calendar-dashboard-header">
         <h2>Top 3 des Pannes :</h2>
       </div>
       <div className="w-96 h-96">
-        <div className="dashboard-calendar-doctor-meet">
-              <AiOutlineCaretRight size={30}/>
-              <h2>Ecran noire </h2>
+        {Top3Pannes?.map((Panne, index) => (
+          <div key={index} className="dashboard-calendar-doctor-meet" >
+            <AiOutlineCaretRight size={30}/>
+            <h2>{Panne.TypePanne}</h2>
+            <h2>{Panne.Count} fois</h2>
           </div>
-          <div className="dashboard-calendar-doctor-meet">
-            
-              <AiOutlineCaretRight size={30}/>
-              <h2>Piece R9123</h2>
-          </div>
-          <div className="dashboard-calendar-doctor-meet">
-              <AiOutlineCaretRight size={30}/>
-
-              <h2>Compresseur clim</h2>
-          </div>
+        ))}
       </div>
     </div>
   );

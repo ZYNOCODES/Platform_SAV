@@ -8,6 +8,10 @@ const statistic = sequelize.define('statistics', {
     allowNull: false,
     autoIncrement: true,
   },
+  NbTicketsOuverts: {
+    type: DataTypes.BIGINT,
+    allowNull: false,
+  },
   ProduitEnAttente: {
     type: DataTypes.BIGINT,
     allowNull: false,

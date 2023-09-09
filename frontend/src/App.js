@@ -22,7 +22,8 @@ function App() {
     <BrowserRouter>
       <main>
         <Routes>
-          <Route path='/' element={!user ? <Login /> : <Navigate to="/Dashboard" />} />
+          <Route path='/' element={!user ? <Login /> : (user.Role === "Admin" ? 
+          <Navigate to="/Dashboard" /> : <Navigate to="/liste_des_pannes" />)} />
           <Route path='/Dashboard' element={user ? <Dashboard/> : <Navigate to="/" />} />
           <Route path='/liste_des_pannes' element={user ? <PanneList /> : <Navigate to="/" />} />
           <Route path='/Utilisateurs' element={user ? <Users/> : <Navigate to="/" />}/>

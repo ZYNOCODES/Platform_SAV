@@ -42,6 +42,7 @@ const Login = () => {
       //apdate the auth context
       dispatch({ type: "LOGIN", payload: json });
       setIsLoading(false);
+      
     }
   }
   return (

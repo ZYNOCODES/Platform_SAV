@@ -12,6 +12,10 @@ const StatisticCentre = sequelize.define('statisticscentres', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  NbTicketsOuverts: {
+    type: DataTypes.BIGINT,
+    allowNull: false,
+  },
   ProduitEnAttente: {
     type: DataTypes.BIGINT,
     allowNull: false,

@@ -12,7 +12,7 @@ export default function MyDashboradTop( {Data}) {
           <AiOutlineArrowUp fill="#008000" />
         </div>
         <div className="dashboard-nombre">
-          <h3>{Data.ProduitEnAttente}</h3>
+          <h3>{Data?.ProduitEnAttente ? Data?.ProduitEnAttente : '0'}</h3>
           <h3 className="dashboard-pourcentage-good">0%</h3>
         </div>
       </div>
@@ -22,7 +22,7 @@ export default function MyDashboradTop( {Data}) {
           <AiOutlineArrowUp fill="#008000" />
         </div>
         <div className="dashboard-nombre">
-          <h3>{Data.ProduitDeposes}</h3>
+          <h3>{Data?.ProduitDeposes ? Data?.ProduitDeposes : '0'}</h3>
           <h3 className="dashboard-pourcentage-good">0%</h3>
         </div>
       </div>
@@ -32,7 +32,7 @@ export default function MyDashboradTop( {Data}) {
           <AiOutlineArrowUp fill="#008000" />
         </div>
         <div className="dashboard-nombre">
-          <h3>{Data.ProduitRepares}</h3>
+          <h3>{Data?.ProduitRepares ? Data?.ProduitRepares : '0'}</h3>
           <h3 className="dashboard-pourcentage-good">0%</h3>
         </div>
       </div>
@@ -43,7 +43,7 @@ export default function MyDashboradTop( {Data}) {
           </a>
         </div>
         <div className="dashboard-nombre">
-          <h3>{Data.DelaiMoyenReparation}</h3>
+          <h3>{Data?.DelaiMoyenReparation ? Data?.DelaiMoyenReparation : '00:00:00'}</h3>
         </div>
       </div>
     </div>

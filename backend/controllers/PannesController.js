@@ -4,6 +4,8 @@ const StatisticsCentre = require('../models/StatisticsCentreModel');
 const validator = require('validator');
 const multer = require('multer');
 const path = require('path');
+const { Op, Sequelize } = require('sequelize');
+
 
 const index = async (req, res) => {
   // Handle request to get all Pannes
@@ -164,6 +166,36 @@ const Remove = async (req, res) => {
     res.status(500).send('Error deleting panne');
   }
 }
+const GetTop3Product = async (req, res) => {
+  try {
+    // get all data from dashboard
+    const PannesData = await Panne.findAll();
+    if (!PannesData || PannesData.length === 0) {
+      return res.json({ message: 'No pannes found' });
+    }
+    // get top 3 repetitive ReferanceProduit
+    const top3RepetitiveReferanceProduits = getTop3RepetitiveReferanceProduits(PannesData);
+    res.status(200).json({ top3: top3RepetitiveReferanceProduits });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error getting top 5');
+  }
+};
+const GetTop3Pannes = async (req, res) => {
+  try {
+    // get all data from dashboard
+    const PannesData = await Panne.findAll();
+    if (!PannesData || PannesData.length === 0) {
+      return res.json({ message: 'No pannes found' });
+    }
+    // get top 3 repetitive ReferanceProduit
+    const top3RepetitiveReferanceProduits = getTop3RepetitiveTypePanne(PannesData);
+    res.status(200).json({ top3: top3RepetitiveReferanceProduits });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error getting top 5');
+  }
+}
 const UplaodIMG = async (req, res) => {
     const id  = req.body.id;
     if(req.file === undefined){
@@ -205,6 +237,7 @@ const upload = multer({
     cb('Give proper files format to upload');
   }
 }).single('image');
+// add to today date and sub to depot date
 const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
   if(progres !== 0){
     if(progres === 1){
@@ -219,14 +252,16 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
   
       if (dashboard) {
         await Dashboard.update(
-          { ProduitDeposes: dashboard.ProduitDeposes + 1 },
+          { ProduitDeposes: dashboard.ProduitDeposes + 1,
+            ProduitEnAttente: dashboard.ProduitEnAttente - 1 },
           { where: { createdAt: todayDate } }
         );
       }
   
       if (sourceStatistics) {
         await StatisticsCentre.update(
-          { ProduitDeposes: sourceStatistics.ProduitDeposes + 1 },
+          { ProduitDeposes: sourceStatistics.ProduitDeposes + 1,
+            ProduitEnAttente: sourceStatistics.ProduitEnAttente - 1 },
           { where: { Centre: centre, createdAt: todayDate } }
         );
       }
@@ -242,7 +277,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
   
       if (dashboard && dashboard.ProduitDeposes > 0) {
         await Dashboard.update(
-          { ProduitRepares: dashboard.ProduitRepares + 1,
+          { ProduitEnReparation: dashboard.ProduitEnReparation + 1,
             ProduitDeposes: dashboard.ProduitDeposes - 1 },
           { where: { createdAt: todayDate } }
         );
@@ -250,7 +285,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
       
       if (sourceStatistics && sourceStatistics.ProduitDeposes > 0) {
         await StatisticsCentre.update(
-          { ProduitRepares: sourceStatistics.ProduitRepares + 1,
+          { ProduitEnReparation: sourceStatistics.ProduitEnReparation + 1,
             ProduitDeposes: sourceStatistics.ProduitDeposes - 1 },
           { where: { Centre: centre, createdAt: todayDate } }
         );
@@ -266,18 +301,18 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
           where: { Centre: centre, createdAt: todayDate },
         });
     
-        if (dashboard && dashboard.ProduitRepares > 0) {
+        if (dashboard && dashboard.ProduitEnReparation > 0) {
           await Dashboard.update(
-            { ProduitEnReparation: dashboard.ProduitEnReparation + 1,
-              ProduitRepares: dashboard.ProduitRepares - 1 },
+            { ProduitRepares: dashboard.ProduitRepares + 1,
+              ProduitEnReparation: dashboard.ProduitEnReparation - 1 },
             { where: { createdAt: todayDate } }
           );
         }
         
-        if (sourceStatistics && sourceStatistics.ProduitRepares > 0) {
+        if (sourceStatistics && sourceStatistics.ProduitEnReparation > 0) {
           await StatisticsCentre.update(
-            { ProduitEnReparation: sourceStatistics.ProduitEnReparation + 1,
-              ProduitRepares: sourceStatistics.ProduitRepares - 1 },
+            { ProduitRepares: sourceStatistics.ProduitRepares + 1,
+              ProduitEnReparation: sourceStatistics.ProduitEnReparation - 1 },
             { where: { Centre: centre, createdAt: todayDate } }
           );
         }
@@ -292,7 +327,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
     
         if (dashboard && dashboard.ProduitDeposes > 0) {
           await Dashboard.update(
-            { ProduitEnReparation: dashboard.ProduitEnReparation + 1,
+            { ProduitRepares: dashboard.ProduitRepares + 1,
               ProduitDeposes: dashboard.ProduitDeposes - 1 },
             { where: { createdAt: todayDate } }
           );
@@ -300,7 +335,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
         
         if (sourceStatistics && sourceStatistics.ProduitDeposes > 0) {
           await StatisticsCentre.update(
-            { ProduitEnReparation: sourceStatistics.ProduitEnReparation + 1,
+            { ProduitRepares: sourceStatistics.ProduitRepares + 1,
               ProduitDeposes: sourceStatistics.ProduitDeposes - 1 },
             { where: { Centre: centre, createdAt: todayDate } }
           );
@@ -316,7 +351,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
     
         if (dashboard && dashboard.ProduitEnAttente > 0) {
           await Dashboard.update(
-            { ProduitEnReparation: dashboard.ProduitEnReparation + 1,
+            { ProduitRepares: dashboard.ProduitRepares + 1,
               ProduitEnAttente: dashboard.ProduitEnAttente - 1 },
             { where: { createdAt: todayDate } }
           );
@@ -324,7 +359,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
         
         if (sourceStatistics && sourceStatistics.ProduitEnAttente > 0) {
           await StatisticsCentre.update(
-            { ProduitEnReparation: sourceStatistics.ProduitEnReparation + 1,
+            { ProduitRepares: sourceStatistics.ProduitRepares + 1,
               ProduitEnAttente: sourceStatistics.ProduitEnAttente - 1 },
             { where: { Centre: centre, createdAt: todayDate } }
           );
@@ -341,18 +376,16 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
           where: { Centre: centre, createdAt: todayDate },
         });
     
-        if (dashboard && dashboard.ProduitEnReparation > 0) {
+        if (dashboard && dashboard.ProduitRepares > 0) {
           await Dashboard.update(
-            { EnAttenteDePickup: dashboard.EnAttenteDePickup + 1,
-              ProduitEnReparation: dashboard.ProduitEnReparation - 1 },
+            { EnAttenteDePickup: dashboard.EnAttenteDePickup + 1 },
             { where: { createdAt: todayDate } }
           );
         }
         
-        if (sourceStatistics && sourceStatistics.ProduitEnReparation > 0) {
+        if (sourceStatistics && sourceStatistics.ProduitRepares > 0) {
           await StatisticsCentre.update(
-            { EnAttenteDePickup: sourceStatistics.EnAttenteDePickup + 1,
-              ProduitEnReparation: sourceStatistics.ProduitEnReparation - 1 },
+            { EnAttenteDePickup: sourceStatistics.EnAttenteDePickup + 1 },
             { where: { Centre: centre, createdAt: todayDate } }
           );
         }
@@ -365,18 +398,20 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
           where: { Centre: centre, createdAt: todayDate },
         });
     
-        if (dashboard && dashboard.ProduitRepares > 0) {
+        if (dashboard && dashboard.ProduitEnReparation > 0) {
           await Dashboard.update(
             { EnAttenteDePickup: dashboard.EnAttenteDePickup + 1,
-              ProduitRepares: dashboard.ProduitRepares - 1 },
+              ProduitRepares: dashboard.ProduitRepares + 1,
+              ProduitEnReparation: dashboard.ProduitEnReparation - 1 },
             { where: { createdAt: todayDate } }
           );
         }
         
-        if (sourceStatistics && sourceStatistics.ProduitRepares > 0) {
+        if (sourceStatistics && sourceStatistics.ProduitEnReparation > 0) {
           await StatisticsCentre.update(
             { EnAttenteDePickup: sourceStatistics.EnAttenteDePickup + 1,
-              ProduitRepares: sourceStatistics.ProduitRepares - 1 },
+              ProduitRepares: sourceStatistics.ProduitRepares + 1,
+              ProduitEnReparation: sourceStatistics.ProduitEnReparation - 1 },
             { where: { Centre: centre, createdAt: todayDate } }
           );
         }
@@ -392,6 +427,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
         if (dashboard && dashboard.ProduitDeposes > 0) {
           await Dashboard.update(
             { EnAttenteDePickup: dashboard.EnAttenteDePickup + 1,
+              ProduitRepares: dashboard.ProduitRepares + 1,
               ProduitDeposes: dashboard.ProduitDeposes - 1 },
             { where: { createdAt: todayDate } }
           );
@@ -400,6 +436,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
         if (sourceStatistics && sourceStatistics.ProduitDeposes > 0) {
           await StatisticsCentre.update(
             { EnAttenteDePickup: sourceStatistics.EnAttenteDePickup + 1,
+              ProduitRepares: sourceStatistics.ProduitRepares + 1,
               ProduitDeposes: sourceStatistics.ProduitDeposes - 1 },
             { where: { Centre: centre, createdAt: todayDate } }
           );
@@ -416,6 +453,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
         if (dashboard && dashboard.ProduitEnAttente > 0) {
           await Dashboard.update(
             { EnAttenteDePickup: dashboard.EnAttenteDePickup + 1,
+              ProduitRepares: dashboard.ProduitRepares + 1,
               ProduitEnAttente: dashboard.ProduitEnAttente - 1 },
             { where: { createdAt: todayDate } }
           );
@@ -424,6 +462,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
         if (sourceStatistics && sourceStatistics.ProduitEnAttente > 0) {
           await StatisticsCentre.update(
             { EnAttenteDePickup: sourceStatistics.EnAttenteDePickup + 1,
+              ProduitRepares: sourceStatistics.ProduitRepares + 1,
               ProduitEnAttente: sourceStatistics.ProduitEnAttente - 1 },
             { where: { Centre: centre, createdAt: todayDate } }
           );
@@ -464,18 +503,16 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
           where: { Centre: centre, createdAt: todayDate },
         });
     
-        if (dashboard && dashboard.ProduitEnReparation > 0) {
+        if (dashboard && dashboard.ProduitRepares > 0) {
           await Dashboard.update(
-            { Produitlivre: dashboard.Produitlivre + 1,
-              ProduitEnReparation: dashboard.ProduitEnReparation - 1 },
+            { Produitlivre: dashboard.Produitlivre + 1, },
             { where: { createdAt: todayDate } }
           );
         }
         
-        if (sourceStatistics && sourceStatistics.ProduitEnReparation > 0) {
+        if (sourceStatistics && sourceStatistics.ProduitRepares > 0) {
           await StatisticsCentre.update(
-            { Produitlivre: sourceStatistics.Produitlivre + 1,
-              ProduitEnReparation: sourceStatistics.ProduitEnReparation - 1 },
+            { Produitlivre: sourceStatistics.Produitlivre + 1 },
             { where: { Centre: centre, createdAt: todayDate } }
           );
         }
@@ -488,18 +525,20 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
           where: { Centre: centre, createdAt: todayDate },
         });
     
-        if (dashboard && dashboard.ProduitRepares > 0) {
+        if (dashboard && dashboard.ProduitEnReparation > 0) {
           await Dashboard.update(
             { Produitlivre: dashboard.Produitlivre + 1,
-              ProduitRepares: dashboard.ProduitRepares - 1 },
+              ProduitRepares: dashboard.ProduitRepares + 1,
+              ProduitEnReparation: dashboard.ProduitEnReparation - 1 },
             { where: { createdAt: todayDate } }
           );
         }
         
-        if (sourceStatistics && sourceStatistics.ProduitRepares > 0) {
+        if (sourceStatistics && sourceStatistics.ProduitEnReparation > 0) {
           await StatisticsCentre.update(
             { Produitlivre: sourceStatistics.Produitlivre + 1,
-              ProduitRepares: sourceStatistics.ProduitRepares - 1 },
+              ProduitRepares: sourceStatistics.ProduitRepares + 1,
+              ProduitEnReparation: sourceStatistics.ProduitEnReparation - 1 },
             { where: { Centre: centre, createdAt: todayDate } }
           );
         }
@@ -515,6 +554,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
         if (dashboard && dashboard.ProduitDeposes > 0) {
           await Dashboard.update(
             { Produitlivre: dashboard.Produitlivre + 1,
+              ProduitRepares: dashboard.ProduitRepares + 1,
               ProduitDeposes: dashboard.ProduitDeposes - 1 },
             { where: { createdAt: todayDate } }
           );
@@ -523,6 +563,7 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
         if (sourceStatistics && sourceStatistics.ProduitDeposes > 0) {
           await StatisticsCentre.update(
             { Produitlivre: sourceStatistics.Produitlivre + 1,
+              ProduitRepares: sourceStatistics.ProduitRepares + 1,
               ProduitDeposes: sourceStatistics.ProduitDeposes - 1 },
             { where: { Centre: centre, createdAt: todayDate } }
           );
@@ -538,138 +579,21 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
     
         if (dashboard) {
           await Dashboard.update(
-            { Produitlivre: dashboard.Produitlivre + 1 },
+            { Produitlivre: dashboard.Produitlivre + 1,
+              ProduitRepares: dashboard.ProduitRepares + 1,
+              ProduitEnAttente: dashboard.ProduitEnAttente - 1 },
             { where: { createdAt: todayDate } }
           );
         }
         
         if (sourceStatistics) {
           await StatisticsCentre.update(
-            { Produitlivre: sourceStatistics.Produitlivre + 1 },
+            { Produitlivre: sourceStatistics.Produitlivre + 1,
+              ProduitRepares: sourceStatistics.ProduitRepares + 1,
+              ProduitEnAttente: sourceStatistics.ProduitEnAttente - 1 },
             { where: { Centre: centre, createdAt: todayDate } }
           );
         }
-      }
-    }
-  }else{
-    if(oldProgres === 1){
-      // update dashboard
-      const dashboard = await Dashboard.findOne({
-        where: { createdAt: todayDate },
-      });
-  
-      const sourceStatistics = await StatisticsCentre.findOne({
-        where: { Centre: centre, createdAt: todayDate },
-      });
-  
-      if (dashboard && dashboard.ProduitDeposes > 0) {
-        await Dashboard.update(
-          { ProduitDeposes: dashboard.ProduitDeposes - 1 },
-          { where: { createdAt: todayDate } }
-        );
-      }
-  
-      if (sourceStatistics && sourceStatistics.ProduitDeposes > 0) {
-        await StatisticsCentre.update(
-          { ProduitDeposes: sourceStatistics.ProduitDeposes - 1 },
-          { where: { Centre: centre, createdAt: todayDate } }
-        );
-      }
-    }else if(oldProgres === 2){
-      // update dashboard
-      const dashboard = await Dashboard.findOne({
-        where: { createdAt: todayDate },
-      });
-  
-      const sourceStatistics = await StatisticsCentre.findOne({
-        where: { Centre: centre, createdAt: todayDate },
-      });
-  
-      if (dashboard && dashboard.ProduitRepares > 0) {
-        await Dashboard.update(
-          { ProduitRepares: dashboard.ProduitRepares - 1 },
-          { where: { createdAt: todayDate } }
-        );
-      }
-      
-      if (sourceStatistics && sourceStatistics.ProduitRepares > 0) {
-        await StatisticsCentre.update(
-          { ProduitRepares: sourceStatistics.ProduitRepares - 1,
-            ProduitEnAttente: sourceStatistics.ProduitEnAttente + 1 },
-          { where: { Centre: centre, createdAt: todayDate } }
-        );
-      }
-    }else if(oldProgres === 3){
-      // update dashboard
-      const dashboard = await Dashboard.findOne({
-        where: { createdAt: todayDate },
-      });
-  
-      const sourceStatistics = await StatisticsCentre.findOne({
-        where: { Centre: centre, createdAt: todayDate },
-      });
-  
-      if (dashboard && dashboard.ProduitEnReparation > 0) {
-        await Dashboard.update(
-          { ProduitEnReparation: dashboard.ProduitEnReparation - 1 },
-          { where: { createdAt: todayDate } }
-        );
-      }
-      
-      if (sourceStatistics && sourceStatistics.ProduitEnReparation > 0) {
-        await StatisticsCentre.update(
-          { ProduitEnReparation: sourceStatistics.ProduitEnReparation - 1,
-            ProduitEnAttente: sourceStatistics.ProduitEnAttente + 1 },
-          { where: { Centre: centre, createdAt: todayDate } }
-        );
-      }
-    }else if(oldProgres === 4){
-      // update dashboard
-      const dashboard = await Dashboard.findOne({
-        where: { createdAt: todayDate },
-      });
-  
-      const sourceStatistics = await StatisticsCentre.findOne({
-        where: { Centre: centre, createdAt: todayDate },
-      });
-  
-      if (dashboard && dashboard.EnAttenteDePickup > 0) {
-        await Dashboard.update(
-          { EnAttenteDePickup: dashboard.EnAttenteDePickup - 1 },
-          { where: { createdAt: todayDate } }
-        );
-      }
-      
-      if (sourceStatistics && sourceStatistics.EnAttenteDePickup > 0) {
-        await StatisticsCentre.update(
-          { EnAttenteDePickup: sourceStatistics.EnAttenteDePickup - 1,
-            ProduitEnAttente: sourceStatistics.ProduitEnAttente + 1 },
-          { where: { Centre: centre, createdAt: todayDate } }
-        );
-      }
-    }else if(oldProgres === 5){
-      // update dashboard
-      const dashboard = await Dashboard.findOne({
-        where: { createdAt: todayDate },
-      });
-  
-      const sourceStatistics = await StatisticsCentre.findOne({
-        where: { Centre: centre, createdAt: todayDate },
-      });
-  
-      if (dashboard && dashboard.EnAttenteDePickup > 0) {
-        await Dashboard.update(
-          { Produitlivre: dashboard.Produitlivre - 1 },
-          { where: { createdAt: todayDate } }
-        );
-      }
-      
-      if (sourceStatistics && sourceStatistics.Produitlivre > 0) {
-        await StatisticsCentre.update(
-          { Produitlivre: sourceStatistics.Produitlivre - 1,
-            ProduitEnAttente: sourceStatistics.ProduitEnAttente + 1 },
-          { where: { Centre: centre, createdAt: todayDate } }
-        );
       }
     }
   }
@@ -783,7 +707,58 @@ function calculateAverageTime(timeArray) {
 
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
+function getTop3RepetitiveReferanceProduits(pannesData) {
+  // Create an empty object to store the counts of each ReferanceProduit
+  const referanceCounts = {};
 
+  // Iterate through the pannesData array and count the occurrences of each ReferanceProduit
+  for (const panne of pannesData) {
+      const referance = panne.ReferanceProduit;
+      if (referanceCounts[referance]) {
+          referanceCounts[referance]++;
+      } else {
+          referanceCounts[referance] = 1;
+      }
+  }
+
+  // Convert the object into an array of objects with ReferanceProduit and count properties
+  const referanceCountArray = Object.entries(referanceCounts).map(([referance, count]) => ({
+      ReferanceProduit: referance,
+      Count: count,
+  }));
+
+  // Sort the array in descending order based on count
+  referanceCountArray.sort((a, b) => b.Count - a.Count);
+
+  // Return the top 3 repetitive ReferanceProduits
+  return referanceCountArray.slice(0, 3);
+}
+function getTop3RepetitiveTypePanne(pannesData) {
+  // Create an empty object to store the counts of each ReferanceProduit
+  const typePanneCounts = {};
+
+  // Iterate through the pannesData array and count the occurrences of each TypePanne
+  for (const panne of pannesData) {
+      const typePanne = panne.TypePanne;
+      if (typePanneCounts[typePanne]) {
+          typePanneCounts[typePanne]++;
+      } else {
+          typePanneCounts[typePanne] = 1;
+      }
+  }
+
+  // Convert the object into an array of objects with TypePanne and count properties
+  const typePanneCountArray = Object.entries(typePanneCounts).map(([typePanne, count]) => ({
+      TypePanne: typePanne,
+      Count: count,
+  }));
+
+  // Sort the array in descending order based on count
+  typePanneCountArray.sort((a, b) => b.Count - a.Count);
+
+  // Return the top 3 repetitive TypePannes
+  return typePanneCountArray.slice(0, 3);
+}
 module.exports = {
   index,
   GetByID,
@@ -791,6 +766,8 @@ module.exports = {
   Create,
   Update,
   Remove,
+  GetTop3Product,
+  GetTop3Pannes,
   UplaodIMG,
   upload
 };

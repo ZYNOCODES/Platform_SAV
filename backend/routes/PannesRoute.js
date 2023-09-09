@@ -6,6 +6,8 @@ const {
     Create,
     Update,
     Remove,
+    GetTop3Product,
+    GetTop3Pannes,
     UplaodIMG,
     upload
 } = require('../controllers/PannesController');
@@ -15,6 +17,8 @@ const router = express.Router();
 router.get('/', index);
 router.get('/:id', GetByID);
 router.get('/All/:Ref/:id', GetByRefProduct);
+router.get('/Product/Top3', GetTop3Product);
+router.get('/Pannes/Top3', GetTop3Pannes);
 router.post('/', Create);
 router.post('/IMG',upload, UplaodIMG);
 router.put('/:id', Update);

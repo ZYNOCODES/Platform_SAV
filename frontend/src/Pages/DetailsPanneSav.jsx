@@ -31,7 +31,7 @@ const DetailsPanneSav = () => {
     const [progress, setProgress] = useState(0);
     const [disabledButtons, setDisabledButtons] = useState([
           false, false, false, false, false]);
-          //Upload image to server
+    //Upload image to server
     const uploadImage = async (e) => {
       e.preventDefault();
       
@@ -243,14 +243,14 @@ const DetailsPanneSav = () => {
                     </div>
 
                     <div className='image'>
-                          {image ? (
-                              <img onClick={uploadImage} src={URL.createObjectURL(image)}
-                              alt="Selected"  
-                              style={{ maxWidth: '350px', width: '100%' ,height:'310px'}}/>
-                            ) : (
-                              <img src={imageframe} style={{ maxWidth: '350px', width: '100%' ,height:'250px', marginTop:'30px'}}/>
-                            )}
-                          </div>
+                      {image ? (
+                          <img onClick={uploadImage} src={URL.createObjectURL(image)}
+                          alt="Selected"  
+                          style={{ maxWidth: '350px', width: '100%' ,height:'310px'}}/>
+                        ) : (
+                          <img src={imageframe} style={{ maxWidth: '350px', width: '100%' ,height:'250px', marginTop:'30px'}}/>
+                        )}
+                    </div>
                   </div>
                   
             </div>

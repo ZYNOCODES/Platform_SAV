@@ -201,7 +201,7 @@ const UplaodIMG = async (req, res) => {
     if(req.file === undefined){
       return res.status(400).json({message: 'No file uploaded'});
     }
-    const image = req.file.path;
+    const image = req.file.filename;
     try{
         const panne = await Panne.findByPk(id);
         if (!panne) {
@@ -216,7 +216,7 @@ const UplaodIMG = async (req, res) => {
 }
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-      cb(null,'images');
+      cb(null, path.join(__dirname, '..', '..', 'frontend', 'src', 'Pages', 'Style', 'images'));
   },
   filename: function(req, file, cb) {
       cb(null, Date.now() + path.extname(file.originalname));

@@ -1,6 +1,6 @@
-import { MdDashboard } from "react-icons/md";
+import { BiSolidDashboard } from "react-icons/bi";
 import {FaList} from  "react-icons/fa"
-import { ImProfile } from "react-icons/im";
+import { FaElevator } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
 import { useLogout } from "../hooks/useLogout";
 import { useAuthContext } from "../hooks/useAuthContext";
@@ -26,7 +26,7 @@ export default function MyAsideBar() {
                     location.pathname === "/Dashboard" ? "aside-item-active" : ""
                   }`}
                 >
-                  <MdDashboard className="w-6 h-6 ml-2" />
+                  <BiSolidDashboard className="w-6 h-6 ml-2" />
                   <span className="title">Dashboard</span>
                 </div>
               </NavLink>
@@ -52,7 +52,7 @@ export default function MyAsideBar() {
                 location.pathname === "/Utilisateurs" ? "aside-item-active" : ""
               }`}
               >
-                <ImProfile className="w-6 h-6 ml-2" />
+                <FaElevator className="w-6 h-6 ml-2" />
                 <span className="title">Utilisateurs</span>
               </div>
             </NavLink>

@@ -11,6 +11,8 @@ const sequelize = require('./config/database');
 const PannesRoute = require('./routes/PannesRoute');
 const UserRoute = require('./routes/users');
 const DashboardRoute = require('./routes/dashboard');
+const PDFGeneratorRoute = require('./routes/PDFGenerator');
+
 
 const port = process.env.PORT || 8080;
 
@@ -31,6 +33,7 @@ app.use((req, res, next) => {
 app.use('/Pannes', PannesRoute);
 app.use('/User', UserRoute);
 app.use('/Dashboard', DashboardRoute);
+app.use('/EmailGenerator', PDFGeneratorRoute);
 
 //connect to db
 sequelize

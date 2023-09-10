@@ -87,10 +87,7 @@ const GetByWeek = async (req, res) => {
             } else {
                 res.status(404).json({ message: 'No dashboard data found for this week' });
             }
-        }
-        
-
-        
+        }      
     } catch (error) {
         console.error(error);
         res.status(500).send('Error getting dashboard by week');

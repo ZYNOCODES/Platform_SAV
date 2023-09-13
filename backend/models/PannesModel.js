@@ -25,7 +25,7 @@ const Panne = sequelize.define('pannes', {
     allowNull: false,
   },
   ReferanceProduit: {
-    type: DataTypes.BIGINT,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   TypePanne: {

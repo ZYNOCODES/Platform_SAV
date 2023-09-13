@@ -27,29 +27,55 @@ const Users = () => {
       setRole(newValue);
     };
     useEffect(() => {
-      const fetchUsersData = async () => {
-        try {
-          const response = await fetch(`http://localhost:8000/User`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user?.token}`,
-            },
-          });
-    
-          if (response.ok) {
-            const data = await response.json();
-            setUsersData(data);
-          } else {
-            console.error("Error receiving Panne data:", response.statusText);
+      if(user?.Role === 'DRCentre'){
+        const fetchUsersData = async () => {
+          try {
+            const response = await fetch(`http://localhost:8000/User/byCentre/${user?.Centre}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user?.token}`,
+              },
+            });
+      
+            if (response.ok) {
+              const data = await response.json();
+              setUsersData(data);
+            } else {
+              console.error("Error receiving Panne data:", response.statusText);
+            }
+          } catch (error) {
+            console.error("Error fetching Panne data:", error);
           }
-        } catch (error) {
-          console.error("Error fetching Panne data:", error);
-        }
-      };
-    
-      fetchUsersData();
-    }, [user?.id, UsersData]);
+        };
+      
+        fetchUsersData();
+      }else{
+        const fetchUsersData = async () => {
+          try {
+            const response = await fetch(`http://localhost:8000/User`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user?.token}`,
+              },
+            });
+      
+            if (response.ok) {
+              const data = await response.json();
+              setUsersData(data);
+            } else {
+              console.error("Error receiving Panne data:", response.statusText);
+            }
+          } catch (error) {
+            console.error("Error fetching Panne data:", error);
+          }
+        };
+      
+        fetchUsersData();
+      }
+      
+    }, [user.id, UsersData, user?.token, user?.Role, user?.Centre]);
   
   return (
     <>
@@ -62,17 +88,8 @@ const Users = () => {
           <div className="patient-table-header">
             <div className="table-header-item">
             <div className='forminput'>
-              <label>Centre</label>
-              <select onChange={(e) => setcentre(e.target.value)}>
-                <option>All</option>
-                <option>Direction General</option>
-                <option>Alger</option>
-                <option>Blida</option>
-                <option>Medea</option>
-                <option>Tipaza</option>
-                <option>Batna</option>
-                <option>Oran</option>
-              </select>
+              <CostumSelectCentre label='Centre:' onChange={handleCentreInputChange}/>
+
             </div>
             </div>
             <div className="table-header-item">
@@ -82,7 +99,7 @@ const Users = () => {
                 <option>All</option>
                 <option>Admin</option>
                 <option>SAV</option>
-                <option>Directeur Marketing</option>
+                <option>DRCentre</option>
               </select>
             </div>
             </div>
@@ -115,20 +132,36 @@ const Users = () => {
                 <td className="table-patients-header-button"></td>
               </tr>
               {UsersData?.filter((item) => {
-                if (
-                  (search.toLowerCase() === "" ||
-                    item.Nom.toLowerCase().includes(search.toLowerCase()) ||
-                    item.Prenom.toLowerCase().includes(search.toLowerCase()) ||
-                    item.Email.toLowerCase().includes(search.toLowerCase()) ||
-                    item.Telephone.toString().includes(search.toLowerCase())||
-                    item.Centre.toLowerCase().includes(search.toLowerCase())||
-                    item.Role.toLowerCase().includes(search.toLowerCase())) &&
-                  (centre === "All" ||
-                    item.Centre.toLowerCase().includes(centre.toLowerCase())) &&
-                  (role === "All" || item.Role.toLowerCase().includes(role.toLowerCase()))
-                ) {
-                  return item;
-                }                
+                if((item.Role === 'SAV' || item.Role === 'DRCentre') && user?.Role === 'DRCentre'){
+                  if (
+                    (search.toLowerCase() === "" ||
+                      item.Nom.toLowerCase().includes(search.toLowerCase()) ||
+                      item.Prenom.toLowerCase().includes(search.toLowerCase()) ||
+                      item.Email.toLowerCase().includes(search.toLowerCase()) ||
+                      item.Telephone.toString().includes(search.toLowerCase())||
+                      item.Centre.toLowerCase().includes(search.toLowerCase())) &&
+                    (centre === "All" ||
+                      item.Centre.toLowerCase().includes(centre.toLowerCase())) &&
+                    (role === "All" || item.Role.toLowerCase().includes(role.toLowerCase()))
+                  ) {
+                    return item;
+                  }       
+                }else if(user?.Role === 'Admin'){
+                  if (
+                    (search.toLowerCase() === "" ||
+                      item.Nom.toLowerCase().includes(search.toLowerCase()) ||
+                      item.Prenom.toLowerCase().includes(search.toLowerCase()) ||
+                      item.Email.toLowerCase().includes(search.toLowerCase()) ||
+                      item.Telephone.toString().includes(search.toLowerCase())||
+                      item.Centre.toLowerCase().includes(search.toLowerCase())||
+                      item.Role.toLowerCase().includes(search.toLowerCase())) &&
+                    (centre === "All" ||
+                      item.Centre.toLowerCase().includes(centre.toLowerCase())) &&
+                    (role === "All" || item.Role.toLowerCase().includes(role.toLowerCase()))
+                  ) {
+                    return item;
+                  } 
+                }      
               }).map((user) => (
                 <UserRow User={user}/>
               ))}

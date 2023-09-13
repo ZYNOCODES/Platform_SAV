@@ -101,7 +101,7 @@ export const PanneList = () => {
                 <td className="table-patients-header-annee">Nom Complet</td>
                 <td className="table-patients-header-annee">Date</td>
                 <td className="table-patients-header-willaya">Centre</td>
-                <td className="table-patients-header-progress">Progression</td>
+                <td className="table-patients-header-progress">TypePanne</td>
                 <td className="table-patients-header-button"></td>
               </tr>
               {ProduitenPanne?.filter((item) => {
@@ -113,7 +113,8 @@ export const PanneList = () => {
                     item.DateDepot.toLowerCase().includes(search.toLowerCase())||
                     item.Progres.toString().includes(search.toLowerCase())||
                     item.CentreDepot.toLowerCase().includes(search.toLowerCase())||
-                    item.ReferanceProduit.toString().includes(search.toLowerCase())) &&
+                    item.ReferanceProduit.toLowerCase().includes(search.toLowerCase())||
+                    item.TypePanne.toLowerCase().includes(search.toLowerCase())) &&
                   (datedepot == null || item.DateDepot.includes(datedepot)) &&
                   (progres === "All" || item.Progres.toString().includes(progres.toString())) &&
                   (centredepot === "All" || item.CentreDepot.toLowerCase().includes(centredepot.toLowerCase()))

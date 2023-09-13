@@ -181,7 +181,7 @@ const DetailsPanneSav = () => {
     };
     //Go back to previous page
     const GoBackPressed =()=>{
-        navigate(-1);
+        navigate(-2);
     }
   return (
     <>
@@ -215,9 +215,9 @@ const DetailsPanneSav = () => {
             <div className=' progress-toogle'>
                 <div className='left-toogle'>
                   <Tooglebtn label='En attente de depot' value={1} onChange={handleProgressChange} disabled={disabledButtons[0]} onClick={() => handleUncheck(0)} />
-                  <Tooglebtn label='en attente de réparation' value={2} onChange={handleProgressChange} disabled={disabledButtons[1]} onClick={() => handleUncheck(1)}/>
-                  <Tooglebtn label='En reparation au centre' value={3} onChange={handleProgressChange} disabled={disabledButtons[2]} onClick={() => handleUncheck(2)}/>
-                  <Tooglebtn label='Reparé en attente de pickup' value={4} onChange={handleProgressChange} disabled={disabledButtons[3]} onClick={() => handleUncheck(3)}/>
+                  <Tooglebtn label='En reparation au centre' value={2} onChange={handleProgressChange} disabled={disabledButtons[1]} onClick={() => handleUncheck(1)}/>
+                  <Tooglebtn label='Produit reparé' value={3} onChange={handleProgressChange} disabled={disabledButtons[2]} onClick={() => handleUncheck(2)}/>
+                  <Tooglebtn label='En attente de pickup' value={4} onChange={handleProgressChange} disabled={disabledButtons[3]} onClick={() => handleUncheck(3)}/>
                   <Tooglebtn label='Livré au client' value={5} onChange={handleProgressChange} disabled={disabledButtons[4]} onClick={() => handleUncheck(4)}/>
 
                 </div>

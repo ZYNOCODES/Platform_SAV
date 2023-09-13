@@ -14,6 +14,7 @@ const FormInput = (props) => {
       <input 
         placeholder={props.placeholder} 
         value={props.value} 
+        defaultValue={props.defaultValue}
         type={props.type} 
         onChange={handleChange} 
         readOnly={props.readOnly}/>

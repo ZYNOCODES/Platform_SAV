@@ -76,7 +76,7 @@ const DetailsPanne = () => {
                 {PanneData?.Progres !== 0 && PanneData?.Progres !== 5 &&
                     <div className='progression-label'>
                         <div className='progress-div'>
-                            <h4>En attente de  reparation </h4>
+                            <h4>Le produit a été déposé</h4>
                             <AiOutlineCaretDown/>
                         </div>
                         <div className='progress-div second-progress-div s-dv'>
@@ -84,11 +84,11 @@ const DetailsPanne = () => {
                             <AiOutlineCaretDown/>
                         </div>
                         <div className='progress-div second-progress-div'>
-                            <h4>En Reparation au Centrale</h4>
+                            <h4>Le Produit a été reparé</h4>
                             <AiOutlineCaretDown/>
                         </div>
                         <div className='progress-div third-progress-div'>
-                            <h4>Reparé en attente de pickup</h4>
+                            <h4>Le produit en attente de pickup</h4>
                             <AiOutlineCaretDown/>
                         </div>
                     </div>

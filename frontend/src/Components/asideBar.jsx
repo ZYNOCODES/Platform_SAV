@@ -44,7 +44,7 @@ export default function MyAsideBar() {
               </div>
             </NavLink>
           </li>
-          {user && user.Role === "Admin" &&(
+          {user && (user.Role === "Admin" || user.Role === "DRCentre") &&(
             <li className="mb-6">
             <NavLink to="/Utilisateurs">
             <div

@@ -4,9 +4,12 @@ import Updatebutton from '../Buttons/updatebutton'
 import Deletebutton from '../Buttons/deletebutton'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuthContext } from '../../hooks/useAuthContext';
 function UserRow(User){
   const notify = (message) => toast.error(message);
   const notifySuccess = (message) => toast.success(message);
+  const { user } = useAuthContext();
+
   const DeleteUser = async () =>{
     const reponse = await fetch("http://localhost:8000/User", {
       method: "DELETE",
@@ -42,9 +45,11 @@ function UserRow(User){
       <td className="btn-column">
         <Updatebutton Redirection={Redirect}/>
       </td>
-      <td className="btn-column">
-        <Deletebutton DeleteUser={DeleteUser}/>
-      </td>
+      {user && user.Role === 'Admin' &&
+        <td className="btn-column">
+          <Deletebutton DeleteUser={DeleteUser}/>
+        </td>
+      }
       <ToastContainer />
     </tr>
   )

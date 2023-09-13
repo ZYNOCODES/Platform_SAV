@@ -43,7 +43,10 @@ const ProduitDepose = () => {
         };
     
         fetchPanneData();
-    }, [id, PanneData, user?.token]);
+        if (PanneData?.Progres === 1) {
+            navigate(`/DetailPanneSav/${id}`)
+        }
+    }, [id, PanneData, user?.token, navigate]);
     const createAndDownloadPdf = async () => {
         try {
             const response = await fetch('http://localhost:8000/EmailGenerator/createPDF', {

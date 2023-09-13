@@ -12,7 +12,8 @@ const PannesRoute = require('./routes/PannesRoute');
 const UserRoute = require('./routes/users');
 const DashboardRoute = require('./routes/dashboard');
 const PDFGeneratorRoute = require('./routes/PDFGenerator');
-
+const SAVRoute = require('./routes/ServiceApresVente');
+const AgentRoute = require('./routes/AgentAgree');
 
 const port = process.env.PORT || 8080;
 
@@ -34,7 +35,8 @@ app.use('/Pannes', PannesRoute);
 app.use('/User', UserRoute);
 app.use('/Dashboard', DashboardRoute);
 app.use('/EmailGenerator', PDFGeneratorRoute);
-
+app.use('/SAV', SAVRoute);
+app.use('/Agent', AgentRoute);
 //connect to db
 sequelize
   .sync()

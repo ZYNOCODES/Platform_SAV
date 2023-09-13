@@ -3,6 +3,7 @@ const {
     Login,
     Signup,
     GetAllUsers,
+    GetAllUsersByCentre,
     GetUser, 
     DeleteUser,
     UpdateUser,
@@ -17,6 +18,9 @@ router.post('/signup', Signup);
 
 //get all users
 router.get('/', GetAllUsers);
+
+//get all users
+router.get('/byCentre/:centre', GetAllUsersByCentre);
 
 //get a specific user
 router.get('/:id', GetUser);

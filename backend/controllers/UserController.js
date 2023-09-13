@@ -120,6 +120,26 @@ const GetAllUsers = async (req, res) => {
     }
 }
 
+//get all users by center
+const GetAllUsersByCentre = async (req, res) => {
+    const {centre} = req.params;
+    try {
+        const Users = await User.findAll({
+            where: {
+                Centre: centre
+            }
+        });
+        if (Users.length > 0) {
+          res.status(200).json(Users);
+        }else{
+          res.json({message: 'No users found'});
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error getting users');
+    }
+}
+
 //get a specific user
 const GetUser = async (req, res) => {
     const {id} = req.params;
@@ -237,6 +257,7 @@ module.exports = {
     Login,
     Signup,
     GetAllUsers,
+    GetAllUsersByCentre,
     GetUser,
     DeleteUser,
     UpdateUser,

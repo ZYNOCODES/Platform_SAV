@@ -4,6 +4,7 @@ import MyAsideBar from "./Components/asideBar";
 import MyNavBar from "./Components/navBar";
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { PanneList } from './Pages/PanneList';
+import { PanneListLivrees } from './Pages/PanneListLivrees';
 import { useRef, useState } from 'react';
 import Login from './Pages/Login';
 import DetailsPanne from './Pages/DetailsPanne';
@@ -26,6 +27,7 @@ function App() {
           <Navigate to="/Dashboard" /> : <Navigate to="/liste_des_pannes" />)} />
           <Route path='/Dashboard' element={user ? <Dashboard/> : <Navigate to="/" />} />
           <Route path='/liste_des_pannes' element={user ? <PanneList /> : <Navigate to="/" />} />
+          <Route path='/PannesLivree' element={user ? <PanneListLivrees /> : <Navigate to="/" />} />
           <Route path='/Utilisateurs' element={user ? <Users/> : <Navigate to="/" />}/>
           <Route path='/Details/:id' element={user ? <DetailsPanne /> : <Navigate to="/" />} />
           <Route path='/EnAttenteDeDepot/:id' element={user ? <ProduitDepose/> : <Navigate to="/" />}/>

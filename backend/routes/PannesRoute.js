@@ -1,6 +1,7 @@
 const express = require('express');
 const {
     index,
+    GetAllDelivred,
     GetByID,
     GetByRefProduct,
     Create,
@@ -15,6 +16,7 @@ const router = express.Router();
 
 
 router.get('/', index);
+router.get('/Delivred', GetAllDelivred);
 router.get('/:id', GetByID);
 router.get('/All/:Ref/:id', GetByRefProduct);
 router.get('/Product/Top3', GetTop3Product);

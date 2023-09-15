@@ -68,7 +68,7 @@ const CostumSelectCentre = (props) => {
             <option value={props.value}>{props.value}</option>
             :
             <>
-              <option value=''>Sélectionné le role</option>
+              <option value=''>Sélectionné le centre</option>
               <option value={user.Centre}>{user.Centre}</option>
             </>
           }

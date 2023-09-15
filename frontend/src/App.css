@@ -1,11 +1,10 @@
 @font-face {
   font-family: Poppins;
 }
-
+voir-btn-class-red
 .titre {
   padding-left: 100px;
 }
-
 * {
   margin: 0;
   padding: 0;
@@ -1653,12 +1652,29 @@ form {
   width: 100%;
   border-bottom: 1px solid #DA171B;
 }
-
 .table-nouveau-ne-ligne:nth-child(2n),
 .Maman-profile .table-concultation-ligne:nth-child(2n) {
   background-color: rgba(218, 218, 218, 1);
 }
+.table-nouveau-ne-ligne-red-row{
+  background-color: rgba(255, 0, 0, 0.781);
+  .table-patients-td-nom{
+    color: white;
+  }
+  .table-patients-td-annee{
+    color: white;
+  }
+  .table-patients-td-willaya{
+    color: white;
+  }
+  .table-patients-td-region{
+    color: white;
+  }
+}
 
+.table-nouveau-ne-ligne-orange-row{
+  background-color: rgba(255, 123, 0, 0.426);
+}
 .table-patients td {
   border: none;
 }
@@ -2429,6 +2445,21 @@ form {
   padding-right: 10px;
   cursor: pointer;
   background-color: #DA171B;
+}
+.voir-btn-class-red{
+  background-color: #fff;
+  height: 25px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  cursor: pointer;
+  .voir-btn{
+    color: red;
+  }
 }
 .update-btn,.delete-btn{
   padding-left: 10px;

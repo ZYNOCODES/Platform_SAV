@@ -13,7 +13,13 @@ const index = async (req, res) => {
   
   try {
     if(Role === 'Admin'){
-      const Pannes = await Panne.findAll();
+      const Pannes = await Panne.findAll({
+        where: {
+          Progres: {
+            [Op.lt]: 5, // Less than 5
+          },
+        }
+      });
       if (Pannes.length > 0) {
         res.json({Pannes: Pannes});
       }else{
@@ -23,6 +29,44 @@ const index = async (req, res) => {
       const Pannes = await Panne.findAll({
         where: {
           CentreDepot: CentreDepot,
+          Progres: {
+            [Op.lt]: 5,
+          },
+        }
+      });
+      if (Pannes.length > 0) {
+        res.json({Pannes: Pannes});
+      }else{
+        res.json({message: 'No pannes found'});
+      }
+    }
+    
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error getting panne');
+  }
+}
+const GetAllDelivred = async (req, res) => {
+  const { Role, CentreDepot } = req.query;
+  
+  try {
+    if(Role === 'Admin'){
+      const Pannes = await Panne.findAll({
+        where: {
+          Progres: 5,
+        }
+      });
+      if (Pannes.length > 0) {
+        res.json({Pannes: Pannes});
+      }else{
+        res.json({message: 'No pannes found'});
+      }
+    }else{
+      const Pannes = await Panne.findAll({
+        where: {
+          CentreDepot: CentreDepot,
+          Progres: 5,
         }
       });
       if (Pannes.length > 0) {
@@ -761,6 +805,7 @@ function getTop3RepetitiveTypePanne(pannesData) {
 }
 module.exports = {
   index,
+  GetAllDelivred,
   GetByID,
   GetByRefProduct,
   Create,

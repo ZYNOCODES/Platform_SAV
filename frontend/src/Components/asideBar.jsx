@@ -1,5 +1,6 @@
 import { BiSolidDashboard } from "react-icons/bi";
-import {FaList} from  "react-icons/fa"
+import {ImList2} from  "react-icons/im"
+import {BsFillArchiveFill} from "react-icons/bs"
 import { FaElevator } from "react-icons/fa6";
 import { FiLogOut } from "react-icons/fi";
 import { useLogout } from "../hooks/useLogout";
@@ -39,8 +40,20 @@ export default function MyAsideBar() {
                   location.pathname === "/liste_des_pannes" ? "aside-item-active" : ""
                 }`}
               >
-                <FaList className="w-6 h-6 ml-2" />
+                <ImList2 className="w-6 h-6 ml-2" />
                 <span className="title">Tickets Ouverts</span>
+              </div>
+            </NavLink>
+          </li>
+          <li className="mb-6">
+            <NavLink to="/PannesLivree">
+            <div
+                className={`link flex items-center justify-items-center ${
+                  location.pathname === "/PannesLivree" ? "aside-item-active" : ""
+                }`}
+              >
+                <BsFillArchiveFill className="w-6 h-6 ml-2" />
+                <span className="title">Archive</span>
               </div>
             </NavLink>
           </li>

@@ -12,6 +12,12 @@ import CostumSelectCentre from '../Components/Form/CostumSelectCentre';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuthContext } from '../hooks/useAuthContext';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
 
 const CreateNewUser = () => {
   const [act, setAct] = useState(false);
@@ -53,6 +59,20 @@ const CreateNewUser = () => {
   const handleCentreInputChange = (newValue) => {
     setCentre(newValue);
   };
+
+
+  const [open,setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const Redirect =()=>{
+    navigate(-1);
+  }
   
   async function submitSignup(e) {
     e.preventDefault();
@@ -74,11 +94,13 @@ const CreateNewUser = () => {
     }
     if (reponse.ok) {
       notifySuccess(json.message);
+      handleClose();
+      Redirect();
     }
   }
-  const Redirect =()=>{
-    navigate(-1);
-  }
+  
+
+  
   return (
     <>
         <MyNavBar  act={act} setAct={setAct} />
@@ -107,10 +129,34 @@ const CreateNewUser = () => {
             </div>
             <div className='pannedetails-Button1'>
                       <button className='Cancel-btn' type='button' onClick={Redirect}>Annuler</button>
-                      <button className='depose-btn' type='submit' onClick={submitSignup}>Ajouter</button>
+                      <button className='depose-btn' type='submit' onClick={handleClickOpen}>Ajouter</button>
                    </div>
             <ToastContainer />
         </div>
+        <div>
+        <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Etes-vous sure de vouloir Ajouter un nouveau utilisateur ?"}
+            </DialogTitle>
+           
+            <DialogActions>
+              <Button onClick={handleClose} 
+              
+              
+              >Annuller</Button>
+              <Button onClick={submitSignup} autoFocus
+             
+              >
+                Oui, Ajouter
+              </Button>
+            </DialogActions>
+          </Dialog>`
+      </div>
     </>
   )
 }

@@ -9,6 +9,12 @@ import { IoIosArrowBack } from "react-icons/io";
 import {useNavigate, useParams} from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { ToastContainer, toast } from "react-toastify";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
 import "react-toastify/dist/ReactToastify.css";
 
 const ProduitDepose = () => {
@@ -19,6 +25,20 @@ const ProduitDepose = () => {
     const [PanneData, setPanneData] = useState();
     const {id} = useParams();
     const { user } = useAuthContext();
+
+
+    const [open,setOpen] = React.useState(false);
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const GoBackPressed =()=>{
+        navigate(-1);
+    }
     //Get user data from server
     useEffect(() => {
         const fetchPanneData = async () => {
@@ -115,11 +135,10 @@ const ProduitDepose = () => {
             setTimeout(() => {
                 navigate(`/DetailPanneSav/${id}`)
             }, 2000)
+           
         }
     }
-    const GoBackPressed =()=>{
-        navigate(-1);
-    }
+    
     return (
     <>
         <MyNavBar  act={act} setAct={setAct} />
@@ -149,10 +168,39 @@ const ProduitDepose = () => {
 
             <div className='pannedetails-Button1'>
                 <button className='Cancel-btn' type='button' onClick={GoBackPressed}>Annuler</button>
-                <button className='depose-btn' type='submit' onClick={UpdatePanne}>Deposer</button>
+                <button className='depose-btn' type='submit' onClick={handleClickOpen}>Deposer</button>
             </div>
             <ToastContainer />
         </div>
+
+        <div>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Etes-vous sure de vouloir deposer ce produit ? "}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Cette action permet de passe de l'etat en attente de depot a l'etat en attente de reparation.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} 
+              
+              
+              >Annuller</Button>
+              <Button onClick={UpdatePanne} autoFocus
+             
+              >
+                Oui, Deposer
+              </Button>
+            </DialogActions>
+          </Dialog>`
+      </div>
     </>
   )
 }

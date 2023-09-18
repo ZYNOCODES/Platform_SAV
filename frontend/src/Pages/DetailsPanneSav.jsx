@@ -18,6 +18,7 @@ import Tooglebtn from '../Components/Tooglebtn';
 import axios from 'axios'; 
 import imageframe from'../Components/assets/imageframe.png';
 
+
 const DetailsPanneSav = () => {
     const notifyFailed = (message) => toast.error(message);
     const notifySuccess = (message) => toast.success(message);
@@ -31,6 +32,16 @@ const DetailsPanneSav = () => {
     const [progress, setProgress] = useState(0);
     const [disabledButtons, setDisabledButtons] = useState([
           false, false, false, false, false]);
+
+
+    const [open,setOpen] = React.useState(false);
+    const handleClickOpen = () => {
+      setOpen(true);
+    };
+        
+    const handleClose = () => {
+      setOpen(false);
+    };          
     //Upload image to server
     const uploadImage = async (e) => {
       e.preventDefault();
@@ -214,11 +225,11 @@ const DetailsPanneSav = () => {
             </div>
             <div className=' progress-toogle'>
                 <div className='left-toogle'>
-                  <Tooglebtn label='En attente de depot' value={1} onChange={handleProgressChange} disabled={disabledButtons[0]} onClick={() => handleUncheck(0)} />
-                  <Tooglebtn label='En reparation au centre' value={2} onChange={handleProgressChange} disabled={disabledButtons[1]} onClick={() => handleUncheck(1)}/>
-                  <Tooglebtn label='Produit reparé' value={3} onChange={handleProgressChange} disabled={disabledButtons[2]} onClick={() => handleUncheck(2)}/>
-                  <Tooglebtn label='En attente de pickup' value={4} onChange={handleProgressChange} disabled={disabledButtons[3]} onClick={() => handleUncheck(3)}/>
-                  <Tooglebtn label='Livré au client' value={5} onChange={handleProgressChange} disabled={disabledButtons[4]} onClick={() => handleUncheck(4)}/>
+                  <Tooglebtn label='En attente de depot' value={1} onChange={handleProgressChange} disabled={disabledButtons[0]} />
+                  <Tooglebtn label='En reparation au centre' value={2} onChange={handleProgressChange} disabled={disabledButtons[1]} />
+                  <Tooglebtn label='Produit reparé' value={3} onChange={handleProgressChange} disabled={disabledButtons[2]} />
+                  <Tooglebtn label='En attente de pickup' value={4} onChange={handleProgressChange} disabled={disabledButtons[3]} />
+                  <Tooglebtn label='Livré au client' value={5} onChange={handleProgressChange} disabled={disabledButtons[4]} />
 
                 </div>
                 <div className='right-toogle'>
@@ -280,6 +291,8 @@ const DetailsPanneSav = () => {
             
             <ToastContainer />
         </div>
+
+        
     </>
   )
 }

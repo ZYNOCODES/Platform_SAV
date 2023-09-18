@@ -1,8 +1,12 @@
 {
   "name": "website-stream-admin",
   "version": "0.1.0",
+  "homepage": "https://stream.twinpub.com/",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.10",
     "@ramonak/react-progress-bar": "^5.0.3",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",

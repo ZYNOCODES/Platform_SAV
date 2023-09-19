@@ -16,6 +16,7 @@ const SAVRoute = require('./routes/ServiceApresVente');
 const AgentRoute = require('./routes/AgentAgree');
 const EmailSenderRoute = require('./routes/EmailSenderRoute');
 const ProductRoute = require('./routes/Product');
+const WillayaRoute = require('./routes/wilayaOfAlgeria');
 
 const port = process.env.PORT || 8080;
 
@@ -41,6 +42,7 @@ app.use('/SAV', SAVRoute);
 app.use('/Agent', AgentRoute);
 app.use('/EmailSender', EmailSenderRoute);
 app.use('/Product', ProductRoute);
+app.use('/Willaya', WillayaRoute);
 
 //connect to db
 sequelize

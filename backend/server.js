@@ -14,6 +14,8 @@ const DashboardRoute = require('./routes/dashboard');
 const PDFGeneratorRoute = require('./routes/PDFGenerator');
 const SAVRoute = require('./routes/ServiceApresVente');
 const AgentRoute = require('./routes/AgentAgree');
+const EmailSenderRoute = require('./routes/EmailSenderRoute');
+const ProductRoute = require('./routes/Product');
 
 const port = process.env.PORT || 8080;
 
@@ -37,6 +39,9 @@ app.use('/Dashboard', DashboardRoute);
 app.use('/EmailGenerator', PDFGeneratorRoute);
 app.use('/SAV', SAVRoute);
 app.use('/Agent', AgentRoute);
+app.use('/EmailSender', EmailSenderRoute);
+app.use('/Product', ProductRoute);
+
 //connect to db
 sequelize
   .sync()

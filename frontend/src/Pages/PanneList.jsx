@@ -38,7 +38,7 @@ export const PanneList = () => {
             CentreDepot: user?.Centre,
           });
     
-          const response = await fetch(`http://localhost:8000/Pannes/?${queryParams}`, {
+          const response = await fetch(`https://streamsav.onrender.com/Pannes/?${queryParams}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",

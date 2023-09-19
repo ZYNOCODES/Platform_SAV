@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { HiEllipsisVertical } from "react-icons/hi2";
-
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -57,7 +56,7 @@ export default function MyChart() {
   useEffect(() => {
     const fetchDashboardDataWeekly = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/Dashboard/current/week`, {
+        const response = await fetch(`https://streamsav.onrender.com/Dashboard/current/week`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -80,7 +79,7 @@ export default function MyChart() {
   useEffect(() => {
     const fetchDashboardDataMonthly = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/Dashboard/current/month`, {
+        const response = await fetch(`https://streamsav.onrender.com/Dashboard/current/month`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -103,7 +102,7 @@ export default function MyChart() {
   useEffect(() => {
     const fetchDashboardDataYearly = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/Dashboard/current/year`, {
+        const response = await fetch(`https://streamsav.onrender.com/Dashboard/current/year`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

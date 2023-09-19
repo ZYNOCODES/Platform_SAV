@@ -51,7 +51,7 @@ const DetailsPanneSav = () => {
       formData.append('id', id);
       
       const result = await axios.post(
-        "http://localhost:8000/Pannes/IMG",
+        "https://streamsav.onrender.com/Pannes/IMG",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -68,7 +68,7 @@ const DetailsPanneSav = () => {
     useEffect(() => {
         const fetchPanneData = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/Pannes/${id}`, {
+            const response = await fetch(`https://streamsav.onrender.com/Pannes/${id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -93,7 +93,7 @@ const DetailsPanneSav = () => {
     useEffect(() => {
         const fetchAllPannesDataOfProduct = async () => {
           try {
-            const response = await fetch(`http://localhost:8000/Pannes/All/${PanneData?.ReferanceProduit}/${id}`, {
+            const response = await fetch(`https://streamsav.onrender.com/Pannes/All/${PanneData?.ReferanceProduit}/${id}`, {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ const DetailsPanneSav = () => {
         fetchAllPannesDataOfProduct();
       }, [id, user?.token, PanneData?.ReferanceProduit, ProductData]);
     const UpdatePanne = async (val) =>{
-        const reponse = await fetch(`http://localhost:8000/Pannes/${id}`, {
+        const reponse = await fetch(`https://streamsav.onrender.com/Pannes/${id}`, {
           method: "PATCH",
           headers: {
             "content-type": "application/json",
@@ -183,17 +183,18 @@ const DetailsPanneSav = () => {
         }
       }
     }, [PanneData?.Progres]);
-    //Function to handle unchecking a button
-    const handleUncheck = (value) => {
-        const updatedDisabledButtons = [...disabledButtons];
-        updatedDisabledButtons[value - 1] = false;
-        setDisabledButtons(updatedDisabledButtons);
-        setProgress(value);
-    };
     //Go back to previous page
     const GoBackPressed =()=>{
-        navigate(-2);
+      if(PanneData?.Progres != 0){
+        navigate('/liste_des_pannes');
+      }else{
+        navigate(-1);
+      }
     }
+    const handleConfirm = (value) => {
+      // Handle the "Confirmer" button click based on the selected value
+      UpdatePanne(value);
+    };
   return (
     <>
         <MyNavBar  act={act} setAct={setAct} />
@@ -225,11 +226,11 @@ const DetailsPanneSav = () => {
             </div>
             <div className=' progress-toogle'>
                 <div className='left-toogle'>
-                  <Tooglebtn label='En attente de depot' value={1} onChange={handleProgressChange} disabled={disabledButtons[0]} />
-                  <Tooglebtn label='En reparation au centre' value={2} onChange={handleProgressChange} disabled={disabledButtons[1]} />
-                  <Tooglebtn label='Produit reparé' value={3} onChange={handleProgressChange} disabled={disabledButtons[2]} />
-                  <Tooglebtn label='En attente de pickup' value={4} onChange={handleProgressChange} disabled={disabledButtons[3]} />
-                  <Tooglebtn label='Livré au client' value={5} onChange={handleProgressChange} disabled={disabledButtons[4]} />
+                  <Tooglebtn label='En attente de depot' value={1} onChange={handleProgressChange} disabled={disabledButtons[0]} onConfirm={handleConfirm}/>
+                  <Tooglebtn label='En reparation au centre' value={2} onChange={handleProgressChange} disabled={disabledButtons[1]} onConfirm={handleConfirm}/>
+                  <Tooglebtn label='Produit reparé' value={3} onChange={handleProgressChange} disabled={disabledButtons[2]} onConfirm={handleConfirm}/>
+                  <Tooglebtn label='En attente de pickup' value={4} onChange={handleProgressChange} disabled={disabledButtons[3]} onConfirm={handleConfirm}/>
+                  <Tooglebtn label='Livré au client' value={5} onChange={handleProgressChange} disabled={disabledButtons[4]} onConfirm={handleConfirm}/>
 
                 </div>
                 <div className='right-toogle'>

@@ -20,7 +20,7 @@ function UserRow(User){
   const DeleteUser = async () =>{
     
 
-    const reponse = await fetch("http://localhost:8000/User", {
+    const reponse = await fetch("https://streamsav.onrender.com/User", {
       method: "DELETE",
       headers: {
         "content-type": "application/json",
@@ -56,7 +56,6 @@ function UserRow(User){
   };
   return (
     <>
-    
       <tr className="table-nouveau-ne-ligne">
         <td className="table-patients-td-nom">{User.User.Nom}{' '}{User.User.Prenom}</td>
         <td className="table-patients-td-annee">{User.User.Email}</td>
@@ -71,9 +70,7 @@ function UserRow(User){
             <Deletebutton DeleteUser={handleClickOpen}/>
           </td>
         }
-        <ToastContainer />
-      </tr>
-      <div>
+        <div>
           <Dialog
             open={open}
             onClose={handleClose}
@@ -81,7 +78,7 @@ function UserRow(User){
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              {"Etes-vous sure de vouloir supprimer "}{User.User.Nom}{' '}{User.User.Prenom}{' ?'}
+              {"Confirmez-vous la suppression de l'utilisateur "}{User.User.Nom}{' '}{User.User.Prenom}{' ?'}
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
@@ -89,18 +86,15 @@ function UserRow(User){
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleClose} 
-              
-              
-              >Annuller</Button>
-              <Button onClick={DeleteUser} autoFocus
-             
-              >
-                Oui, Supprimer
+              <Button onClick={handleClose}>Annuller</Button>
+              <Button onClick={DeleteUser} autoFocus>
+                Confirmer
               </Button>
             </DialogActions>
-          </Dialog>`
-      </div>
+          </Dialog>
+        </div>
+        <ToastContainer />
+      </tr>
     </>
   )
 }

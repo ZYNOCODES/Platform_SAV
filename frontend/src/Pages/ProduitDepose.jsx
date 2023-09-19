@@ -43,7 +43,7 @@ const ProduitDepose = () => {
     useEffect(() => {
         const fetchPanneData = async () => {
         try {
-            const response = await fetch(`http://localhost:8000/Pannes/${id}`, {
+            const response = await fetch(`https://streamsav.onrender.com/Pannes/${id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -69,7 +69,7 @@ const ProduitDepose = () => {
     }, [id, PanneData, user?.token, navigate]);
     const createAndDownloadPdf = async () => {
         try {
-            const response = await fetch('http://localhost:8000/EmailGenerator/createPDF', {
+            const response = await fetch('https://streamsav.onrender.com/EmailGenerator/createPDF', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -93,7 +93,7 @@ const ProduitDepose = () => {
     
             const uniqueFilename = await response.text();
     
-            const pdfResponse = await fetch(`http://localhost:8000/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
+            const pdfResponse = await fetch(`https://streamsav.onrender.com/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/pdf'
@@ -114,7 +114,7 @@ const ProduitDepose = () => {
         }
     }
     const UpdatePanne = async () =>{
-        const reponse = await fetch(`http://localhost:8000/Pannes/${id}`, {
+        const reponse = await fetch(`https://streamsav.onrender.com/Pannes/${id}`, {
           method: "PATCH",
           headers: {
             "content-type": "application/json",
@@ -181,7 +181,7 @@ const ProduitDepose = () => {
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              {"Etes-vous sure de vouloir deposer ce produit ? "}
+              {"Confirmez-vous le dépôt de ce produit ? "}
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
@@ -196,10 +196,10 @@ const ProduitDepose = () => {
               <Button onClick={UpdatePanne} autoFocus
              
               >
-                Oui, Deposer
+                Confirmer
               </Button>
             </DialogActions>
-          </Dialog>`
+          </Dialog>
       </div>
     </>
   )

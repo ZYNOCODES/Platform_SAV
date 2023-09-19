@@ -19,7 +19,7 @@ const Login = () => {
   async function submitLogin(e) {
     e.preventDefault();
     setIsLoading(true);
-    const reponse = await fetch("http://localhost:8000/User/login", {
+    const reponse = await fetch("https://streamsav.onrender.com/User/login", {
       method: "POST",
       headers: {
         "content-type": "application/json",

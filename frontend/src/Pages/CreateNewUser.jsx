@@ -21,7 +21,6 @@ import Button from '@mui/material/Button';
 
 const CreateNewUser = () => {
   const [act, setAct] = useState(false);
-  const BASEURL = process.env.URL_BASE;
   const notifyFailed = (message) => toast.error(message);
   const notifySuccess = (message) => toast.success(message);
   const navigate = useNavigate();
@@ -34,7 +33,7 @@ const CreateNewUser = () => {
   const [Telephone, setTelephone] = useState("");
   const [Role, setRole] = useState("");
   const [Centre, setCentre] = useState("");
-  console.log(BASEURL);
+
   const handleEmailInputChange = (newValue) => {
     setEmail(newValue);
   };
@@ -76,7 +75,7 @@ const CreateNewUser = () => {
   
   async function submitSignup(e) {
     e.preventDefault();
-    const reponse = await fetch("http://localhost:8000/User/signup", {
+    const reponse = await fetch("https://streamsav.onrender.com/User/signup", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -141,7 +140,7 @@ const CreateNewUser = () => {
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              {"Etes-vous sure de vouloir Ajouter un nouveau utilisateur ?"}
+              {"Confirmez-vous l'ajout d'un nouvel utilisateur ?"}
             </DialogTitle>
            
             <DialogActions>
@@ -152,7 +151,7 @@ const CreateNewUser = () => {
               <Button onClick={submitSignup} autoFocus
              
               >
-                Oui, Ajouter
+                Confirmer
               </Button>
             </DialogActions>
           </Dialog>`

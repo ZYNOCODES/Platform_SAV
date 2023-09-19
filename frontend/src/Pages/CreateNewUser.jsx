@@ -21,7 +21,7 @@ import Button from '@mui/material/Button';
 
 const CreateNewUser = () => {
   const [act, setAct] = useState(false);
-
+  const BASEURL = process.env.URL_BASE;
   const notifyFailed = (message) => toast.error(message);
   const notifySuccess = (message) => toast.success(message);
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ const CreateNewUser = () => {
   const [Telephone, setTelephone] = useState("");
   const [Role, setRole] = useState("");
   const [Centre, setCentre] = useState("");
-
+  console.log(BASEURL);
   const handleEmailInputChange = (newValue) => {
     setEmail(newValue);
   };

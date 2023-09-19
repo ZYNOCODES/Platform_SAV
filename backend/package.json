@@ -29,5 +29,8 @@
     "sequelize": "^6.32.1",
     "uuid": "^9.0.0",
     "validator": "^13.11.0"
+  },
+  "engines": {
+    "node": ">=14 <15"
   }
 }

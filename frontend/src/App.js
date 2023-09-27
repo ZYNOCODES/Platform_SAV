@@ -15,6 +15,7 @@ import DetailsPanneSav from './Pages/DetailsPanneSav';
 import CreateNewUser from './Pages/CreateNewUser';
 import UpdateUser from './Pages/UpdateUser';
 import Dashboard from './Pages/dashboard';
+import OuvrirUnTicket from './Pages/OuvrirUnTicket';
 function App() {
   const { user } = useAuthContext();
 
@@ -27,6 +28,7 @@ function App() {
           <Navigate to="/Dashboard" /> : <Navigate to="/liste_des_pannes" />)} />
           <Route path='/Dashboard' element={user ? <Dashboard/> : <Navigate to="/" />} />
           <Route path='/liste_des_pannes' element={user ? <PanneList /> : <Navigate to="/" />} />
+          <Route path='/OuvrirTicket' element={user ? <OuvrirUnTicket /> : <Navigate to="/" />} />
           <Route path='/PannesLivree' element={user ? <PanneListLivrees /> : <Navigate to="/" />} />
           <Route path='/Utilisateurs' element={user ? <Users/> : <Navigate to="/" />}/>
           <Route path='/Details/:id' element={user ? <DetailsPanne /> : <Navigate to="/" />} />

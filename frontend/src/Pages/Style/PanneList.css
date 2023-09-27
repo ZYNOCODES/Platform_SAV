@@ -1,0 +1,7 @@
+
+@media (max-width: 768px){
+    .patient-table-header{
+        display: flex;
+        flex-direction: column;
+    }
+}

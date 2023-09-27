@@ -9,7 +9,7 @@ import MyNavBar from "../Components/navBar";
 import { useAuthContext } from '../hooks/useAuthContext';
 import CostumSelectCentre from '../Components/Form/CostumSelectCentre';
 import ProgressionSelect from '../Components/Form/ProgressionSelect';
-
+import './Style/PanneList.css'
 
 export const PanneList = () => {
     const [add, setAdd] = useState(false);

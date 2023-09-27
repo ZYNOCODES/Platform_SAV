@@ -1,4 +1,4 @@
-import { BiSolidDashboard } from "react-icons/bi";
+import { BiSolidDashboard,BiSolidAddToQueue} from "react-icons/bi";
 import {ImList2} from  "react-icons/im"
 import {BsFillArchiveFill} from "react-icons/bs"
 import { FaElevator } from "react-icons/fa6";
@@ -45,6 +45,20 @@ export default function MyAsideBar() {
               </div>
             </NavLink>
           </li>
+
+          <li className="mb-6">
+            <NavLink to="/OuvrirTicket">
+            <div
+                className={`link flex items-center justify-items-center ${
+                  location.pathname === "/OuvrirTicket" ? "aside-item-active" : ""
+                }`}
+              >
+                <BiSolidAddToQueue className="w-6 h-6 ml-2" />
+                <span className="title">Ouvrir Un Ticket</span>
+              </div>
+            </NavLink>
+          </li>
+
           <li className="mb-6">
             <NavLink to="/PannesLivree">
             <div
@@ -57,6 +71,8 @@ export default function MyAsideBar() {
               </div>
             </NavLink>
           </li>
+
+          
           {user && (user.Role === "Admin" || user.Role === "DRCentre") &&(
             <li className="mb-6">
             <NavLink to="/Utilisateurs">

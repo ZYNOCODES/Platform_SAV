@@ -157,11 +157,9 @@ const OuvrirUnTicket = () => {
       
           const json = await reponse.json();
           if (!reponse.ok) {
-              handleClose();
               notifyFailed(json.message);
           }
           if (reponse.ok) {
-            handleClose();
             notifySuccess(json.message);
           }
     };

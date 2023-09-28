@@ -97,9 +97,6 @@ const CreateNewUser = () => {
       Redirect();
     }
   }
-  
-
-  
   return (
     <>
         <MyNavBar  act={act} setAct={setAct} />

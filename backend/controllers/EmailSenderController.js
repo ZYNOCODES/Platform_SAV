@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 const validator = require('validator');
 
 const SendEmail = async (req, res) => {
-    const { fromAddress, FullName, PhoneNumber, EmailDescription } = req.body;
+    const { fromAddress, FullName, PhoneNumber, EmailDescription, MessageType } = req.body;
     try{
         if(!fromAddress || !FullName || !PhoneNumber || !EmailDescription 
             || validator.isEmpty(fromAddress) || validator.isEmpty(FullName) || validator.isEmpty(PhoneNumber) 
@@ -27,6 +27,7 @@ const SendEmail = async (req, res) => {
         let emailBody = `
             <div class="EmailSenderContainer">
                 <h1>Contact Information</h1>
+                <p><strong>${MessageType}</strong></p>
                 <p><strong>Full Name:</strong> ${FullName}</p>
                 <p><strong>Email:</strong> ${fromAddress}</p>
                 <p><strong>Phone Number:</strong> ${PhoneNumber}</p>

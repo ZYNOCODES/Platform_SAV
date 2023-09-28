@@ -20,6 +20,10 @@ export const PanneList = () => {
     const [datedepot, setdatedepot] = useState();
     const [ProduitenPanne, setProduitenPanne] = useState([]);
     const { user } = useAuthContext();
+    const [currentPage, setCurrentPage] = useState(1);
+    const rowsPerPage = 15;
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
 
     const handleCentreInputChange = (newValue) => {
       setcentredepot(newValue);
@@ -59,6 +63,17 @@ export const PanneList = () => {
     
       fetchPannesData();
     }, [user?.Role, user.CentreDepot, ProduitenPanne, user?.Centre, user?.token]);
+    const handleNextPage = () => {
+      if (currentPage < Math.ceil(ProduitenPanne.length / rowsPerPage)) {
+        setCurrentPage(currentPage + 1);
+      }
+    };
+    
+    const handlePrevPage = () => {
+      if (currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
+    };
   return (
     <>
     <MyNavBar  act={act} setAct={setAct} />
@@ -95,16 +110,25 @@ export const PanneList = () => {
             
           </div>
           <div className="table-patients">
+          <div className="pagination-buttons">
+            <button onClick={handlePrevPage} disabled={currentPage === 1}>
+              Previous
+            </button>
+            <button onClick={handleNextPage} disabled={currentPage === Math.ceil(ProduitenPanne.length / rowsPerPage)}>
+              Next
+            </button>
+          </div>
             <table>
               <tr className="table-patients-header">
                 <td className="table-patients-header-nom">Id</td>
                 <td className="table-patients-header-annee">Nom Complet</td>
                 <td className="table-patients-header-annee">Date</td>
                 <td className="table-patients-header-willaya">Centre</td>
-                <td className="table-patients-header-progress">TypePanne</td>
+                <td className="table-patients-header-progress">Type de panne</td>
+                <td className="table-patients-header-progress">Statue de garantie</td>
                 <td className="table-patients-header-button"></td>
               </tr>
-              {ProduitenPanne?.filter((item) => {
+              {ProduitenPanne?.slice(startIndex, endIndex).filter((item) => {
                 if (
                   (search.toLowerCase() === "" ||
                     item.id.toString().includes(search.toLowerCase()) ||

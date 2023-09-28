@@ -36,6 +36,7 @@ function TablePanneRow ({Panne}){
       <td className="table-patients-td-annee">{Panne.DateDepot}</td>
       <td className="table-patients-td-willaya">{Panne.CentreDepot}</td>
       <td className="table-patients-td-region">{Panne.TypePanne}</td>
+      <td className="table-patients-td-region">{Panne?.StatueGarantie}</td>
       <td className="table-patients-td table-patient-td-button">
         <VoirButton Redirect={Redirect} red={shouldHighlightRedRow}/>
       </td>

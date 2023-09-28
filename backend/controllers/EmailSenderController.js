@@ -27,7 +27,7 @@ const SendEmail = async (req, res) => {
         let emailBody = `
             <div class="EmailSenderContainer">
                 <h1>Contact Information</h1>
-                <p><strong>${MessageType}</strong></p>
+                <p><strong>Type: ${MessageType}</strong></p>
                 <p><strong>Full Name:</strong> ${FullName}</p>
                 <p><strong>Email:</strong> ${fromAddress}</p>
                 <p><strong>Phone Number:</strong> ${PhoneNumber}</p>

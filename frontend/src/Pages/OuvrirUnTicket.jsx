@@ -71,7 +71,7 @@ const OuvrirUnTicket = () => {
     };
     const createAndDownloadPdf = async () => {
         try {
-            const response = await fetch('http://localhost:8000/EmailGenerator/createPDF', {
+            const response = await fetch('http://localhost:8000/EmailGenerator/createPDF/BonV1', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

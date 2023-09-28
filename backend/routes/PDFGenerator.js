@@ -7,6 +7,6 @@ const {
 const router = express.Router();
 
 router.get('/fetchPDF', PDFSender);
-router.post('/createPDF', PDFGenerator);
+router.post('/createPDF/:BonDepot', PDFGenerator);
 
 module.exports = router;

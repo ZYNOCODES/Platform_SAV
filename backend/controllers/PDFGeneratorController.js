@@ -1,9 +1,10 @@
 const pdf = require('html-pdf');
-const pdfTemplate = require('../documents/BonV1');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 
 const PDFGenerator = async (req, res) => {
+    const { BonDepot } = req.params
+    const pdfTemplate = require(`../documents/${BonDepot}`);
     try {
         const uniqueFilename = `${uuidv4()}.pdf`;
         const filePath = path.join(__dirname, '..', 'files', uniqueFilename);

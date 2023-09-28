@@ -57,6 +57,10 @@ const Panne = sequelize.define('pannes', {
     allowNull: true,
     defaultValue: 0,
   },
+  StatueGarantie:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   image: {
     type: DataTypes.STRING,
     allowNull: true,

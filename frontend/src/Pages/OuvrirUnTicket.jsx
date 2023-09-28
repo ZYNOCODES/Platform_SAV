@@ -71,7 +71,7 @@ const OuvrirUnTicket = () => {
     };
     const createAndDownloadPdf = async () => {
         try {
-            const response = await fetch('http://localhost:8000/EmailGenerator/createPDF/BonV1', {
+            const response = await fetch('https://streamsav.onrender.com/EmailGenerator/createPDF/BonV1', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -95,7 +95,7 @@ const OuvrirUnTicket = () => {
     
             const uniqueFilename = await response.text();
     
-            const pdfResponse = await fetch(`http://localhost:8000/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
+            const pdfResponse = await fetch(`https://streamsav.onrender.com/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/pdf'
@@ -117,7 +117,7 @@ const OuvrirUnTicket = () => {
     }
     async function handleCreateNewPanneWithPDF(e) {
         e.preventDefault();
-        const reponse = await fetch("http://localhost:8000/Pannes", {
+        const reponse = await fetch("https://streamsav.onrender.com/Pannes", {
             method: "POST",
             headers: {
               "content-type": "application/json",
@@ -143,7 +143,7 @@ const OuvrirUnTicket = () => {
     };
     async function handleCreateNewPanneNoPDF(e) {
         e.preventDefault();
-        const reponse = await fetch("http://localhost:8000/Pannes", {
+        const reponse = await fetch("https://streamsav.onrender.com/Pannes", {
             method: "POST",
             headers: {
               "content-type": "application/json",

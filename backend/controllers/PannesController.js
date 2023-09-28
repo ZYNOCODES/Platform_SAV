@@ -267,6 +267,27 @@ const Update = async (req, res) => {
     res.status(500).send('Error updating panne');
   }
 }
+const UpdateGarantie = async (req, res) => {
+// Handle request to update a Panne
+const { id } = req.params;
+const { StatueGarantie } = req.body;
+try {
+  //get user by id
+  const panne = await Panne.findByPk(id);
+  //check if panne exist
+  if (!panne) {
+      return res.status(404).json({ error: 'panne not found' });
+  }
+  // assign panne new values
+  panne.StatueGarantie = StatueGarantie;
+  // save panne
+  await panne.save();
+  res.status(200).json({message: 'success'});
+} catch (error) {
+  console.error(error);
+  res.status(500).send('Error updating panne');
+}
+}
 const Remove = async (req, res) => {
   // Handle request to delete a Panne
   const { id } = req.params;
@@ -889,5 +910,6 @@ module.exports = {
   GetTop3Product,
   GetTop3Pannes,
   UplaodIMG,
-  upload
+  upload,
+  UpdateGarantie
 };

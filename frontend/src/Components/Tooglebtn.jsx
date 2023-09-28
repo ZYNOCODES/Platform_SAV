@@ -66,14 +66,8 @@ const Tooglebtn = ({ label, value, onChange, disabled, onConfirm }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} 
-          
-          
-          >Annuller</Button>
-          <Button onClick={handleChange} autoFocus
-          >
-            Confirmer
-          </Button>
+          <Button onClick={handleClose}> Annuller </Button>
+          <Button onClick={handleChange} autoFocus> Confirmer </Button>
         </DialogActions>
       </Dialog>
       </div>

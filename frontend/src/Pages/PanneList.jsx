@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import MyAsideBarActive from '../Components/asideBarActive'
+import {IoArrowBackCircleSharp, IoArrowForwardCircle} from  "react-icons/io5"
 import { useNavigate } from 'react-router-dom';
 import { useState} from "react";
 import TablePanneRow from '../Components/Table/TablePanneRow';
@@ -110,14 +111,6 @@ export const PanneList = () => {
             
           </div>
           <div className="table-patients">
-          <div className="pagination-buttons">
-            <button onClick={handlePrevPage} disabled={currentPage === 1}>
-              Previous
-            </button>
-            <button onClick={handleNextPage} disabled={currentPage === Math.ceil(ProduitenPanne.length / rowsPerPage)}>
-              Next
-            </button>
-          </div>
             <table>
               <tr className="table-patients-header">
                 <td className="table-patients-header-nom">Id</td>
@@ -126,6 +119,16 @@ export const PanneList = () => {
                 <td className="table-patients-header-willaya">Centre</td>
                 <td className="table-patients-header-progress">Type de panne</td>
                 <td className="table-patients-header-progress">Statue de garantie</td>
+                <td className="table-patients-header-button">
+                  <div className="pagination-buttons">
+                    <button onClick={handlePrevPage} disabled={currentPage === 1}>
+                      <IoArrowBackCircleSharp />
+                    </button>
+                    <button onClick={handleNextPage} disabled={currentPage === Math.ceil(ProduitenPanne.length / rowsPerPage)}>
+                      <IoArrowForwardCircle />
+                    </button>
+                  </div>
+                </td>
                 <td className="table-patients-header-button"></td>
               </tr>
               {ProduitenPanne?.slice(startIndex, endIndex).filter((item) => {

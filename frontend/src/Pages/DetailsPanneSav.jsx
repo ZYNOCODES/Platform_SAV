@@ -226,6 +226,26 @@ const DetailsPanneSav = () => {
       }
     }
   }, [PanneData?.Progres]);
+  // handle checkbox change according to the PanneData?.StatueGarantie
+  useEffect(() => {
+    if (PanneData?.StatueGarantie && PanneData.StatueGarantie === 'Sous Garantie') {
+      setSousGarantieChecked(true);
+      setHorsGarantieChecked(false);
+      setSousReserveChecked(false);
+    } else if (PanneData?.StatueGarantie && PanneData.StatueGarantie === 'Hors Garantie') {
+      setSousGarantieChecked(false);
+      setHorsGarantieChecked(true);
+      setSousReserveChecked(false);
+    } else if (PanneData?.StatueGarantie && PanneData.StatueGarantie === 'Sous Reserve') {
+      setSousGarantieChecked(false);
+      setHorsGarantieChecked(false);
+      setSousReserveChecked(true);
+    } else {
+      setSousGarantieChecked(false);
+      setHorsGarantieChecked(false);
+      setSousReserveChecked(false);
+    }
+  }, [PanneData?.StatueGarantie]);
   //Go back to previous page
   const GoBackPressed = () => {
     if (PanneData?.Progres != 0) {
@@ -252,13 +272,13 @@ const DetailsPanneSav = () => {
   const handleChange = () => {
     if (selectedCheckboxLabel === 'Sous Garantie') {
       setSousGarantieChecked(true);
+      setOpenDialog(false);
       UpdatePanneGarantie('Sous Garantie');
     } else if (selectedCheckboxLabel === 'Hors Garantie') {
       setHorsGarantieChecked(true);
+      setOpenDialog(false);
       UpdatePanneGarantie('Hors Garantie');
     }
-
-    setOpenDialog(false);
   };
   // handle sous rederve check box change
   const handleSousReserveChange = () => {
@@ -351,7 +371,7 @@ const DetailsPanneSav = () => {
           </form>
         </div>
         <div className="pannedetails-title progress">
-          <h3>Statue Garentie :</h3>
+          <h3>Statue Garantie :</h3>
         </div>
         <div className="STATUEG">
         <div>

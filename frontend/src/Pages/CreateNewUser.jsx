@@ -74,6 +74,7 @@ const CreateNewUser = () => {
   }
   
   async function submitSignup(e) {
+    handleClose();
     e.preventDefault();
     const reponse = await fetch("https://streamsav.onrender.com/User/signup", {
       method: "POST",
@@ -93,7 +94,6 @@ const CreateNewUser = () => {
     }
     if (reponse.ok) {
       notifySuccess(json.message);
-      handleClose();
       Redirect();
     }
   }

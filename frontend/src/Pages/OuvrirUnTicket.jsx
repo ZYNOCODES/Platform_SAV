@@ -116,6 +116,7 @@ const OuvrirUnTicket = () => {
         }
     }
     async function handleCreateNewPanneWithPDF(e) {
+        handleClose();
         e.preventDefault();
         const reponse = await fetch("https://streamsav.onrender.com/Pannes", {
             method: "POST",
@@ -129,19 +130,17 @@ const OuvrirUnTicket = () => {
                 CentreDepot, DateDepot
             }),
           });
-      
           const json = await reponse.json();
           if (!reponse.ok) {
-              handleClose();
               notifyFailed(json.message);
           }
           if (reponse.ok) {
             createAndDownloadPdf();
-            handleClose();
             notifySuccess(json.message);
           }
     };
     async function handleCreateNewPanneNoPDF(e) {
+        handleClose();
         e.preventDefault();
         const reponse = await fetch("https://streamsav.onrender.com/Pannes", {
             method: "POST",

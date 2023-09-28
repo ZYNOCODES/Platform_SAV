@@ -18,8 +18,7 @@ function UserRow(User){
   const { user } = useAuthContext();
 
   const DeleteUser = async () =>{
-    
-
+    handleClose();
     const reponse = await fetch("https://streamsav.onrender.com/User", {
       method: "DELETE",
       headers: {
@@ -37,7 +36,6 @@ function UserRow(User){
     }
     if (reponse.ok) {
       notifySuccess(json.message);
-      handleClose();
     }
   }
   const navigate = useNavigate();

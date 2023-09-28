@@ -114,6 +114,7 @@ const ProduitDepose = () => {
         }
     }
     const UpdatePanne = async () =>{
+        handleClose();
         const reponse = await fetch(`https://streamsav.onrender.com/Pannes/${id}`, {
           method: "PATCH",
           headers: {

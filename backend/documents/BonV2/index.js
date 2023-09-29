@@ -3,7 +3,7 @@ module.exports = ({ Nom, Prenom, Email, Telephone,
    CentreDepot, DateDepot }) => {
     const today = new Date();
 return `
-      <!DOCTYPE html>
+      <!doctype html>
       <html>
          <head>
             <meta charset="utf-8">

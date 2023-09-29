@@ -11,7 +11,7 @@ const WilayaSelect = (props) => {
   useEffect(() => {
     const fetchWillayaData = async () => {
       try {
-        const response = await fetch('http://localhost:8000/Willaya', {
+        const response = await fetch('https://streamsav.onrender.com/Willaya', {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

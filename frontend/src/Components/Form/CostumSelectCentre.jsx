@@ -74,10 +74,10 @@ const CostumSelectCentre = (props) => {
           }
           </>
         }
-        {user && user.Role !== 'DRCentre' &&
+        {user && user.Role === 'Admin' &&
           <>
             <option value='All'>
-              All
+              Sélectionné le centre
             </option>
             {SAV.map((sav) => (
               <option key={sav?.id} value={sav?.Region}>
@@ -91,7 +91,11 @@ const CostumSelectCentre = (props) => {
             ))}
           </>           
         }
-        
+        {user && user.Role === 'SAV' &&
+          <option value={user.Centre}>
+            {user.Centre}
+          </option>   
+        }
       </select>
     </div>
     

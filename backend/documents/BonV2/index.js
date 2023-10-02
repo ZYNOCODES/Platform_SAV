@@ -131,7 +131,7 @@ return `
                   <div class="Line1">
                      <div class="BonInfos">
                         <h3>
-                              SAV: ${CentreDepot}
+                              SAV ${CentreDepot}
                         </h3>
                         <h3>
                               Reference: ${ReferanceProduit}
@@ -220,7 +220,7 @@ return `
                               Historique du produit
                         </h3>
                         <div class="informations-result">
-                              <h3 class="informations-result-text"></h3>
+                              <h3 class="informations-result-text">${TypePanne}</h3>
                               <h3 class="title-center">
                                  ...........................................................................................................................................................
                               </h3>

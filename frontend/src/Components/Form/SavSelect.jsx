@@ -1,3 +1,4 @@
+import { useAuthContext } from '../../hooks/useAuthContext';
 import './FormInput.css'
 import React, { useEffect, useState } from 'react'
 
@@ -9,6 +10,7 @@ const SavSelect = (props) => {
   };
   const [SAV, setSAV] = useState([]);
   const [Agent, setAgent] = useState([]);
+  const { user } = useAuthContext();
 
   useEffect(() => {
     const fetchSAVData = async () => {
@@ -63,16 +65,25 @@ const SavSelect = (props) => {
         <option value=''>
             Sélectionné le centre de depot
         </option>
-        {SAV.map((sav) => (
-          <option key={sav?.id} value={sav?.Region}>
-              {sav?.Region}
+        {user && user.Role === 'SAV' ? (
+          <option value={user.Centre}>
+            {user.Centre}
           </option>
-        ))}      
-        {Agent.map((agent) => (
-          <option key={agent?.id} value={agent?.Region}>
-            {agent?.Region}
-          </option>
-        ))}    
+        ) : (
+          <>
+            {SAV.map((sav) => (
+            <option key={sav?.id} value={sav?.Region}>
+                {sav?.Region}
+            </option>
+            ))}      
+            {Agent.map((agent) => (
+              <option key={agent?.id} value={agent?.Region}>
+                {agent?.Region}
+              </option>
+            ))}
+          </>    
+        )}
+        
 
       </select>
     </div>

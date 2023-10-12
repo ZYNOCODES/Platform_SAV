@@ -51,7 +51,7 @@ const Login = async (req, res) => {
 
 //signup
 const Signup = async (req, res) => {
-    const { Email, Password, ResetPassword, Nom, Prenom, Telephone, Role, Centre} = req.body;
+    const { Email, Password, ResetPassword, Nom, Prenom, Telephone, Role, Centre, userID} = req.body;
     try{
         // hash password
         const salt = await bcrypt.genSalt(10);
@@ -100,7 +100,7 @@ const Signup = async (req, res) => {
                 return res.status(400).json({ message: "Utilisateur non enregistré" });
             }else{
                 await Transaction.create({
-                    UserID : user.id , Action : 'l\'utilisateur deconnecté'
+                    UserID : userID , Action : 'Ajouter un nouvel utilisateur'
                   }).then(async () => {
                     console.log("Transaction created successfully");
                   }).catch((error) => console.log(error));
@@ -263,7 +263,7 @@ const UpdateUser = async (req, res) => {
         // save user
         await user.save().then(async () => {
             await Transaction.create({
-                UserID : userID , Action : `met à jour le profil de l'utilisateur avec ID = ${user.id}`
+                UserID : userID , Action : `met à jour le profil de l'utilisateur avec ID = ${id}`
               }).then(async () => {
                 console.log("Transaction created successfully");
               }).catch((error) => console.log(error));

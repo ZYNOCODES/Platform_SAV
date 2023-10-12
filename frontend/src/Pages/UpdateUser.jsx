@@ -92,7 +92,8 @@ const UpdateUser = () => {
         Role : Role,
         Centre : Centre,
         Password : Password,
-        ResetPassword : ResetPassword
+        ResetPassword : ResetPassword,
+        userID: user?.id,
       }),
     });
 

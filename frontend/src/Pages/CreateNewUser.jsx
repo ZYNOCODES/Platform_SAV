@@ -83,7 +83,7 @@ const CreateNewUser = () => {
         Authorization: `Bearer ${user?.token}`,
       },
       body: JSON.stringify({ 
-        Email, Password, Nom, Prenom, Telephone, Role, Centre, ResetPassword
+        Email, Password, Nom, Prenom, Telephone, Role, Centre, ResetPassword, userID: user?.id
       }),
     });
 

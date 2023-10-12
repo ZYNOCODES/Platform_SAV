@@ -25,7 +25,7 @@ function UserRow(User){
         "content-type": "application/json",
       },
       body: JSON.stringify({ 
-        id: User.User.id
+        id: User.User.id, userID: user?.id,
       }),
     });
 

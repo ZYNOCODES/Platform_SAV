@@ -55,6 +55,7 @@ const DetailsPanneSav = () => {
     const formData = new FormData();
     formData.append("image", image);
     formData.append("id", id);
+    formData.append("userID", user?.id);
 
     const result = await axios.post(
       "https://streamsav.onrender.com/Pannes/IMG",
@@ -125,14 +126,14 @@ const DetailsPanneSav = () => {
 
     fetchAllPannesDataOfProduct();
   }, [id, user?.token, PanneData?.ReferanceProduit, ProductData]);
-  const UpdatePanne = async (val) => {
+  const UpdatePanne = async (val, Act) => {
     const reponse = await fetch(`https://streamsav.onrender.com/Pannes/${id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        progres: val,
+        progres: val,userID: user?.id, action: `Mettre à jour la Progression avec ${Act} pour la panne ID= ${id}`
       }),
     });
 
@@ -143,19 +144,15 @@ const DetailsPanneSav = () => {
     }
     if (reponse.ok) {
       if (val === 1) {
-        notifySuccess("Panne en attente de depot a été vérifiée avec succès.");
+        notifySuccess(Act);
       } else if (val === 2) {
-        notifySuccess(
-          "Panne en attente de réparation a été vérifiée avec succès."
-        );
+        notifySuccess(Act);
       } else if (val === 3) {
-        notifySuccess(
-          "Panne En reparation au centre a été vérifiée avec succès."
-        );
+        notifySuccess(Act);
       } else if (val === 4) {
-        notifySuccess("Panne en attente de pickup a été vérifiée avec succès.");
+        notifySuccess(Act);
       } else if (val === 5) {
-        notifySuccess("Panne livrée a été vérifiée avec succès.");
+        notifySuccess(Act);
       }
     }
   };
@@ -166,7 +163,7 @@ const DetailsPanneSav = () => {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        StatueGarantie: val,
+        StatueGarantie: val,userID: user?.id, action: `Mettre à jour le Statut Garantie avec ${val} pour la panne ID= ${id}`
       }),
     });
 
@@ -194,7 +191,21 @@ const DetailsPanneSav = () => {
       setDisabledButtons(updatedDisabledButtons);
       setProgress(value);
       if (!disabledButtons[value - 1]) {
-        UpdatePanne(value);
+        if (value === 1) {
+          UpdatePanne(value, "Panne en attente de depot a été vérifiée avec succès.");
+        } else if (value === 2) {
+          UpdatePanne(value, "Panne en attente de réparation a été vérifiée avec succès.");
+
+        } else if (value === 3) {
+          UpdatePanne(value, "Panne En reparation au centre a été vérifiée avec succès.");
+
+        } else if (value === 4) {
+          UpdatePanne(value, "Panne en attente de pickup a été vérifiée avec succès.");
+        } else if (value === 5) {
+          UpdatePanne(value, "Panne livrée a été vérifiée avec succès.");
+        }else{
+          UpdatePanne(value)
+        }
       } else {
         UpdatePanne(1);
       }
@@ -442,14 +453,14 @@ const DetailsPanneSav = () => {
               onConfirm={handleConfirm}
             />
             <Tooglebtn
-              label="En reparation au centre"
+              label="en attente de réparation"
               value={2}
               onChange={handleProgressChange}
               disabled={disabledButtons[1]}
               onConfirm={handleConfirm}
             />
             <Tooglebtn
-              label="Produit reparé"
+              label="En reparation au centre"
               value={3}
               onChange={handleProgressChange}
               disabled={disabledButtons[2]}
@@ -499,12 +510,7 @@ const DetailsPanneSav = () => {
               ) : (
                 <img
                   src={imageframe}
-                  style={{
-                    maxWidth: "350px",
-                    width: "100%",
-                    height: "250px",
-                    marginTop: "30px",
-                  }}
+                  style={{maxWidth: "350px",width: "100%",height: "250px",marginTop: "30px",}}
                 />
               )}
             </div>

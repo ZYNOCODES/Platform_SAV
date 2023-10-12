@@ -360,6 +360,7 @@ const UplaodIMG = async (req, res) => {
       return res.status(400).json({message: 'No file uploaded'});
     }
     const image = req.file.filename;
+    const userID = req.body.userID;
     try{
         const panne = await Panne.findByPk(id);
         if (!panne) {
@@ -368,7 +369,7 @@ const UplaodIMG = async (req, res) => {
         panne.image = image;
         await panne.save().then(async () => {
           await Transaction.create({
-            UserID : userID , Action : 'l\'utilisateur joindre une image'
+            UserID : userID , Action : 'joindre une image pour la panne ID= ' + id
           }).then(async () => {
             console.log("Transaction created successfully");
           }).catch((error) => console.log(error));

@@ -122,10 +122,10 @@ export const PanneList = () => {
                 <td className="table-patients-header-button">
                   <div className="pagination-buttons">
                     <button onClick={handlePrevPage} disabled={currentPage === 1}>
-                      <IoArrowBackCircleSharp />
+                      <IoArrowBackCircleSharp className='next-back-row-table'/>
                     </button>
                     <button onClick={handleNextPage} disabled={currentPage === Math.ceil(ProduitenPanne.length / rowsPerPage)}>
-                      <IoArrowForwardCircle />
+                      <IoArrowForwardCircle className='next-back-row-table'/>
                     </button>
                   </div>
                 </td>
@@ -137,7 +137,6 @@ export const PanneList = () => {
                     item.id.toString().includes(search.toLowerCase()) ||
                     item.Nom.toLowerCase().includes(search.toLowerCase()) ||
                     item.Prenom.toLowerCase().includes(search.toLowerCase())||
-                    item.DateDepot.toLowerCase().includes(search.toLowerCase())||
                     item.Progres.toString().includes(search.toLowerCase())||
                     item.CentreDepot.toLowerCase().includes(search.toLowerCase())||
                     item.ReferanceProduit.toLowerCase().includes(search.toLowerCase())||

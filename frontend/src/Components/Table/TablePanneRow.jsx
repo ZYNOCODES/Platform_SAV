@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import VoirButton from '../Buttons/buttonVoir';
 
 import { useState} from 'react';
@@ -9,12 +9,13 @@ import { useAuthContext } from '../../hooks/useAuthContext';
 function TablePanneRow ({Panne}){
   const { user } = useAuthContext();
   const navigate = useNavigate();
-  const [databaseDate, setdatabaseDate] = useState(new Date(Panne.DateDepot));
   const [currentDate, setcurrentDate] = useState(new Date());
-  const calculateDaysDifference = () => {
-    const timeDifference = currentDate.getTime() - databaseDate.getTime();
-    const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
-    return daysDifference;
+  const calculateDaysDifference = (databaseDate) => {
+    if (databaseDate instanceof Date && !isNaN(databaseDate)) {
+      const timeDifference = currentDate.getTime() - databaseDate.getTime();
+      const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
+      return daysDifference;
+    }
   };
   const Redirect =()=>{
     if(Panne.Progres === 0 && user?.Role === "SAV"){
@@ -25,8 +26,12 @@ function TablePanneRow ({Panne}){
       navigate(`/Details/${Panne.id}`)
     }
   }
-  const shouldHighlightRedRow = calculateDaysDifference() > 3 && Panne.Progres < 3;
-  const shouldHighlightOrangeRow = calculateDaysDifference() > 3 && Panne.Progres >= 3 && Panne.Progres < 5;
+  var shouldHighlightRedRow = calculateDaysDifference(new Date(Panne.DateDepot)) > 3 && Panne.Progres < 3;
+  var shouldHighlightOrangeRow = calculateDaysDifference(new Date(Panne.DateDepot)) > 3 && Panne.Progres >= 3 && Panne.Progres < 5;
+  useEffect(() => {
+    shouldHighlightRedRow = calculateDaysDifference() > 3 && Panne.Progres < 3;
+    shouldHighlightOrangeRow = calculateDaysDifference() > 3 && Panne.Progres >= 3 && Panne.Progres < 5;
+  },[shouldHighlightOrangeRow, shouldHighlightOrangeRow]);
 
   return (
     <tr className={`table-nouveau-ne-ligne${(shouldHighlightRedRow || shouldHighlightOrangeRow) ?

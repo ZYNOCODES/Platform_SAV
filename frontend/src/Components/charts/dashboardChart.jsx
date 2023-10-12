@@ -49,6 +49,7 @@ const options = {
 export default function MyChart() {
   const { user } = useAuthContext();
   const [SelectedData, setSelectedData] = useState("week");
+  const [DataType, setDataType] = useState("NbTicketsOuverts");
   const [DashboardDataWeekly, setDashboardDataWeekly] = useState();
   const [DashboardDataMonthly, setDashboardDataMonthly] = useState();
   const [DashboardDataYearly, setDashboardDataYearly] = useState();
@@ -130,7 +131,6 @@ export default function MyChart() {
   for (let i = 0; i < 5; i++) {
     labelYear.push(currentYear - i);
   }
-
   const dataWeek = {
     labels: labelWeekfr,
     datasets: [
@@ -179,7 +179,7 @@ export default function MyChart() {
         return entryDay === dayLabel;
     });
     if (dayData) {
-        dataWeek.datasets[0].data.push(dayData.NbTicketsOuverts);
+        dataWeek.datasets[0].data.push(dayData[DataType]);
     } else {
         dataWeek.datasets[0].data.push(0);
     }
@@ -193,7 +193,7 @@ export default function MyChart() {
     });
     
     if (monthData) {
-        dataMonth.datasets[0].data.push(monthData.NbTicketsOuverts);
+        dataMonth.datasets[0].data.push(monthData[DataType]);
     } else {
         dataMonth.datasets[0].data.push(0);
     }
@@ -204,7 +204,7 @@ export default function MyChart() {
 
     // If data exists for the year, push it to the data array; otherwise, push 0
     if (yearData) {
-        dataYear.datasets[0].data.push(yearData.NbTicketsOuverts);
+        dataYear.datasets[0].data.push(yearData[DataType]);
     } else {
         dataYear.datasets[0].data.push(0);
     }
@@ -213,12 +213,25 @@ export default function MyChart() {
   return (
     <div className="dashboard-chart-container">
       <div className="chart-header">
-        <a>Nombre de Tickets ouverts</a>
         <div className="select-chart">
           <select
-            className="nouveau-ne-chart"
-            name="nouveau-ne-chart"
-            id="nouveau-ne-chart"
+            className="select-data-chart"
+            name="select-data-chart"
+            id="select-data-chart"
+            onChange={(e) => {setDataType(e.target.value)}}
+          >
+            <option value="NbTicketsOuverts">Nombre de tickets ouverts</option>
+            <option value="ProduitEnAttente">les produits en attente de dépôt</option>
+            <option value="ProduitDeposes">les produits déposés</option>
+            <option value="ProduitEnReparation">les produits en reparation au centre</option>
+            <option value="ProduitRepares">les produits réparés</option>
+            <option value="EnAttenteDePickup">Produits en attente de retrait</option>
+            <option value="Produitlivre">livrés</option>
+          </select>
+          <select
+            className="displaying-data-chart"
+            name="displaying-data-chart"
+            id="displaying-data-chart"
             onChange={(e) => {setSelectedData(e.target.value)}}
           >
             <option value="week">Semaine</option>
@@ -230,8 +243,7 @@ export default function MyChart() {
       <div className="chart-line">
         <div className="chart-line-container"></div>
       </div>
-      <div className="chart-nombre-nouveau-ne">
-      </div>
+
       {SelectedData === "week" ? 
         <Bar className="chart-dashboard1" options={options} data={dataWeek} /> :
         (SelectedData === "month" ?

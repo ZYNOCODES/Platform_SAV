@@ -1099,8 +1099,7 @@ form {
   color: green;
 }
 
-.dashboard-item-title a span,
-.chart-nombre-nouveau-ne h2 span {
+.dashboard-item-title a span {
   font-size: 12px;
   line-height: 14.4px;
   font-weight: 700;
@@ -1154,12 +1153,6 @@ form {
   align-items: center;
   padding-left: 16px;
   padding-right: 34px;
-}
-
-.chart-header a {
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 19.2px;
 }
 
 .calendar-dashboard-header {
@@ -1279,63 +1272,25 @@ form {
   text-decoration: underline;
 }
 
-.chart-line-container,
-.sexe-chart-line-container {
+.chart-line-container {
   width: 95%;
   height: 1px;
   background-color: rgba(79, 129, 255, 0.42);
 }
-
 .chart-line {
   width: 100%;
   display: flex;
   justify-content: center;
 }
-
-.chart-nombre-nouveau-ne {
+.select-chart {
+  display: flex;
   width: 100%;
-  padding-left: 16px;
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 23px;
-}
-
-.chart-nombre-nouveau-ne h2 {
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 28.8px;
-  cursor: pointer;
-}
-
-.title-chart {
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 19.2px;
-  color: rgba(146, 146, 157, 1);
-}
-
-.select-chart,
-.select-table-traitement {
-  display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 34px;
 }
 
-.select-chart select{
-  padding: 0px;
-  color: #DA171B;
-}
-
-.chart-select-icon {
-  cursor: pointer;
-}
-
-
-.chart-header select,
-.select-table-traitement select {
+.displaying-data-chart{
   width: 169px;
   height: 40px;
   border-radius: 8px;
@@ -1343,42 +1298,21 @@ form {
   color: #DA171B;
   background-color: transparent;
   cursor: pointer;
+  padding: 0px;
 }
-
-.select-table-traitement {
-  margin-left: 50px;
-}
-
-.dashboard-table-traitement {
-  width: 95%;
-  height: 611px;
-  margin-top: 28px;
-  background-color: #fff;
+.select-data-chart {
+  width: auto;
+  height: 40px;
   border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-}
-
-.dashboard-table-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 80px;
-  padding-left: 30px;
-  padding-right: 30px;
-}
-
-.dashboard-table-header h2 {
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 19.2px;
-  color: rgba(17, 20, 45, 1);
-}
-
-.dashboard-table-header-right {
-  display: flex;
-  align-items: center;
-  gap: 50px;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  color: #DA171B;
+  background-color: transparent;
+  cursor: pointer;
+  padding: 0px;
+  font-weight: 600;
 }
 
 .table-right-item {
@@ -1412,7 +1346,6 @@ form {
   color: rgba(189, 189, 189, 1);
 }
 
-.dashboard-table-container,
 .table-patients {
   display: flex;
   flex-direction: column;
@@ -1422,30 +1355,6 @@ form {
 
 .table-patients {
   height: 74vh;
-}
-
-.dashboard-table-lh {
-  width: 95%;
-  height: 1px;
-  background-color: rgba(79, 129, 255, 0.25);
-}
-
-.dashboard-table-container table {
-  width: 100%;
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.dashboard-table-container table tr {
-  display: flex;
-  align-items: center;
-}
-
-.dashboard-table-container table td {
-  border: none;
-  width: 20%;
 }
 
 .table-traitement-nom input {
@@ -3909,4 +3818,15 @@ form {
 
 .add-alert-active {
   opacity: 1;
+}
+.next-back-row-table{
+  font-size: 22px;
+  margin: 0;
+  padding: 0;
+}
+.pagination-buttons{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

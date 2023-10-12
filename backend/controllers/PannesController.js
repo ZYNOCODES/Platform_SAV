@@ -402,7 +402,6 @@ const upload = multer({
     cb('Give proper files format to upload');
   }
 }).single('image');
-// add to today date and sub to depot date
 const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
   if(progres !== 0){
     if(progres === 1){
@@ -763,115 +762,6 @@ const UpdateDashboard = async (progres, oldProgres, todayDate, centre) => {
     }
   }
 }
-async function CalculateAverage (Centre) {
-  try {
-    if(Centre){
-      const pannes = await Panne.findAll({
-        where: {
-          CentreDepot: Centre,
-          Progres: 5,
-        },
-      });
-      if (pannes.length === 0) {
-        return res.json({ message: 'No pannes found' });
-      }
-      // Check if the pannes have a start and end date
-      if(pannes.FinReparation && pannes.DateDepot){
-        // Calculate the average time
-        const timeArray = pannes.map((panne) => {
-          return calculateTime(panne.createdAt, panne.FinReparation);
-        });
-        const averageTime = calculateAverageTime(timeArray);
-        // get today date
-        const todayDate = new Date().toISOString().slice(0, 10);
-        // check if dashboard exist
-        const sourceStatistics = await StatisticsCentre.findOne({
-          where: { Centre: Centre, createdAt: todayDate },
-        });
-        // update dashboard
-        if (sourceStatistics) {
-          await StatisticsCentre.update(
-            { DelaiMoyenReparation: averageTime},
-            { where: { Centre: centre, createdAt: todayDate } }
-          );
-        }
-      }
-    }
-    if(Centre){
-      const pannes = await Panne.findAll({
-        where: {
-          Progres: 5,
-        }
-      });
-  
-      if (pannes.length === 0) {
-        return res.json({ message: 'No pannes found' });
-      }
-      // Check if the pannes have a start and end date
-      if(pannes.FinReparation && pannes.DateDepot){
-        // Calculate the average time
-        const timeArray = pannes.map((panne) => {
-          return calculateTime(panne.DateDepot, panne.FinReparation);
-        });
-        const averageTime = calculateAverageTime(timeArray);
-        // get today date
-        const todayDate = new Date().toISOString().slice(0, 10);
-        // check if dashboard exist
-        const dashboard = await Dashboard.findOne({
-          where: { createdAt: todayDate },
-        });
-        // update dashboard
-        if (dashboard) {
-          await Dashboard.update(
-            { DelaiMoyenReparation:averageTime},
-            { where: { createdAt: todayDate } }
-          );
-        }
-      }
-    }
-  }catch(error){
-    console.error(error);
-    res.status(500).send('Error calculating average time');
-  }
-}
-function calculateTime(startDate, endDate) {
-  // Parse the input dates as JavaScript Date objects
-  const startTime = new Date(startDate);
-  const endTime = new Date(endDate);
-
-  // Calculate the time difference in milliseconds
-  const timeDifference = endTime - startTime;
-
-  // Calculate hours, minutes, and seconds
-  const hours = Math.floor(timeDifference / 3600000);
-  const minutes = Math.floor((timeDifference % 3600000) / 60000);
-  const seconds = Math.floor((timeDifference % 60000) / 1000);
-
-  // Format the result as "hour:minute:second"
-  const formattedTime = `${hours}:${minutes}:${seconds}`;
-
-  return formattedTime;
-}
-function calculateAverageTime(timeArray) {
-  // Convert time strings to seconds
-  const timeInSecondsArray = timeArray.map(timeString => {
-    const parts = timeString.split(':');
-    return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseFloat(parts[2]);
-  });
-
-  // Calculate the sum of all times in seconds
-  const totalTimeInSeconds = timeInSecondsArray.reduce((total, time) => total + time, 0);
-
-  // Calculate the average time in seconds
-  const averageTimeInSeconds = totalTimeInSeconds / timeArray.length;
-
-  // Convert the average time back to the HH:mm:ss format
-  const hours = Math.floor(averageTimeInSeconds / 3600);
-  const minutes = Math.floor((averageTimeInSeconds % 3600) / 60);
-  const seconds = Math.floor(averageTimeInSeconds % 60);
-
-  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-}
 function getTop3RepetitiveReferanceProduits(pannesData) {
   // Create an empty object to store the counts of each ReferanceProduit
   const referanceCounts = {};
@@ -924,6 +814,45 @@ function getTop3RepetitiveTypePanne(pannesData) {
   // Return the top 3 repetitive TypePannes
   return typePanneCountArray.slice(0, 3);
 }
+const calculateAverageRepairTime = async (req, res) =>{
+  try {
+    // Retrieve all "Panne" records from the database
+    const allPannes = await Panne.findAll();
+    if(!allPannes || allPannes.length <= 0){
+      return res.json({ message: 'No pannes found' });
+    }
+    // Initialize an array to store time differences
+    const timeDifferences = [];
+
+    // Calculate the time difference for each "Panne" record
+    for (const panne of allPannes) {
+      if (panne.DateDepot && panne.FinReparation) {
+        const startDate = new Date(panne.DateDepot);
+        const endDate = new Date(panne.FinReparation);
+        const timeDiff = endDate - startDate;
+        timeDifferences.push(timeDiff);
+      }
+    }
+
+    // Calculate the average repair time
+    if (timeDifferences.length > 0) {
+      const totalRepairTime = timeDifferences.reduce((acc, timeDiff) => acc + timeDiff, 0);
+      const averageRepairTimeMilliseconds = totalRepairTime / timeDifferences.length;
+
+      const seconds = Math.floor(averageRepairTimeMilliseconds / 1000);
+      const days = Math.floor(seconds / (3600 * 24));
+      seconds -= days * 3600 * 24;
+      const hours = Math.floor(seconds / 3600);
+      seconds -= hours * 3600;
+      const minutes = Math.floor(seconds / 60);
+      seconds -= minutes * 60;
+
+      res.status(200).json({ averageRepairTime: `${days}days${hours}h${minutes}min${seconds}s` });
+    }
+  } catch (error) {
+    console.error('Error calculating average repair time:', error);
+  }
+}
 module.exports = {
   index,
   GetAllDelivred,
@@ -936,5 +865,6 @@ module.exports = {
   GetTop3Pannes,
   UplaodIMG,
   upload,
-  UpdateGarantie
+  UpdateGarantie,
+  calculateAverageRepairTime
 };

@@ -147,11 +147,9 @@ export const PanneList = () => {
                 ) {
                   return item;
                 }
-                
               }).map((Panne) => (
                 <TablePanneRow Panne={Panne} />
               ))}
-
             </table>
           </div>
         </div>

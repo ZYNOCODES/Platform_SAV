@@ -815,39 +815,80 @@ function getTop3RepetitiveTypePanne(pannesData) {
   return typePanneCountArray.slice(0, 3);
 }
 const calculateAverageRepairTime = async (req, res) =>{
+  const {id} = req.body;
   try {
-    // Retrieve all "Panne" records from the database
-    const allPannes = await Panne.findAll();
-    if(!allPannes || allPannes.length <= 0){
-      return res.json({ message: 'No pannes found' });
-    }
-    // Initialize an array to store time differences
-    const timeDifferences = [];
-
-    // Calculate the time difference for each "Panne" record
-    for (const panne of allPannes) {
-      if (panne.DateDepot && panne.FinReparation) {
-        const startDate = new Date(panne.DateDepot);
-        const endDate = new Date(panne.FinReparation);
-        const timeDiff = endDate - startDate;
-        timeDifferences.push(timeDiff);
+    if(!id || id === undefined){
+      // Retrieve all Pannes
+      const allPannes = await Panne.findAll();
+      if(!allPannes || allPannes.length <= 0){
+        return res.json({ message: 'No pannes found' });
       }
-    }
+      // Initialize an array to store time differences
+      const timeDifferences = [];
 
-    // Calculate the average repair time
-    if (timeDifferences.length > 0) {
-      const totalRepairTime = timeDifferences.reduce((acc, timeDiff) => acc + timeDiff, 0);
-      const averageRepairTimeMilliseconds = totalRepairTime / timeDifferences.length;
+      // Calculate the time difference for each "Panne" record
+      for (const panne of allPannes) {
+        if (panne.DateDepot && panne.FinReparation) {
+          const startDate = new Date(panne.DateDepot);
+          const endDate = new Date(panne.FinReparation);
+          const timeDiff = endDate - startDate;
+          timeDifferences.push(timeDiff);
+        }
+      }
 
-      const seconds = Math.floor(averageRepairTimeMilliseconds / 1000);
-      const days = Math.floor(seconds / (3600 * 24));
-      seconds -= days * 3600 * 24;
-      const hours = Math.floor(seconds / 3600);
-      seconds -= hours * 3600;
-      const minutes = Math.floor(seconds / 60);
-      seconds -= minutes * 60;
+      // Calculate the average repair time
+      if (timeDifferences.length > 0) {
+        const totalRepairTime = timeDifferences.reduce((acc, timeDiff) => acc + timeDiff, 0);
+        const averageRepairTimeMilliseconds = totalRepairTime / timeDifferences.length;
 
-      res.status(200).json({ averageRepairTime: `${days}days${hours}h${minutes}min${seconds}s` });
+        const seconds = Math.floor(averageRepairTimeMilliseconds / 1000);
+        const days = Math.floor(seconds / (3600 * 24));
+        seconds -= days * 3600 * 24;
+        const hours = Math.floor(seconds / 3600);
+        seconds -= hours * 3600;
+        const minutes = Math.floor(seconds / 60);
+        seconds -= minutes * 60;
+
+        res.status(200).json({ averageRepairTime: `${days}days${hours}h${minutes}min${seconds}s` });
+      }
+    }else{
+      // Retrieve all Pannes by id
+      const allPannes = await Panne.findAll({
+        where:{
+          id: id
+        }
+      });
+      if(!allPannes || allPannes.length <= 0){
+        return res.json({ message: 'No pannes found' });
+      }
+      // Initialize an array to store time differences
+      const timeDifferences = [];
+
+      // Calculate the time difference for each "Panne" record
+      for (const panne of allPannes) {
+        if (panne.DateDepot && panne.FinReparation) {
+          const startDate = new Date(panne.DateDepot);
+          const endDate = new Date(panne.FinReparation);
+          const timeDiff = endDate - startDate;
+          timeDifferences.push(timeDiff);
+        }
+      }
+
+      // Calculate the average repair time
+      if (timeDifferences.length > 0) {
+        const totalRepairTime = timeDifferences.reduce((acc, timeDiff) => acc + timeDiff, 0);
+        const averageRepairTimeMilliseconds = totalRepairTime / timeDifferences.length;
+
+        const seconds = Math.floor(averageRepairTimeMilliseconds / 1000);
+        const days = Math.floor(seconds / (3600 * 24));
+        seconds -= days * 3600 * 24;
+        const hours = Math.floor(seconds / 3600);
+        seconds -= hours * 3600;
+        const minutes = Math.floor(seconds / 60);
+        seconds -= minutes * 60;
+
+        res.status(200).json({ averageRepairTime: `${days}days${hours}h${minutes}min${seconds}s` });
+      }
     }
   } catch (error) {
     console.error('Error calculating average repair time:', error);

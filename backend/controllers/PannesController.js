@@ -843,13 +843,13 @@ const calculateAverageRepairTime = async (req, res) =>{
 
         const seconds = Math.floor(averageRepairTimeMilliseconds / 1000);
         const days = Math.floor(seconds / (3600 * 24));
-        seconds -= days * 3600 * 24;
-        const hours = Math.floor(seconds / 3600);
-        seconds -= hours * 3600;
-        const minutes = Math.floor(seconds / 60);
-        seconds -= minutes * 60;
+        const remainingSeconds = seconds - days * 3600 * 24;
+        const hours = Math.floor(remainingSeconds / 3600);
+        const remainingSecondsAfterHours = remainingSeconds - hours * 3600;
+        const minutes = Math.floor(remainingSecondsAfterHours / 60);
+        const secondsRemaining = (remainingSecondsAfterHours - minutes * 60);
 
-        res.status(200).json({ averageRepairTime: `${days}days${hours}h${minutes}min${seconds}s` });
+        res.status(200).json({ averageRepairTime: `${days}days ${hours}h ${minutes}min ${secondsRemaining}s` });
       }
     }else{
       // Retrieve all Pannes by id
@@ -881,13 +881,12 @@ const calculateAverageRepairTime = async (req, res) =>{
 
         const seconds = Math.floor(averageRepairTimeMilliseconds / 1000);
         const days = Math.floor(seconds / (3600 * 24));
-        seconds -= days * 3600 * 24;
-        const hours = Math.floor(seconds / 3600);
-        seconds -= hours * 3600;
-        const minutes = Math.floor(seconds / 60);
-        seconds -= minutes * 60;
-
-        res.status(200).json({ averageRepairTime: `${days}days${hours}h${minutes}min${seconds}s` });
+        const remainingSeconds = seconds - days * 3600 * 24;
+        const hours = Math.floor(remainingSeconds / 3600);
+        const remainingSecondsAfterHours = remainingSeconds - hours * 3600;
+        const minutes = Math.floor(remainingSecondsAfterHours / 60);
+        const secondsRemaining = (remainingSecondsAfterHours - minutes * 60);
+        res.status(200).json({ averageRepairTime: `${days}days ${hours}h ${minutes}min ${secondsRemaining}s` });
       }
     }
   } catch (error) {

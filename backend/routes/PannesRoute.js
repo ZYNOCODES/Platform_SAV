@@ -28,6 +28,6 @@ router.post('/IMG',upload, UplaodIMG);
 router.delete('/:id', Remove);
 router.patch('/:id', Update);
 router.patch('/Garantie/:id', UpdateGarantie);
-router.post('/Average/time',calculateAverageRepairTime);
+router.get('/Average/time/:id',calculateAverageRepairTime);
 
 module.exports = router;

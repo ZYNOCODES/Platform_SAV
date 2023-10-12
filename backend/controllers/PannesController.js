@@ -815,9 +815,9 @@ function getTop3RepetitiveTypePanne(pannesData) {
   return typePanneCountArray.slice(0, 3);
 }
 const calculateAverageRepairTime = async (req, res) =>{
-  const {id} = req.body;
+  const {id} = req.params;
   try {
-    if(!id || id === undefined){
+    if(id == 0){
       // Retrieve all Pannes
       const allPannes = await Panne.findAll();
       if(!allPannes || allPannes.length <= 0){

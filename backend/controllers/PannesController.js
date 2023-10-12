@@ -1,6 +1,7 @@
 const Panne = require('../models/PannesModel');
 const Dashboard = require('../models/DashboardModel');
 const StatisticsCentre = require('../models/StatisticsCentreModel');
+const Transaction = require('../models/TransactionModel')
 const validator = require('validator');
 const multer = require('multer');
 const path = require('path');
@@ -237,7 +238,7 @@ try {
 const Update = async (req, res) => {
   // Handle request to update a Panne
   const { id } = req.params;
-  const { progres } = req.body;
+  const { progres, action, userID } = req.body;
   try {
     //get user by id
     const panne = await Panne.findByPk(id);
@@ -259,6 +260,11 @@ const Update = async (req, res) => {
       const Date = panne.createdAt;
       const centre = panne.CentreDepot;
       UpdateDashboard(progres, oldProgres, Date, centre);
+      await Transaction.create({
+        UserID : userID , Action : action
+      }).then(async () => {
+        console.log("Transaction created successfully");
+      }).catch((error) => console.log(error));
     }).catch((error) => console.log(error));
     // return updated panne
     res.json({panne: panne, message: 'La panne a été déposée avec succès.'});
@@ -268,29 +274,35 @@ const Update = async (req, res) => {
   }
 }
 const UpdateGarantie = async (req, res) => {
-// Handle request to update a Panne
-const { id } = req.params;
-const { StatueGarantie } = req.body;
-try {
-  //get user by id
-  const panne = await Panne.findByPk(id);
-  //check if panne exist
-  if (!panne) {
-      return res.status(404).json({ error: 'panne not found' });
+  const { id } = req.params;
+  const { StatueGarantie, userID, action } = req.body;
+  try {
+    //get panne by id
+    const panne = await Panne.findByPk(id);
+    //check if panne exist
+    if (!panne) {
+        return res.status(404).json({ error: 'panne not found' });
+    }
+    // assign panne new values
+    panne.StatueGarantie = StatueGarantie;
+    // save panne
+    await panne.save().then(async () => {
+      await Transaction.create({
+        UserID : userID , Action : action
+      }).then(async () => {
+        console.log("Transaction created successfully");
+      }).catch((error) => console.log(error));
+    }).catch((error) => console.log(error));;
+    res.status(200).json({message: 'success'});
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error updating panne');
   }
-  // assign panne new values
-  panne.StatueGarantie = StatueGarantie;
-  // save panne
-  await panne.save();
-  res.status(200).json({message: 'success'});
-} catch (error) {
-  console.error(error);
-  res.status(500).send('Error updating panne');
-}
 }
 const Remove = async (req, res) => {
   // Handle request to delete a Panne
   const { id } = req.params;
+  const {userID} = req.body;
   try {
     const panne = await Panne.findByPk(id);
 
@@ -298,7 +310,13 @@ const Remove = async (req, res) => {
       return res.status(404).json({ error: 'Panne not found' });
     }
 
-    await panne.destroy();
+    await panne.destroy().then(async () => {
+      await Transaction.create({
+        UserID : userID , Action : 'l\'utilisateur supprimer une panne'
+      }).then(async () => {
+        console.log("Transaction created successfully");
+      }).catch((error) => console.log(error));
+    }).catch((err) => console.log(err));
     res.json({ message: 'Panne deleted successfully' });
 
   } catch (error) {
@@ -348,7 +366,13 @@ const UplaodIMG = async (req, res) => {
             return res.status(404).json({ error: 'Panne not found' });
         }
         panne.image = image;
-        await panne.save();
+        await panne.save().then(async () => {
+          await Transaction.create({
+            UserID : userID , Action : 'l\'utilisateur joindre une image'
+          }).then(async () => {
+            console.log("Transaction created successfully");
+          }).catch((error) => console.log(error));
+        }).catch((err) => console.log(err));
         res.json({panne: panne, message: 'Image uploaded successfully'});
     }catch(error){
       res.status(500).send('Error uploading image');

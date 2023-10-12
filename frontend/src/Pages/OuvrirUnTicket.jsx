@@ -171,8 +171,6 @@ const OuvrirUnTicket = () => {
     <MyNavBar  act={act} setAct={setAct} />
     <MyAsideBar />
     <div className='form'>
-
-        
         <form>
             <div className='left-form'>
                 <FormInput label='Nom :' placeholder=' Entrer votre nom' type='text' onChange={handleNomInputChange}/>
@@ -189,10 +187,8 @@ const OuvrirUnTicket = () => {
                 <div className='button-section'>
                     <button className='Cancel-btn' type='button' onClick={handleOnback}>Annuler</button>
                     <button className='depose-btn' type='button' onClick={handleClickOpen}>Ouvrir</button>
-                    
                 </div>
-            </div> 
-            
+            </div>
         </form>
         <Dialog
             open={open}

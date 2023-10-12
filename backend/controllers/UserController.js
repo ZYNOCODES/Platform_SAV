@@ -1,4 +1,5 @@
 const User = require('../models/UserModel');
+const Transaction = require('../models/TransactionModel')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
@@ -30,6 +31,11 @@ const Login = async (req, res) => {
         if(!match){
             return res.status(400).json({ message: "Mot de passe incorrect" });
         }else{
+            await Transaction.create({
+                UserID : user.id , Action : 'l\'utilisateur connecté'
+              }).then(async () => {
+                console.log("Transaction created successfully");
+              }).catch((error) => console.log(error));
             //create token
             const token = createToken(user.id);
             var id = user.id;
@@ -93,6 +99,11 @@ const Signup = async (req, res) => {
             if(!user){
                 return res.status(400).json({ message: "Utilisateur non enregistré" });
             }else{
+                await Transaction.create({
+                    UserID : user.id , Action : 'l\'utilisateur deconnecté'
+                  }).then(async () => {
+                    console.log("Transaction created successfully");
+                  }).catch((error) => console.log(error));
                 //create token
                 const token = createToken(user.id);
                 //return user
@@ -161,7 +172,7 @@ const GetUser = async (req, res) => {
 
 //delete a user
 const DeleteUser = async (req, res) => {
-    const { id } = req.body;
+    const { id, userID } = req.body;
     try {
         //get user by id
         const user = await User.findByPk(id);
@@ -170,7 +181,13 @@ const DeleteUser = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
         // delete user
-        await user.destroy();
+        await user.destroy().then(async ()=>{
+            await Transaction.create({
+                UserID : userID , Action : `supprimer l'utilisateur avec ID = ${id}`
+              }).then(async () => {
+                console.log("Transaction created successfully");
+              }).catch((error) => console.log(error));
+        }).catch((err) => console.log(err));
         // return response
         res.json({ message: 'User deleted successfully' });
     } catch (error) {
@@ -181,7 +198,7 @@ const DeleteUser = async (req, res) => {
 
 //update a user
 const UpdateUser = async (req, res) => {
-    const { id, Nom, Prenom, Telephone, Role, Centre, Email, Password , ResetPassword} = req.body;
+    const { id, Nom, Prenom, Telephone, Role, Centre, Email, Password , ResetPassword, userID} = req.body;
     try {
 
         if(!Nom && !Prenom && !Telephone && !Role && !Centre && !Email && !Password ){
@@ -244,7 +261,13 @@ const UpdateUser = async (req, res) => {
             user.Password = hash;
         }
         // save user
-        await user.save();
+        await user.save().then(async () => {
+            await Transaction.create({
+                UserID : userID , Action : `met à jour le profil de l'utilisateur avec ID = ${user.id}`
+              }).then(async () => {
+                console.log("Transaction created successfully");
+              }).catch((error) => console.log(error));
+        }).catch((err) => console.log(err));
         // return updated user
         res.json({user: user, message: 'User updated successfully'});
     } catch (error) {

@@ -16,6 +16,7 @@ import CreateNewUser from './Pages/CreateNewUser';
 import UpdateUser from './Pages/UpdateUser';
 import Dashboard from './Pages/dashboard';
 import OuvrirUnTicket from './Pages/OuvrirUnTicket';
+import Profile from './Pages/Profile';
 function App() {
   const { user } = useAuthContext();
 
@@ -36,6 +37,7 @@ function App() {
           <Route path='/DetailPanneSav/:id' element={user ? <DetailsPanneSav/> : <Navigate to="/" />}/>
           <Route path='/NouveauUser' element={user ? <CreateNewUser/> : <Navigate to="/" />}/>
           <Route path='/UpdateUser/:id' element={user ? <UpdateUser/> : <Navigate to="/" />}/>
+          <Route path='/Profile/:id' element={user ? <Profile/> : <Navigate to="/" />}/>
         </Routes>
       </main>
     </BrowserRouter>

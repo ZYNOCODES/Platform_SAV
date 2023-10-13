@@ -20,7 +20,7 @@ function TablePanneRow ({Panne}){
   const Redirect =()=>{
     if(Panne.Progres === 0 && user?.Role === "SAV"){
       navigate(`/EnAttenteDeDepot/${Panne.id}`);
-    }else if(user?.Role === "SAV"){
+    }else if(user?.Role === "SAV" && (Panne.UserID === user?.id || Panne.UserID === null) && Panne.Progres !== 5){
       navigate(`/DetailPanneSav/${Panne.id}`)
     }else{
       navigate(`/Details/${Panne.id}`)
@@ -29,8 +29,8 @@ function TablePanneRow ({Panne}){
   var shouldHighlightRedRow = calculateDaysDifference(new Date(Panne.DateDepot)) > 3 && Panne.Progres < 3;
   var shouldHighlightOrangeRow = calculateDaysDifference(new Date(Panne.DateDepot)) > 3 && Panne.Progres >= 3 && Panne.Progres < 5;
   useEffect(() => {
-    shouldHighlightRedRow = calculateDaysDifference() > 3 && Panne.Progres < 3;
-    shouldHighlightOrangeRow = calculateDaysDifference() > 3 && Panne.Progres >= 3 && Panne.Progres < 5;
+    shouldHighlightRedRow = calculateDaysDifference(Panne.DateDepot) > 3 && Panne.Progres < 3;
+    shouldHighlightOrangeRow = calculateDaysDifference(Panne.DateDepot) > 3 && Panne.Progres >= 3 && Panne.Progres < 5;
   },[shouldHighlightOrangeRow, shouldHighlightOrangeRow]);
 
   return (

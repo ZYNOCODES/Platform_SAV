@@ -9,7 +9,7 @@ export default function MyDashboradTop( {Data}) {
   useEffect(() => {
     const fetchAverageTime = async () => {
       try {
-        const response = await fetch(`https://streamsav.onrender.com/Pannes/Average/time/${0}`, {
+        const response = await fetch(`http://localhost:8000/Pannes/Average/time/${0}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -19,7 +19,7 @@ export default function MyDashboradTop( {Data}) {
   
         if (response.ok) {
           const data = await response.json();
-          setAverageTime(data.Pannes);
+          setAverageTime(data.averageRepairTime);
         } else {
           console.error("Error receiving Panne data:", response.statusText);
         }
@@ -27,10 +27,8 @@ export default function MyDashboradTop( {Data}) {
         console.error("Error fetching Panne data:", error);
       }
     };
-  
     fetchAverageTime();
   }, [AverageTime,user?.token]);
-  console.log(AverageTime)
   return (
     <div className="dashboard-top">
       <div className="dashboard-item">

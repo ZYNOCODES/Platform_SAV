@@ -15,7 +15,7 @@ const SavSelect = (props) => {
   useEffect(() => {
     const fetchSAVData = async () => {
       try {
-        const response = await fetch('https://streamsav.onrender.com/SAV', {
+        const response = await fetch('http://localhost:8000/SAV', {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -38,7 +38,7 @@ const SavSelect = (props) => {
   useEffect(() => {
     const fetchAgentData = async () => {
       try {
-        const response = await fetch('https://streamsav.onrender.com/Agent', {
+        const response = await fetch('http://localhost:8000/Agent', {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

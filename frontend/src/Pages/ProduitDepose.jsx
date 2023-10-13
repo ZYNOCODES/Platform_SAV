@@ -39,11 +39,10 @@ const ProduitDepose = () => {
     const GoBackPressed =()=>{
         navigate(-1);
     }
-    //Get user data from server
     useEffect(() => {
         const fetchPanneData = async () => {
         try {
-            const response = await fetch(`https://streamsav.onrender.com/Pannes/${id}`, {
+            const response = await fetch(`http://localhost:8000/Pannes/${id}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -69,7 +68,7 @@ const ProduitDepose = () => {
     }, [id, PanneData, user?.token, navigate]);
     const createAndDownloadPdf = async () => {
         try {
-            const response = await fetch('https://streamsav.onrender.com/EmailGenerator/createPDF', {
+            const response = await fetch('http://localhost:8000/EmailGenerator/createPDF', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -93,7 +92,7 @@ const ProduitDepose = () => {
     
             const uniqueFilename = await response.text();
     
-            const pdfResponse = await fetch(`https://streamsav.onrender.com/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
+            const pdfResponse = await fetch(`http://localhost:8000/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/pdf'
@@ -115,13 +114,13 @@ const ProduitDepose = () => {
     }
     const UpdatePanne = async () =>{
         handleClose();
-        const reponse = await fetch(`https://streamsav.onrender.com/Pannes/${id}`, {
+        const reponse = await fetch(`http://localhost:8000/Pannes/${id}`, {
           method: "PATCH",
           headers: {
             "content-type": "application/json",
           },
           body: JSON.stringify({ 
-            progres : 1,
+            progres : 1, userID: user?.id, action: `deposer la panne ID= ${id}`,
           }),
         });
     
@@ -136,10 +135,8 @@ const ProduitDepose = () => {
             setTimeout(() => {
                 navigate(`/DetailPanneSav/${id}`)
             }, 2000)
-           
         }
     }
-    
     return (
     <>
         <MyNavBar  act={act} setAct={setAct} />

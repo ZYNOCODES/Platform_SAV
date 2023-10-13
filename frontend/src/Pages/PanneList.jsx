@@ -41,9 +41,10 @@ export const PanneList = () => {
           const queryParams = new URLSearchParams({
             Role: user?.Role,
             CentreDepot: user?.Centre,
+            UserID: user?.id,
           });
     
-          const response = await fetch(`https://streamsav.onrender.com/Pannes/?${queryParams}`, {
+          const response = await fetch(`http://localhost:8000/Pannes/?${queryParams}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -63,7 +64,7 @@ export const PanneList = () => {
       };
     
       fetchPannesData();
-    }, [user?.Role, user.CentreDepot, ProduitenPanne, user?.Centre, user?.token]);
+    }, [ProduitenPanne, user?.token]);
     const handleNextPage = () => {
       if (currentPage < Math.ceil(ProduitenPanne.length / rowsPerPage)) {
         setCurrentPage(currentPage + 1);

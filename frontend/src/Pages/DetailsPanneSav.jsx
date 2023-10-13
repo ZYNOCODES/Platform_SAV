@@ -58,7 +58,7 @@ const DetailsPanneSav = () => {
     formData.append("userID", user?.id);
 
     const result = await axios.post(
-      "https://streamsav.onrender.com/Pannes/IMG",
+      "http://localhost:8000/Pannes/IMG",
       formData,
       {
         headers: { "Content-Type": "multipart/form-data" },
@@ -75,7 +75,7 @@ const DetailsPanneSav = () => {
     const fetchPanneData = async () => {
       try {
         const response = await fetch(
-          `https://streamsav.onrender.com/Pannes/${id}`,
+          `http://localhost:8000/Pannes/${id}`,
           {
             method: "GET",
             headers: {
@@ -103,7 +103,7 @@ const DetailsPanneSav = () => {
     const fetchAllPannesDataOfProduct = async () => {
       try {
         const response = await fetch(
-          `https://streamsav.onrender.com/Pannes/All/${PanneData?.ReferanceProduit}/${id}`,
+          `http://localhost:8000/Pannes/All/${PanneData?.ReferanceProduit}/${id}`,
           {
             method: "GET",
             headers: {
@@ -127,7 +127,7 @@ const DetailsPanneSav = () => {
     fetchAllPannesDataOfProduct();
   }, [id, user?.token, PanneData?.ReferanceProduit, ProductData]);
   const UpdatePanne = async (val, Act) => {
-    const reponse = await fetch(`https://streamsav.onrender.com/Pannes/${id}`, {
+    const reponse = await fetch(`http://localhost:8000/Pannes/${id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
@@ -157,7 +157,7 @@ const DetailsPanneSav = () => {
     }
   };
   const UpdatePanneGarantie = async (val) => {
-    const reponse = await fetch(`https://streamsav.onrender.com/Pannes/Garantie/${id}`, {
+    const reponse = await fetch(`http://localhost:8000/Pannes/Garantie/${id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",

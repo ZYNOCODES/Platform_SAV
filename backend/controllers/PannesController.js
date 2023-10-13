@@ -10,8 +10,7 @@ const { Op, Sequelize } = require('sequelize');
 
 const index = async (req, res) => {
   // Handle request to get all Pannes
-  const { Role, CentreDepot } = req.query;
-  
+  const { Role, CentreDepot, UserID} = req.query;
   try {
     if(Role === 'Admin'){
       const Pannes = await Panne.findAll({
@@ -49,7 +48,7 @@ const index = async (req, res) => {
   }
 }
 const GetAllDelivred = async (req, res) => {
-  const { Role, CentreDepot } = req.query;
+  const { Role, CentreDepot, UserID} = req.query;
   
   try {
     if(Role === 'Admin'){
@@ -63,11 +62,24 @@ const GetAllDelivred = async (req, res) => {
       }else{
         res.json({message: 'No pannes found'});
       }
+    }else if(Role === 'DRCentre'){
+      const Pannes = await Panne.findAll({
+        where: {
+          CentreDepot: CentreDepot,
+          Progres: 5,
+        }
+      });
+      if (Pannes.length > 0) {
+        res.json({Pannes: Pannes});
+      }else{
+        res.json({message: 'No pannes found'});
+      }
     }else{
       const Pannes = await Panne.findAll({
         where: {
           CentreDepot: CentreDepot,
           Progres: 5,
+          UserID: UserID
         }
       });
       if (Pannes.length > 0) {
@@ -249,10 +261,16 @@ const Update = async (req, res) => {
     const oldProgres = panne.Progres;
     // assign panne new values
     panne.Progres = progres;
+    panne.UserID = userID;
     // current date
-    const todayDate = new Date().toISOString().slice(0, 10);
-    if(progres === 1){
+    const todayDate = new Date().toISOString();
+    if(progres == 1){
       panne.DateDepot = todayDate;
+    }
+    if(progres == 4){
+      panne.FinReparation = todayDate;
+    }else if(progres == 5 && oldProgres != 4){
+      panne.FinReparation = todayDate;
     }
     // save panne
     await panne.save().then(async () => {
@@ -850,12 +868,14 @@ const calculateAverageRepairTime = async (req, res) =>{
         const secondsRemaining = (remainingSecondsAfterHours - minutes * 60);
 
         res.status(200).json({ averageRepairTime: `${days}days ${hours}h ${minutes}min ${secondsRemaining}s` });
+      }else{
+        return res.status(500).json({message: 'Error calculating average repair time'});
       }
     }else{
       // Retrieve all Pannes by id
       const allPannes = await Panne.findAll({
         where:{
-          id: id
+          UserID: id
         }
       });
       if(!allPannes || allPannes.length <= 0){
@@ -886,7 +906,10 @@ const calculateAverageRepairTime = async (req, res) =>{
         const remainingSecondsAfterHours = remainingSeconds - hours * 3600;
         const minutes = Math.floor(remainingSecondsAfterHours / 60);
         const secondsRemaining = (remainingSecondsAfterHours - minutes * 60);
+
         res.status(200).json({ averageRepairTime: `${days}days ${hours}h ${minutes}min ${secondsRemaining}s` });
+      }else{
+        return res.status(500).json({message: 'Error calculating average repair time'});
       }
     }
   } catch (error) {

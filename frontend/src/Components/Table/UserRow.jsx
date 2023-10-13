@@ -1,6 +1,7 @@
 import React from 'react'
 import {useNavigate} from 'react-router-dom';
 import Updatebutton from '../Buttons/updatebutton'
+import VoirButton from '../Buttons/buttonVoir';
 import Deletebutton from '../Buttons/deletebutton'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,7 +20,7 @@ function UserRow(User){
 
   const DeleteUser = async () =>{
     handleClose();
-    const reponse = await fetch("https://streamsav.onrender.com/User", {
+    const reponse = await fetch("http://localhost:8000/User", {
       method: "DELETE",
       headers: {
         "content-type": "application/json",
@@ -40,10 +41,12 @@ function UserRow(User){
   }
   const navigate = useNavigate();
 
-  const Redirect =()=>{
+  const Redirect = () =>{
     navigate(`/UpdateUser/${User.User.id}`);
   }
-
+  const RedirectToProfile = () =>{
+    navigate(`/Profile/${User.User.id}`);
+  }
   const [open,setOpen] = React.useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -68,6 +71,9 @@ function UserRow(User){
             <Deletebutton DeleteUser={handleClickOpen}/>
           </td>
         }
+        <td className="btn-column">
+          <VoirButton Redirect={RedirectToProfile}/>
+        </td>
         <div>
           <Dialog
             open={open}

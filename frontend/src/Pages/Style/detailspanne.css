@@ -271,6 +271,34 @@ pannedetails-info progressbar .Historique-container {
   margin-left: 10px;
 }
 
+.GlobalInput{
+  width: 100%;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+
+.searchclass{
+  margin-top: 30px;
+  margin-right: 70px;
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+
+}
+
+.delaimoy{
+  padding: 5px 5px;
+  color: #d4171b;
+  background-color: #f8f9fd;
+  border-radius: 6px;
+}
+
 @media only screen and (max-width: 1215px) {
   .pannedetails-container {
     padding: 10px 10px;
@@ -327,5 +355,14 @@ pannedetails-info progressbar .Historique-container {
   td {
     font-size: 10px;
     padding: 2px;
+  }
+
+  .searchclass{
+    
+    margin-right: 0px;
+    
+    justify-content: center;
+    align-items: center;
+  
   }
 }

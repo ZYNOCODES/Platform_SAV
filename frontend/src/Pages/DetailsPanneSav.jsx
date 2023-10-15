@@ -258,6 +258,8 @@ const DetailsPanneSav = () => {
     }
   }, [PanneData?.StatueGarantie]);
   //Go back to previous page
+
+  
   const GoBackPressed = () => {
     if (PanneData?.Progres != 0) {
       navigate("/liste_des_pannes");

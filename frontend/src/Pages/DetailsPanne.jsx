@@ -8,6 +8,7 @@ import { AiOutlineCaretDown } from "react-icons/ai";
 import {useNavigate, useParams} from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
 import ProgressBar from "@ramonak/react-progress-bar";
+import moment from 'moment-timezone';
 
 const DetailsPanne = () => {
     const [act, setAct] = useState(false);
@@ -67,7 +68,7 @@ const DetailsPanne = () => {
                 <FormInput label='Referance de produit :' value={PanneData?.ReferanceProduit} readOnly type='text'/>
                 <FormInput label='Type de panne :' value={PanneData?.TypePanne} readOnly type='text' />
                 <FormInput label='Centre de depot:' value={"SAV de "+PanneData?.CentreDepot} readOnly type='text' />
-                <FormInput label='Date de depot:' value={PanneData?.DateDepot} readOnly type='text' />
+                <FormInput label='Date de depot:' value={formatDate(PanneData?.DateDepot)} readOnly type='text' />
                 <FormInput label='Description:' value={PanneData?.Description} readOnly type='text' />
                 </form>
             </div>
@@ -140,5 +141,21 @@ const DetailsPanne = () => {
     </>
   )
 }
-
+function formatDate(dateString) {
+    const timeZone = 'Africa/Algiers'; // Algeria's time zone
+    const date = moment(dateString).tz(timeZone);
+    const monthNames = [
+      'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    ];
+    const month = monthNames[date.month()];
+    const day = date.date();
+    const year = date.year();
+    const hours = date.hours();
+    const minutes = date.minutes();
+  
+    const formattedDate = `${month} ${day}, ${year} at ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    return formattedDate;
+  
+  }
 export default DetailsPanne

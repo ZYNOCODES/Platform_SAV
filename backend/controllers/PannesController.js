@@ -111,6 +111,25 @@ const GetByID = async (req, res) => {
   }
   
 }
+const GetByUserID = async (req, res) => {
+  // Handle request to get all Pannes whred by ID
+  const { id } = req.params;
+  try {
+    const Pannes = await Panne.findAll({
+      where: {
+        UserID: id
+      }
+    });
+    if (Pannes) {
+      res.status(200).json(Pannes);
+    } else {
+      res.status(440).json({ message: 'No panne found' });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Error getting panne by ID');
+  }
+}
 const GetByRefProduct = async (req, res) => {
   // Handle request to get all Pannes filtered by ReferanceProduit
   const { Ref, id } = req.params;
@@ -867,7 +886,7 @@ const calculateAverageRepairTime = async (req, res) =>{
         const minutes = Math.floor(remainingSecondsAfterHours / 60);
         const secondsRemaining = (remainingSecondsAfterHours - minutes * 60);
 
-        res.status(200).json({ averageRepairTime: `${days}days ${hours}h ${minutes}min ${secondsRemaining}s` });
+        res.status(200).json({ averageRepairTime: `${days}J ${hours}h ${minutes}min ${secondsRemaining}s` });
       }else{
         return res.status(500).json({message: 'Error calculating average repair time'});
       }
@@ -907,7 +926,7 @@ const calculateAverageRepairTime = async (req, res) =>{
         const minutes = Math.floor(remainingSecondsAfterHours / 60);
         const secondsRemaining = (remainingSecondsAfterHours - minutes * 60);
 
-        res.status(200).json({ averageRepairTime: `${days}days ${hours}h ${minutes}min ${secondsRemaining}s` });
+        res.status(200).json({ averageRepairTime: `${days}J ${hours}h ${minutes}min ${secondsRemaining}s` });
       }else{
         return res.status(500).json({message: 'Error calculating average repair time'});
       }
@@ -920,6 +939,7 @@ module.exports = {
   index,
   GetAllDelivred,
   GetByID,
+  GetByUserID,
   GetByRefProduct,
   Create,
   Update,

@@ -16,6 +16,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import "react-toastify/dist/ReactToastify.css";
+import moment from 'moment-timezone';
 
 const ProduitDepose = () => {
     const [act, setAct] = useState(false);
@@ -68,7 +69,7 @@ const ProduitDepose = () => {
     }, [id, PanneData, user?.token, navigate]);
     const createAndDownloadPdf = async () => {
         try {
-            const response = await fetch('http://localhost:8000/EmailGenerator/createPDF', {
+            const response = await fetch('http://localhost:8000/EmailGenerator/createPDF/BonV3', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -159,7 +160,7 @@ const ProduitDepose = () => {
                     <FormInput label='Referance de produit :' value={PanneData?.ReferanceProduit} readOnly type='text'/>
                     <FormInput label='Type de panne :' value={PanneData?.TypePanne} readOnly type='text' />
                     <FormInput label='Centre de depot:' value={"SAV de "+PanneData?.CentreDepot} readOnly type='text' />
-                    <FormInput label='Date de depot:' value={PanneData?.DateDepot} readOnly type='text' />
+                    <FormInput label='Date de depot:' value={formatDate(PanneData?.DateDepot)} readOnly type='text' />
                     <FormInput label='Description:' value={PanneData?.Description} readOnly type='text' />
                 </form>
             </div>
@@ -202,5 +203,21 @@ const ProduitDepose = () => {
     </>
   )
 }
-
+function formatDate(dateString) {
+    const timeZone = 'Africa/Algiers'; // Algeria's time zone
+    const date = moment(dateString).tz(timeZone);
+    const monthNames = [
+      'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+      'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    ];
+    const month = monthNames[date.month()];
+    const day = date.date();
+    const year = date.year();
+    const hours = date.hours();
+    const minutes = date.minutes();
+  
+    const formattedDate = `${month} ${day}, ${year} at ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    return formattedDate;
+  
+  }
 export default ProduitDepose;

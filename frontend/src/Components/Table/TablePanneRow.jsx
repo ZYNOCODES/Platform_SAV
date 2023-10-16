@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import VoirButton from '../Buttons/buttonVoir';
-
+import moment from 'moment-timezone';
 import { useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../hooks/useAuthContext';
@@ -38,7 +38,7 @@ function TablePanneRow ({Panne}){
       (shouldHighlightRedRow ? ('-red-row') : (shouldHighlightOrangeRow ? '-orange-row' : '')): ''}`} >
       <td className="table-patients-td-nom">{Panne.id}</td>
       <td className="table-patients-td-nom">{Panne.Nom}{' '}{Panne.Prenom}</td>
-      <td className="table-patients-td-annee">{Panne.DateDepot}</td>
+      <td className="table-patients-td-annee">{formatDate(Panne.DateDepot)}</td>
       <td className="table-patients-td-willaya">{Panne.CentreDepot}</td>
       <td className="table-patients-td-region">{Panne.TypePanne}</td>
       <td className="table-patients-td-region">{Panne?.StatueGarantie}</td>
@@ -48,5 +48,21 @@ function TablePanneRow ({Panne}){
     </tr>
   )
 }
+function formatDate(dateString) {
+  const timeZone = 'Africa/Algiers'; // Algeria's time zone
+  const date = moment(dateString).tz(timeZone);
+  const monthNames = [
+    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+  ];
+  const month = monthNames[date.month()];
+  const day = date.date();
+  const year = date.year();
+  const hours = date.hours();
+  const minutes = date.minutes();
 
+  const formattedDate = `${month} ${day}, ${year} at ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+  return formattedDate;
+
+}
 export default TablePanneRow

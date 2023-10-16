@@ -3,6 +3,7 @@ const {
     index,
     GetAllDelivred,
     GetByID,
+    GetByUserID,
     GetByRefProduct,
     Create,
     Update,
@@ -20,6 +21,7 @@ const router = express.Router();
 router.get('/', index);
 router.get('/Delivred', GetAllDelivred);
 router.get('/:id', GetByID);
+router.get('/byuser/:id', GetByUserID);
 router.get('/All/:Ref/:id', GetByRefProduct);
 router.get('/Product/Top3', GetTop3Product);
 router.get('/Pannes/Top3', GetTop3Pannes);

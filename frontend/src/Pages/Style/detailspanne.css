@@ -10,7 +10,7 @@
   overflow-y: scroll;
   padding: 30px 55px;
 }
-pannedetails-info progressbar .Historique-container {
+.pannedetails-info progressbar .Historique-container {
   width: 100%;
 }
 .pannedetails-title {
@@ -295,7 +295,6 @@ pannedetails-info progressbar .Historique-container {
 .delaimoy{
   padding: 5px 5px;
   color: #d4171b;
-  background-color: #f8f9fd;
   border-radius: 6px;
 }
 

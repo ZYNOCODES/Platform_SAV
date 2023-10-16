@@ -11,6 +11,7 @@ import { useAuthContext } from '../hooks/useAuthContext';
 import CostumSelectCentre from '../Components/Form/CostumSelectCentre';
 import ProgressionSelect from '../Components/Form/ProgressionSelect';
 import './Style/PanneList.css'
+import { CircularProgress } from '@mui/material';
 
 export const PanneList = () => {
     const [add, setAdd] = useState(false);
@@ -66,9 +67,12 @@ export const PanneList = () => {
       fetchPannesData();
     }, [ProduitenPanne, user?.token]);
     const handleNextPage = () => {
-      if (currentPage < Math.ceil(ProduitenPanne.length / rowsPerPage)) {
-        setCurrentPage(currentPage + 1);
+      if(ProduitenPanne !== null){
+        if (currentPage < Math.ceil(ProduitenPanne.length / rowsPerPage)) {
+          setCurrentPage(currentPage + 1);
+        }
       }
+      
     };
     
     const handlePrevPage = () => {
@@ -76,6 +80,7 @@ export const PanneList = () => {
         setCurrentPage(currentPage - 1);
       }
     };
+
   return (
     <>
     <MyNavBar  act={act} setAct={setAct} />
@@ -111,6 +116,7 @@ export const PanneList = () => {
             </div>
             
           </div>
+          {ProduitenPanne && ProduitenPanne !== undefined ?
           <div className="table-patients">
             <table>
               <tr className="table-patients-header">
@@ -125,7 +131,7 @@ export const PanneList = () => {
                     <button onClick={handlePrevPage} disabled={currentPage === 1}>
                       <IoArrowBackCircleSharp className='next-back-row-table'/>
                     </button>
-                    <button onClick={handleNextPage} disabled={currentPage === Math.ceil(ProduitenPanne.length / rowsPerPage)}>
+                    <button onClick={ProduitenPanne ? handleNextPage : null} disabled={ProduitenPanne ? currentPage === Math.ceil(ProduitenPanne.length / rowsPerPage) : null}>
                       <IoArrowForwardCircle className='next-back-row-table'/>
                     </button>
                   </div>
@@ -153,6 +159,11 @@ export const PanneList = () => {
               ))}
             </table>
           </div>
+          :
+          <div className="CircularProgress-container">
+            <CircularProgress className='CircularProgress' />
+          </div>
+          }
         </div>
       </div>
     </div>

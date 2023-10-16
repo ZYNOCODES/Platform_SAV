@@ -24,6 +24,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
+import moment from 'moment-timezone';
 
 const DetailsPanneSav = () => {
   const notifyFailed = (message) => toast.error(message);
@@ -371,7 +372,7 @@ const DetailsPanneSav = () => {
             />
             <FormInput
               label="Date de depot:"
-              value={PanneData?.DateDepot}
+              value={formatDate(PanneData?.DateDepot)}
               readOnly
               type="text"
             />
@@ -567,5 +568,21 @@ const DetailsPanneSav = () => {
     </>
   );
 };
+function formatDate(dateString) {
+  const timeZone = 'Africa/Algiers'; // Algeria's time zone
+  const date = moment(dateString).tz(timeZone);
+  const monthNames = [
+    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+  ];
+  const month = monthNames[date.month()];
+  const day = date.date();
+  const year = date.year();
+  const hours = date.hours();
+  const minutes = date.minutes();
 
+  const formattedDate = `${month} ${day}, ${year} at ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+  return formattedDate;
+
+}
 export default DetailsPanneSav;

@@ -17,6 +17,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import "react-toastify/dist/ReactToastify.css";
 import moment from 'moment-timezone';
+import { CircularProgress } from '@mui/material';
 
 const ProduitDepose = () => {
     const [act, setAct] = useState(false);
@@ -26,8 +27,7 @@ const ProduitDepose = () => {
     const [PanneData, setPanneData] = useState();
     const {id} = useParams();
     const { user } = useAuthContext();
-
-
+    const [loading, setLoading] = useState(false); // State for CircularProgress
     const [open,setOpen] = React.useState(false);
     const handleClickOpen = () => {
         setOpen(true);
@@ -114,7 +114,7 @@ const ProduitDepose = () => {
         }
     }
     const UpdatePanne = async () =>{
-        handleClose();
+        setLoading(true);
         const reponse = await fetch(`http://localhost:8000/Pannes/${id}`, {
           method: "PATCH",
           headers: {
@@ -134,10 +134,13 @@ const ProduitDepose = () => {
             notifySuccess(json.message);
             createAndDownloadPdf();
             setTimeout(() => {
+                handleClose();
+                setLoading(false); // Hide CircularProgress
                 navigate(`/DetailPanneSav/${id}`)
             }, 2000)
         }
     }
+
     return (
     <>
         <MyNavBar  act={act} setAct={setAct} />
@@ -188,16 +191,16 @@ const ProduitDepose = () => {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleClose} 
-              
-              
-              >Annuller</Button>
-              <Button onClick={UpdatePanne} autoFocus
-             
-              >
+              <Button onClick={handleClose} disabled={loading}>Annuller</Button>
+              <Button onClick={UpdatePanne} autoFocus disabled={loading}>
                 Confirmer
               </Button>
             </DialogActions>
+            {loading && (
+            <div className="CircularProgress-container">
+              <CircularProgress className="CircularProgress" />
+            </div>
+            )}
           </Dialog>
       </div>
     </>

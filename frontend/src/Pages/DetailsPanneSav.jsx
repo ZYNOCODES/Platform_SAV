@@ -25,6 +25,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import moment from 'moment-timezone';
+import { Fa1 } from "react-icons/fa6";
 
 const DetailsPanneSav = () => {
   const notifyFailed = (message) => toast.error(message);
@@ -519,6 +520,27 @@ const DetailsPanneSav = () => {
             </div>
           </div>
         </div>
+
+
+        <div className="Historique-container">
+            <div className="pannedetails-title Historique">
+              <h3>Bons :</h3>
+            </div>
+            <div className="Bons-container">
+              
+              <div className="buttonbons bd">
+                  <input type="submit" value="Bon de depot" className="voir-btn" />
+              </div>
+
+
+              <div className="buttonbons bl">
+                  <input type="submit" value="Bon de Livraison" className="voir-btn" />
+              </div>
+            
+            </div>
+          </div>
+
+
         {ProductData && (
           <div className="Historique-container">
             <div className="pannedetails-title Historique">

@@ -167,7 +167,7 @@ const Create = async (req, res) => {
   // Handle request to create a new Panne
   const { Nom, Prenom, Email, Telephone, 
     ReferanceProduit, TypePanne, Wilaya, 
-    CentreDepot, DateDepot} = req.body;
+    CentreDepot, DateDepot, PDFFilename} = req.body;
 try {
     // validation
     if(!Nom || !Prenom || !Email || !Telephone || !ReferanceProduit 
@@ -183,8 +183,8 @@ try {
         return res.status(400).json({message: "L'email n'est pas valide"});
     }
     const newPanne = await Panne.create({ Nom, Prenom, Email, Telephone, 
-      ReferanceProduit, TypePanne, Wilaya, 
-      CentreDepot, DateDepot }).then(async () => {
+      ReferanceProduit, TypePanne, Wilaya,
+      CentreDepot, DateDepot, [PDFFilename.startsWith('BD') ? 'BDPDFfile' : 'BLPDFfile']: PDFFilename }).then(async () => {
         const dashboard = await Dashboard.findOne({
           where: {
             createdAt : new Date().toISOString().slice(0, 10),
@@ -269,7 +269,7 @@ try {
 const Update = async (req, res) => {
   // Handle request to update a Panne
   const { id } = req.params;
-  const { progres, action, userID } = req.body;
+  const { progres, action, userID, PDFFilename } = req.body;
   try {
     //get user by id
     const panne = await Panne.findByPk(id);
@@ -281,6 +281,11 @@ const Update = async (req, res) => {
     // assign panne new values
     panne.Progres = progres;
     panne.UserID = userID;
+    if(PDFFilename && PDFFilename.startsWith('BD')){
+      panne.BDPDFfile = PDFFilename;
+    }else if(PDFFilename && PDFFilename.startsWith('BL')){
+      panne.BLPDFfile = PDFFilename;
+    }
     // current date
     const todayDate = new Date().toISOString();
     if(progres == 1){

@@ -1,7 +1,9 @@
 const puppeteer = require('puppeteer');
+const Panne = require('../models/PannesModel');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const { PDFDocument } = require('pdf-lib');
+const fs = require('fs');
 const PDFGenerator = async (req, res) => {
     const { BonDepot } = req.params;
     const { Nom,
@@ -14,7 +16,8 @@ const PDFGenerator = async (req, res) => {
         CentreDepot,
         DateDepot, 
         type, 
-        postalCode } = req.body;
+        postalCode,
+        UserID } = req.body;
     const pdfTemplate = require(`../documents/${BonDepot}`);
     try {
         const browser = await puppeteer.launch();
@@ -74,6 +77,35 @@ const PDFSender = async (req, res) => {
         res.status(500).send("Error sending PDF");
     }
 };
+
+const PDFDownloader = async (req, res) => {
+    try {
+        const {filename} = req.params;
+
+        if (!filename) {
+            return res.status(400).send("Filename parameter missing");
+        }
+
+        const filePath = path.join(__dirname, '..', 'files', filename);
+
+        // Check if the file exists
+        if (fs.existsSync(filePath)) {
+            // If the file exists, send it to the browser for download
+            res.download(filePath, filename, (err) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send("Error downloading the file");
+                }
+            });
+        } else {
+            res.status(404).send("File not found");
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error processing the request");
+    }
+};
+
 // generate PDF unique ID
 function generateUniqueID(type, willaya, postalCode) {
     // Generate a random 4-digit number
@@ -91,4 +123,5 @@ function generateUniqueID(type, willaya, postalCode) {
 module.exports = {
     PDFGenerator,
     PDFSender,
+    PDFDownloader,
 };

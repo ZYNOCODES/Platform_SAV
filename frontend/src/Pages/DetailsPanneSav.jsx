@@ -259,9 +259,34 @@ const DetailsPanneSav = () => {
       setSousReserveChecked(false);
     }
   }, [PanneData?.StatueGarantie]);
+  //download pdf directly 
+  const downloadPDFFile = async (filename) => {
+    try {
+      const response = await fetch(`http://localhost:8000/EmailGenerator/downloaderPDF/${filename}`);
+      if (response.status === 200) {
+        // If the file exists, trigger the download
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+      } else if (response.status === 404) {
+        notifyFailed('File not found');
+      } else {
+        notifyFailed('Error downloading the file');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handledownloadBDPDFfile = () => {
+    downloadPDFFile(PanneData?.BDPDFfile);
+  }
+  const handledownloadBLPDFfile = () => {
+    downloadPDFFile(PanneData?.BLPDFfile);
+  }
   //Go back to previous page
-
-  
   const GoBackPressed = () => {
     if (PanneData?.Progres != 0) {
       navigate("/liste_des_pannes");
@@ -520,27 +545,19 @@ const DetailsPanneSav = () => {
             </div>
           </div>
         </div>
-
-
         <div className="Historique-container">
             <div className="pannedetails-title Historique">
-              <h3>Bons :</h3>
+              <h3>Bon :</h3>
             </div>
             <div className="Bons-container">
-              
               <div className="buttonbons bd">
-                  <input type="submit" value="Bon de depot" className="voir-btn" />
+                  <input type="submit" value="Bon de depot" onClick={handledownloadBDPDFfile} className="voir-btn" />
               </div>
-
-
               <div className="buttonbons bl">
-                  <input type="submit" value="Bon de Livraison" className="voir-btn" />
+                  <input type="submit" value="Bon de Livraison" onClick={handledownloadBLPDFfile} className="voir-btn" />
               </div>
-            
             </div>
           </div>
-
-
         {ProductData && (
           <div className="Historique-container">
             <div className="pannedetails-title Historique">

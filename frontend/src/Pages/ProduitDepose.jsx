@@ -29,14 +29,13 @@ const ProduitDepose = () => {
     const { user } = useAuthContext();
     const [loading, setLoading] = useState(false); // State for CircularProgress
     const [open,setOpen] = React.useState(false);
+    const [PostalCode, setPostalCode] = useState('');
     const handleClickOpen = () => {
         setOpen(true);
     };
-
     const handleClose = () => {
         setOpen(false);
     };
-
     const GoBackPressed =()=>{
         navigate(-1);
     }
@@ -67,54 +66,67 @@ const ProduitDepose = () => {
             navigate(`/DetailPanneSav/${id}`)
         }
     }, [id, PanneData, user?.token, navigate]);
+
     const createAndDownloadPdf = async () => {
+        setLoading(true); // Show CircularProgress
         try {
-            const response = await fetch('http://localhost:8000/EmailGenerator/createPDF/BonV3', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    Nom: PanneData.Nom,
-                    Prenom: PanneData.Prenom,
-                    Email: PanneData.Email,
-                    Telephone: PanneData.Telephone,
-                    ReferanceProduit: PanneData.ReferanceProduit,
-                    TypePanne: PanneData.TypePanne,
-                    Wilaya: PanneData.Wilaya,
-                    CentreDepot: PanneData.CentreDepot,
-                    DateDepot: new Date().toISOString().slice(0, 10),
-                })
-            });
-    
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            if(PanneData?.BDPDFfile === null || PanneData?.BDPDFfile === undefined){
+                const response = await fetch('http://localhost:8000/EmailGenerator/createPDF/BonV3', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        Nom: PanneData.Nom,
+                        Prenom: PanneData.Prenom,
+                        Email: PanneData.Email,
+                        Telephone: PanneData.Telephone,
+                        ReferanceProduit: PanneData.ReferanceProduit,
+                        TypePanne: PanneData.TypePanne,
+                        Wilaya: PanneData.Wilaya,
+                        CentreDepot: PanneData.CentreDepot,
+                        DateDepot: new Date().toISOString().slice(0, 10),
+                        type: 'BD',  
+                        postalCode: '06'
+                    })
+                    });
+            
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+            
+                    if(response.ok){
+                        const uniqueFilename = await response.text();
+            
+                        const pdfResponse = await fetch(`http://localhost:8000/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/pdf'
+                            }
+                        });
+                
+                        if (!pdfResponse.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                
+                        if(pdfResponse.ok){
+                            const pdfBlob = await pdfResponse.blob();
+                            const link = document.createElement('a');
+                            link.href = URL.createObjectURL(pdfBlob);
+                            link.download = uniqueFilename;
+                            link.click();
+                            UpdatePanne(uniqueFilename);
+                        }
+                    }
+            }else{
+                UpdatePanne();
             }
-    
-            const uniqueFilename = await response.text();
-    
-            const pdfResponse = await fetch(`http://localhost:8000/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/pdf'
-                }
-            });
-    
-            if (!pdfResponse.ok) {
-                throw new Error('Network response was not ok');
-            }
-    
-            const pdfBlob = await pdfResponse.blob();
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(pdfBlob);
-            link.download = 'newPdf.pdf';
-            link.click();
+            
         } catch (error) {
             console.error('Fetch error:', error);
         }
     }
-    const UpdatePanne = async () =>{
-        setLoading(true);
+    const UpdatePanne = async (PDFFilename) =>{
         const reponse = await fetch(`http://localhost:8000/Pannes/${id}`, {
           method: "PATCH",
           headers: {
@@ -122,6 +134,7 @@ const ProduitDepose = () => {
           },
           body: JSON.stringify({ 
             progres : 1, userID: user?.id, action: `deposer la panne ID= ${id}`,
+            PDFFilename
           }),
         });
     
@@ -131,16 +144,14 @@ const ProduitDepose = () => {
             notifyFailed(json.message);
         }
         if (reponse.ok) {
+            setLoading(false); // Hide CircularProgress
+            handleClose();
             notifySuccess(json.message);
-            createAndDownloadPdf();
             setTimeout(() => {
-                handleClose();
-                setLoading(false); // Hide CircularProgress
                 navigate(`/DetailPanneSav/${id}`)
             }, 2000)
         }
     }
-
     return (
     <>
         <MyNavBar  act={act} setAct={setAct} />
@@ -178,7 +189,7 @@ const ProduitDepose = () => {
         <div>
           <Dialog
             open={open}
-            onClose={handleClose}
+            onClose={false}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
@@ -192,7 +203,7 @@ const ProduitDepose = () => {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose} disabled={loading}>Annuller</Button>
-              <Button onClick={UpdatePanne} autoFocus disabled={loading}>
+              <Button onClick={createAndDownloadPdf} autoFocus disabled={loading}>
                 Confirmer
               </Button>
             </DialogActions>

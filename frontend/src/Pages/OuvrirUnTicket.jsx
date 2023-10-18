@@ -132,9 +132,9 @@ const OuvrirUnTicket = () => {
                         const pdfBlob = await pdfResponse.blob();
                         const link = document.createElement('a');
                         link.href = URL.createObjectURL(pdfBlob);
-                        link.download = 'Bon_de_depot.pdf';
+                        link.download = uniqueFilename;
                         link.click();
-                        handleCreateNewPanneWithPDF();
+                        handleCreateNewPanneWithPDF(uniqueFilename);
                     }
                 }
             }
@@ -142,7 +142,7 @@ const OuvrirUnTicket = () => {
             console.error('Fetch error:', error);
         }
     }
-    async function handleCreateNewPanneWithPDF() {
+    async function handleCreateNewPanneWithPDF(PDFFilename) {
         const reponse = await fetch("http://localhost:8000/Pannes", {
             method: "POST",
             headers: {
@@ -152,7 +152,7 @@ const OuvrirUnTicket = () => {
             body: JSON.stringify({
                 Nom, Prenom, Email, Telephone, 
                 ReferanceProduit, TypePanne, Wilaya, 
-                CentreDepot, DateDepot
+                CentreDepot, DateDepot, PDFFilename
             }),
           });
       
@@ -210,7 +210,7 @@ const OuvrirUnTicket = () => {
                 <PanneSelect label='Type de panne :' placeholder=' Entrer le type de panne' type='text' onChange={handleTypePanneInputChange}/>
                 <WilayaSelect label='Wilaya :' placeholder=' Entrer le type de panne' onChange={handleWilayaInputChange}/>
                 <SavSelect label='Centre De Depot :' placeholder=' Entrer votre centre de depot' type='text' onChange={handleCentreDepotInputChange}/>
-                <FormInput label='Date de depot :' placeholder=' Entrer votre date de depot' type='date' onChange={handleDateDepotInputChange}/>     
+                <FormInput label='Date de depot :' placeholder=' Entrer votre date de depot' type='datetime-local' onChange={handleDateDepotInputChange}/>     
                 <div className='button-section'>
                     <button className='Cancel-btn' type='button' onClick={handleOnback}>Annuler</button>
                     <button className='depose-btn' type='button' onClick={handleClickOpen}>Ouvrir</button>

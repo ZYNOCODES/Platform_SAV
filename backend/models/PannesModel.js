@@ -65,6 +65,14 @@ const Panne = sequelize.define('pannes', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  BDPDFfile:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  BLPDFfile:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   UserID: {
     type: DataTypes.BIGINT,
     allowNull: true,

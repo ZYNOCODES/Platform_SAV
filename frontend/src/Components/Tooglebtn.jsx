@@ -61,7 +61,7 @@ const Tooglebtn = ({ label, value, onChange, disabled, onConfirm }) => {
       <div>
         <Dialog
           open={open}
-          onClose={handleClose}
+          onClose={false}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >

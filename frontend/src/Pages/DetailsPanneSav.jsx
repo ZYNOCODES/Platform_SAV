@@ -568,7 +568,7 @@ const DetailsPanneSav = () => {
         )}
         <Dialog
           open={openDialog}
-          onClose={handleCloseDialog}
+          onClose={false}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >

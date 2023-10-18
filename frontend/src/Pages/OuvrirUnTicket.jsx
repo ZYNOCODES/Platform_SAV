@@ -14,14 +14,16 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import {useNavigate} from 'react-router-dom';
-import MyNavBar from '../Components/navBar';
-import MyAsideBar from '../Components/asideBar';
+import MyNavBar from '../Components/navBar'
+import MyAsideBar from '../Components/asideBar'
 import WilayaSelect from '../Components/Form/WilayaSelect';
+import { CircularProgress } from '@mui/material';
+import validator from 'validator';
 
 const OuvrirUnTicket = () => {
-    const [act, setAct] = useState(false);
     const notifyFailed = (message) => toast.error(message);
     const notifySuccess = (message) => toast.success(message);
+    const [act, setAct] = useState();
     const [Nom, setNom] = useState('');
     const [Prenom, setPrenom] = useState('');
     const [Email, setEmail] = useState('');
@@ -29,9 +31,12 @@ const OuvrirUnTicket = () => {
     const [ReferanceProduit, setReferanceProduit] = useState('');
     const [TypePanne, setTypePanne] = useState('');
     const [Wilaya, setWilaya] = useState('');
+    const [PostalCode, setPostalCode] = useState('');
     const [CentreDepot, setCentreDepot] = useState('');
     const [DateDepot, setDateDepot] = useState('');
     const [open,setOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const handleClickOpen = () => {
@@ -40,7 +45,9 @@ const OuvrirUnTicket = () => {
 
     const handleClose = () => {
         setOpen(false);
+        setLoading(false);
     }; 
+    const [isValid, setIsValid] = useState(true);
 
     const handleNomInputChange = (newValue) => {
         setNom(newValue);
@@ -49,7 +56,11 @@ const OuvrirUnTicket = () => {
         setPrenom(newValue);
     };
     const handleEmailInputChange = (newValue) => {
-        setEmail(newValue);
+        if (validator.isEmail(newValue)) {
+            setEmail(newValue);
+        }else{
+            setEmail('invalid');
+        }
     };
     const handleTelephoneInputChange = (newValue) => {
         setTelephone(newValue);
@@ -60,8 +71,9 @@ const OuvrirUnTicket = () => {
     const handleTypePanneInputChange = (newValue) => {
         setTypePanne(newValue);
     };
-    const handleWilayaInputChange = (newValue) => {
-        setWilaya(newValue);
+    const handleWilayaInputChange = (selectedValue, selectedKey) => {
+        setWilaya(selectedValue);
+        setPostalCode(selectedKey);
     };
     const handleCentreDepotInputChange = (newValue) => {
         setCentreDepot(newValue);
@@ -69,9 +81,16 @@ const OuvrirUnTicket = () => {
     const handleDateDepotInputChange = (newValue) => {
         setDateDepot(newValue);
     };
+    
     const createAndDownloadPdf = async () => {
+        setLoading(true); // Show CircularProgress
         try {
-            const response = await fetch('http://localhost:8000/EmailGenerator/createPDF/BonV3', {
+            if((Nom === undefined || Prenom === undefined || Email === undefined || Email === 'invalid' || Telephone === undefined || ReferanceProduit === undefined || TypePanne === undefined || Wilaya === undefined || CentreDepot === undefined || DateDepot === undefined || PostalCode === undefined)||
+            (!Nom || !Prenom || !Email || !Telephone || !ReferanceProduit || !TypePanne || !Wilaya || !CentreDepot || !DateDepot || !PostalCode)){
+                handleCreateNewPanneWithPDF();
+                handleClose();
+            }else{
+                const response = await fetch('http://localhost:8000/EmailGenerator/createPDF/BonV3', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -85,39 +104,45 @@ const OuvrirUnTicket = () => {
                     TypePanne,
                     Wilaya,
                     CentreDepot,
-                    DateDepot
+                    DateDepot,
+                    type: 'BD',  
+                    postalCode: PostalCode
                 })
-            });
-    
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-    
-            const uniqueFilename = await response.text();
-    
-            const pdfResponse = await fetch(`http://localhost:8000/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/pdf'
+                });
+        
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
-            });
-    
-            if (!pdfResponse.ok) {
-                throw new Error('Network response was not ok');
+        
+                if(response.ok){
+                    const uniqueFilename = await response.text();
+        
+                    const pdfResponse = await fetch(`http://localhost:8000/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/pdf'
+                        }
+                    });
+            
+                    if (!pdfResponse.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+            
+                    if(pdfResponse.ok){
+                        const pdfBlob = await pdfResponse.blob();
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(pdfBlob);
+                        link.download = 'Bon_de_depot.pdf';
+                        link.click();
+                        handleCreateNewPanneWithPDF();
+                    }
+                }
             }
-    
-            const pdfBlob = await pdfResponse.blob();
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(pdfBlob);
-            link.download = 'newPdf.pdf';
-            link.click();
         } catch (error) {
             console.error('Fetch error:', error);
         }
     }
-    async function handleCreateNewPanneWithPDF(e) {
-        handleClose();
-        e.preventDefault();
+    async function handleCreateNewPanneWithPDF() {
         const reponse = await fetch("http://localhost:8000/Pannes", {
             method: "POST",
             headers: {
@@ -130,12 +155,14 @@ const OuvrirUnTicket = () => {
                 CentreDepot, DateDepot
             }),
           });
+      
           const json = await reponse.json();
           if (!reponse.ok) {
               notifyFailed(json.message);
           }
           if (reponse.ok) {
-            createAndDownloadPdf();
+            setLoading(false); // Hide CircularProgress
+            handleClose();
             notifySuccess(json.message);
           }
     };
@@ -192,23 +219,37 @@ const OuvrirUnTicket = () => {
         </form>
         <Dialog
             open={open}
-            onClose={handleClose}
+            onClose={false}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
+            {!loading && (<>
             <DialogTitle id="alert-dialog-title">
                 {`Souhaitez-vous télécharger le bon de dépôt ?`}
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    En cliquant sur 'Oui', le bon de dépôt sera téléchargé automatiquement.                </DialogContentText>
+                    En choisissant l'option 'Oui', le bon de dépôt sera automatiquement téléchargé, tandis qu'en sélectionnant 'Non', le bon de dépôt ne sera pas téléchargé, mais la panne sera enregistrée pour être traitée.
+                </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleCreateNewPanneNoPDF}>Non</Button>
-                <Button onClick={handleCreateNewPanneWithPDF} autoFocus>
+                <Button onClick={handleClose}>remodifier mes infos</Button>
+                <Button onClick={handleCreateNewPanneNoPDF} disabled={loading}>Non</Button>
+                <Button onClick={createAndDownloadPdf} autoFocus disabled={loading}>
                     Oui
                 </Button>
             </DialogActions>
+            </>)}
+            {loading && (
+            <div className="CircularProgress-container">
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Ce processus peut prendre du temps en fonction de votre connexion Internet. Veuillez patienter jusqu'à la fin.
+                    </DialogContentText>
+                </DialogContent>
+              <CircularProgress className="CircularProgress" />
+            </div>
+            )}
         </Dialog>
         <ToastContainer />
     </div>

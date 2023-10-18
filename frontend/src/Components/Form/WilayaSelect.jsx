@@ -3,8 +3,11 @@ import React, { useEffect, useState } from 'react'
 
 const WilayaSelect = (props) => {
   const handleChange = (event) => {
+    const selectedValue = event.target.value;
+    const selectedKey = event.target.selectedOptions[0].dataset.key;
+  
     if (props.onChange) {
-      props.onChange(event.target.value);
+      props.onChange(selectedValue, selectedKey);
     }
   };
   const [Willaya, setWillaya] = useState([]);
@@ -37,10 +40,10 @@ const WilayaSelect = (props) => {
       <select onChange={handleChange}>
         <option value=''>Sélectionné votre willaya</option>
         {Willaya.map((willaya) => (
-            <option key={willaya?.id} value={willaya?.Nom}>
+            <option data-key={willaya?.code} value={willaya?.Nom}>
                 {willaya?.Nom}
             </option>
-        ))}     
+        ))}   
       </select>
     </div>
     

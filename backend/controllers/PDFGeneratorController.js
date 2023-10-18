@@ -1,9 +1,20 @@
 const puppeteer = require('puppeteer');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
-
+const { PDFDocument } = require('pdf-lib');
 const PDFGenerator = async (req, res) => {
     const { BonDepot } = req.params;
+    const { Nom,
+        Prenom,
+        Email,
+        Telephone,
+        ReferanceProduit,
+        TypePanne,
+        Wilaya,
+        CentreDepot,
+        DateDepot, 
+        type, 
+        postalCode } = req.body;
     const pdfTemplate = require(`../documents/${BonDepot}`);
     try {
         const browser = await puppeteer.launch();
@@ -11,8 +22,19 @@ const PDFGenerator = async (req, res) => {
 
         // Set the page size to A4
         await page.setViewport({ width: 595, height: 842 }); // A4 dimensions in pixels
+        // generate unique ID for pdf document
+        const BonID = generateUniqueID(type, Wilaya, postalCode)
 
-        const content = pdfTemplate(req.body);
+        const content = pdfTemplate({Nom,
+            Prenom,
+            Email,
+            Telephone,
+            ReferanceProduit,
+            TypePanne,
+            Wilaya,
+            CentreDepot,
+            DateDepot,
+            BonID});
 
         // Set the HTML content of the page
         await page.setContent(content);
@@ -23,7 +45,7 @@ const PDFGenerator = async (req, res) => {
             printBackground: true,
         });
 
-        const uniqueFilename = `${uuidv4()}.pdf`;
+        const uniqueFilename = `${generateUniqueID(type, Wilaya, postalCode)}.pdf`;
         const filePath = path.join(__dirname, '..', 'files', uniqueFilename);
 
         // Write the PDF to a file
@@ -52,8 +74,21 @@ const PDFSender = async (req, res) => {
         res.status(500).send("Error sending PDF");
     }
 };
-
+// generate PDF unique ID
+function generateUniqueID(type, willaya, postalCode) {
+    // Generate a random 4-digit number
+    const randomNum = Math.floor(Math.random() * 1000).toString().padStart(4, '0');
+  
+    // Get the current date and time in a specific format
+    const currentDate = new Date();
+    const datePart = currentDate.toISOString().slice(0, 19).replace(/[-T:]/g, '');
+  
+    // Combine all the parts to create the unique ID
+    const uniqueID = `${type}${randomNum}${datePart}${postalCode*1000}`;
+  
+    return uniqueID;
+}
 module.exports = {
     PDFGenerator,
-    PDFSender
+    PDFSender,
 };

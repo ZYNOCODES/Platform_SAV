@@ -1,7 +1,7 @@
 const express = require('express');
 const {
     PDFGenerator,
-    PDFSender
+    PDFSender,
 } = require('../controllers/PDFGeneratorController');
 
 const router = express.Router();

@@ -298,6 +298,40 @@
   border-radius: 6px;
 }
 
+.Bons-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+ 
+}
+
+.Bons-container .buttonbons{
+  height: 50px;
+  width: 200px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  gap: 15px;
+  padding-left: 10px;
+  margin-top: 30px;
+  padding-right: 10px;
+  cursor: pointer;
+  
+ 
+}
+
+.bd{
+  background-color: #d4171b;
+ 
+}
+
+.bl{
+  background-color: #00ca0d;
+ 
+}
 @media only screen and (max-width: 1215px) {
   .pannedetails-container {
     padding: 10px 10px;

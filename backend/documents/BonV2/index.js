@@ -1,6 +1,6 @@
 module.exports = ({ Nom, Prenom, Email, Telephone, 
    ReferanceProduit, TypePanne, Wilaya, 
-   CentreDepot, DateDepot }) => {
+   CentreDepot, DateDepot, BonID }) => {
     const today = new Date();
 return `
       <!doctype html>
@@ -134,7 +134,7 @@ return `
                               SAV ${CentreDepot}
                         </h3>
                         <h3>
-                              Reference: ${ReferanceProduit}
+                              Reference: ${BonID}
                         </h3>
                      </div>
                      <h3>

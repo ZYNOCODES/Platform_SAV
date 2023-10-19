@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const { PDFDocument } = require('pdf-lib');
 const fs = require('fs');
+
 const PDFGenerator = async (req, res) => {
     const { BonDepot } = req.params;
     const { Nom,

@@ -26,6 +26,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import moment from 'moment-timezone';
 import { Fa1 } from "react-icons/fa6";
+import { CircularProgress } from '@mui/material';
 
 const DetailsPanneSav = () => {
   const notifyFailed = (message) => toast.error(message);
@@ -37,7 +38,7 @@ const DetailsPanneSav = () => {
   const { id } = useParams();
   const { user } = useAuthContext();
   const [image, setSelectedImage] = useState(null);
-  const [progress, setProgress] = useState(0);
+  const [ToggleValue, setToggleValue] = useState(0);
   const [disabledButtons, setDisabledButtons] = useState([
     false,
     false,
@@ -49,7 +50,11 @@ const DetailsPanneSav = () => {
   const [horsGarantieChecked, setHorsGarantieChecked] = useState(false);
   const [sousReserveChecked, setSousReserveChecked] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogPDF, setOpenDialogPDF] = useState(false);
   const [selectedCheckboxLabel, setSelectedCheckboxLabel] = useState('');
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false); // State for CircularProgress
+  const [lableACT, setlableACT] = useState('');
   //Upload image to server
   const uploadImage = async (e) => {
     e.preventDefault();
@@ -128,14 +133,93 @@ const DetailsPanneSav = () => {
 
     fetchAllPannesDataOfProduct();
   }, [id, user?.token, PanneData?.ReferanceProduit, ProductData]);
-  const UpdatePanne = async (val, Act) => {
+  //create pdf file and download it
+  const createAndDownloadPdf = async () => {
+    setLoading(true); // show CircularProgress
+    try {
+      if(ToggleValue === 3 || ToggleValue === 4 || ToggleValue === 5){
+        if(PanneData?.BLPDFfile === null || PanneData?.BLPDFfile === undefined){
+            const response = await fetch('http://localhost:8000/EmailGenerator/createPDF/BonV2', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    Nom: PanneData.Nom,
+                    Prenom: PanneData.Prenom,
+                    Email: PanneData.Email,
+                    Telephone: PanneData.Telephone,
+                    ReferanceProduit: PanneData.ReferanceProduit,
+                    TypePanne: PanneData.TypePanne,
+                    Wilaya: PanneData.Wilaya,
+                    CentreDepot: PanneData.CentreDepot,
+                    DateDepot: new Date().toISOString().slice(0, 10),
+                    type: 'BL',  
+                    postalCode: '06'
+                })
+                });
+        
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+        
+                if(response.ok){
+                    const uniqueFilename = await response.text();
+        
+                    const pdfResponse = await fetch(`http://localhost:8000/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/pdf'
+                        }
+                    });
+            
+                    if (!pdfResponse.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+            
+                    if(pdfResponse.ok){
+                        const pdfBlob = await pdfResponse.blob();
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(pdfBlob);
+                        link.download = uniqueFilename;
+                        link.click();
+                        if (ToggleValue === 3) {
+                          UpdatePanne(ToggleValue, "Panne En reparation au centre a été vérifiée avec succès.",uniqueFilename);
+                        } else if (ToggleValue === 4) {
+                          UpdatePanne(ToggleValue, "Panne en attente de pickup a été vérifiée avec succès.",uniqueFilename);
+                        } else if (ToggleValue === 5) {
+                          UpdatePanne(ToggleValue, "Panne livrée a été vérifiée avec succès.",uniqueFilename);
+                        }
+                    }
+                }
+        }else{
+          if (ToggleValue === 4) {
+            UpdatePanne(ToggleValue, "Panne en attente de pickup a été vérifiée avec succès.");
+          } else if (ToggleValue === 5) {
+            UpdatePanne(ToggleValue, "Panne livrée a été vérifiée avec succès.");
+          }
+        }
+      }else if(ToggleValue === 1 || ToggleValue === 2){
+        if (ToggleValue === 1) {
+          UpdatePanne(ToggleValue, "Panne en attente de depot a été vérifiée avec succès.");
+        } else if (ToggleValue === 2) {
+          UpdatePanne(ToggleValue, "Panne en attente de réparation a été vérifiée avec succès.");
+        }
+      }
+    } catch (error) {
+        console.error('Fetch error:', error);
+    }
+  }
+  //update pannes progress state
+  const UpdatePanne = async (val, Act,uniqueFilename) => {
     const reponse = await fetch(`http://localhost:8000/Pannes/${id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        progres: val,userID: user?.id, action: `Mettre à jour la Progression avec ${Act} pour la panne ID= ${id}`
+        progres: val,userID: user?.id, action: `Mettre à jour la Progression avec ${Act} pour la panne ID= ${id}`,
+        PDFFilename: uniqueFilename
       }),
     });
 
@@ -145,6 +229,8 @@ const DetailsPanneSav = () => {
       notifyFailed(json.message);
     }
     if (reponse.ok) {
+      setLoading(false); // Hide CircularProgress
+      setOpenDialogPDF(false);
       if (val === 1) {
         notifySuccess(Act);
       } else if (val === 2) {
@@ -191,22 +277,19 @@ const DetailsPanneSav = () => {
         (_, index) => index < value - 1
       );
       setDisabledButtons(updatedDisabledButtons);
-      setProgress(value);
+      setToggleValue(value);
       if (!disabledButtons[value - 1]) {
-        if (value === 1) {
-          UpdatePanne(value, "Panne en attente de depot a été vérifiée avec succès.");
-        } else if (value === 2) {
-          UpdatePanne(value, "Panne en attente de réparation a été vérifiée avec succès.");
-
-        } else if (value === 3) {
-          UpdatePanne(value, "Panne En reparation au centre a été vérifiée avec succès.");
-
-        } else if (value === 4) {
-          UpdatePanne(value, "Panne en attente de pickup a été vérifiée avec succès.");
-        } else if (value === 5) {
-          UpdatePanne(value, "Panne livrée a été vérifiée avec succès.");
-        }else{
-          UpdatePanne(value)
+        setOpenDialogPDF(true);
+        if(value === 1) {
+          setlableACT("Panne en attente de depot a été vérifiée avec succès.");
+        }else if(value === 2) {
+          setlableACT("Panne En reparation au centre a été vérifiée avec succès.");
+        }else if(value === 3) {
+          setlableACT("Panne en attente de réparation a été vérifiée avec succès.");
+        }else if(value === 4) {
+          setlableACT("Panne en attente de pickup a été vérifiée avec succès.");
+        }else if(value === 5) {
+          setlableACT("Panne livrée a été vérifiée avec succès.");
         }
       } else {
         UpdatePanne(1);
@@ -294,11 +377,6 @@ const DetailsPanneSav = () => {
       navigate(-1);
     }
   };
-  //confirm the change of progress state
-  const handleConfirm = (value) => {
-    // Handle the "Confirmer" button click based on the selected value
-    UpdatePanne(value);
-  };
   // handle open the dialog based on the selected value
   const handleCheckboxClick = (label) => {
     setSelectedCheckboxLabel(label);
@@ -307,6 +385,10 @@ const DetailsPanneSav = () => {
   // handle close button click of the dialog
   const handleCloseDialog = () => {
     setOpenDialog(false);
+  };
+  // handle open button click of the dialog
+  const handleCloseDialogPDF = () => {
+    setOpenDialogPDF(false);
   };
   // handle the "Confirmer" button click of the dialog
   const handleChange = () => {
@@ -479,35 +561,30 @@ const DetailsPanneSav = () => {
               value={1}
               onChange={handleProgressChange}
               disabled={disabledButtons[0]}
-              onConfirm={handleConfirm}
-            />
-            <Tooglebtn
-              label="en attente de réparation"
-              value={2}
-              onChange={handleProgressChange}
-              disabled={disabledButtons[1]}
-              onConfirm={handleConfirm}
             />
             <Tooglebtn
               label="En reparation au centre"
+              value={2}
+              onChange={handleProgressChange}
+              disabled={disabledButtons[1]}
+            />
+            <Tooglebtn
+              label="Produit réparé"
               value={3}
               onChange={handleProgressChange}
               disabled={disabledButtons[2]}
-              onConfirm={handleConfirm}
             />
             <Tooglebtn
               label="En attente de pickup"
               value={4}
               onChange={handleProgressChange}
               disabled={disabledButtons[3]}
-              onConfirm={handleConfirm}
             />
             <Tooglebtn
               label="Livré au client"
               value={5}
               onChange={handleProgressChange}
               disabled={disabledButtons[4]}
-              onConfirm={handleConfirm}
             />
           </div>
           <div className="right-toogle">
@@ -601,6 +678,39 @@ const DetailsPanneSav = () => {
               Confirmer
             </Button>
           </DialogActions>
+        </Dialog>
+        <Dialog
+          open={openDialogPDF}
+          onClose={false}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          {!loading && (<>
+            <DialogTitle id="alert-dialog-title">
+                {`Confirmez-vous la sélection de l'état "${lableACT}" ?`}
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                Si vous passez à l'état suivant, vous ne pouvez pas revenir en arrière.
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleCloseDialogPDF} disabled={loading}>Annuler</Button>
+                <Button onClick={createAndDownloadPdf} autoFocus disabled={loading}>
+                    Confirmer
+                </Button>
+            </DialogActions>
+            </>)}
+            {loading && (
+            <div className="CircularProgress-container">
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Ce processus peut prendre du temps en fonction de votre connexion Internet. Veuillez patienter jusqu'à la fin.
+                    </DialogContentText>
+                </DialogContent>
+              <CircularProgress className="CircularProgress" />
+            </div>
+            )}
         </Dialog>
         <ToastContainer />
       </div>

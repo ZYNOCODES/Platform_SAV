@@ -29,7 +29,8 @@ const ProduitDepose = () => {
     const { user } = useAuthContext();
     const [loading, setLoading] = useState(false); // State for CircularProgress
     const [open,setOpen] = React.useState(false);
-    const [PostalCode, setPostalCode] = useState('');
+    const [CodePostal, setCodePostal] = useState('0');
+
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -66,7 +67,29 @@ const ProduitDepose = () => {
             navigate(`/DetailPanneSav/${id}`)
         }
     }, [id, PanneData, user?.token, navigate]);
-
+    useEffect(() => {
+        const fetchCodePostalData = async () => {
+          try {
+            const response = await fetch(`http://localhost:8000/Willaya/${PanneData?.Wilaya}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+      
+            if (response.ok) {
+              const data = await response.json();
+              setCodePostal(data.code);
+            } else {
+              console.error("Error receiving Panne data:", response.statusText);
+            }
+          } catch (error) {
+            console.error("Error fetching Panne data:", error);
+          }
+        };
+      
+        fetchCodePostalData();
+      }, [CodePostal, PanneData?.Wilaya]);
     const createAndDownloadPdf = async () => {
         setLoading(true); // Show CircularProgress
         try {
@@ -87,7 +110,7 @@ const ProduitDepose = () => {
                         CentreDepot: PanneData.CentreDepot,
                         DateDepot: new Date().toISOString().slice(0, 10),
                         type: 'BD',  
-                        postalCode: '06'
+                        postalCode: CodePostal
                     })
                     });
             

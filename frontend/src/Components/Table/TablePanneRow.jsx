@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import VoirButton from '../Buttons/buttonVoir';
 import moment from 'moment-timezone';
 import { useState} from 'react';
@@ -26,12 +26,8 @@ function TablePanneRow ({Panne}){
       navigate(`/Details/${Panne.id}`)
     }
   }
-  var shouldHighlightRedRow = calculateDaysDifference(new Date(Panne.DateDepot)) > 3 && Panne.Progres < 3;
-  var shouldHighlightOrangeRow = calculateDaysDifference(new Date(Panne.DateDepot)) > 3 && Panne.Progres >= 3 && Panne.Progres < 5;
-  useEffect(() => {
-    shouldHighlightRedRow = calculateDaysDifference(Panne.DateDepot) > 3 && Panne.Progres < 3;
-    shouldHighlightOrangeRow = calculateDaysDifference(Panne.DateDepot) > 3 && Panne.Progres >= 3 && Panne.Progres < 5;
-  },[shouldHighlightOrangeRow, shouldHighlightOrangeRow]);
+  const shouldHighlightRedRow = useMemo(() => calculateDaysDifference(new Date(Panne.DateDepot)) > 3 && Panne.Progres < 3, [Panne.DateDepot, Panne.Progres]);
+  const shouldHighlightOrangeRow = useMemo(() => calculateDaysDifference(new Date(Panne.DateDepot)) > 3 && Panne.Progres >= 3 && Panne.Progres < 5, [Panne.DateDepot, Panne.Progres]);
 
   return (
     <tr className={`table-nouveau-ne-ligne${(shouldHighlightRedRow || shouldHighlightOrangeRow) ?

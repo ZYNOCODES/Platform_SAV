@@ -55,7 +55,7 @@ export const PanneListLivrees = () => {
       };
     
       fetchPannesData();
-    }, [user?.Role, user.CentreDepot, ProduitenPanne, user?.Centre, user?.token]);
+    }, [user?.Centre, user?.Role, user?.id, user?.token]);
   return (
     <>
     <MyNavBar  act={act} setAct={setAct} />

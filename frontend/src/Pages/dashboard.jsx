@@ -36,7 +36,7 @@ function Dashboard() {
     };
   
     fetchDashboardData();
-  }, [user?.Role, DashboardData, user?.Centre, user?.token]);
+  }, [user?.token]);
   return (
     <>
       <MyNavBar  act={act} setAct={setAct} />

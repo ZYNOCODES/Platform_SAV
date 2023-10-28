@@ -75,8 +75,7 @@ const Users = () => {
         fetchUsersData();
       }
       
-    }, [user.id, UsersData, user?.token, user?.Role, user?.Centre]);
-  
+    }, [user?.Centre, user?.Role, user?.token]);
   return (
     <>
     <MyNavBar  act={act} setAct={setAct} />

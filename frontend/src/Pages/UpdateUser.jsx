@@ -76,7 +76,7 @@ const UpdateUser = () => {
     };
   
     fetchUserData();
-  }, [id, UserData, user?.token]);
+  }, [id, user?.token]);
   const UpdateUser = async () =>{
     const reponse = await fetch("http://localhost:8000/User", {
       method: "PATCH",
@@ -109,7 +109,6 @@ const UpdateUser = () => {
       }, 2000)
     }
   }
-
   const GoBackPressed =()=>{
     navigate(-1);
   }

@@ -28,7 +28,7 @@ export default function MyDashboradTop( {Data}) {
       }
     };
     fetchAverageTime();
-  }, [AverageTime,user?.token]);
+  }, [user?.token]);
   return (
     <div className="dashboard-top">
       <div className="dashboard-item">

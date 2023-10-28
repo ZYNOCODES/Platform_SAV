@@ -11,7 +11,6 @@ const SavSelect = (props) => {
   const [SAV, setSAV] = useState([]);
   const [Agent, setAgent] = useState([]);
   const { user } = useAuthContext();
-
   useEffect(() => {
     const fetchSAVData = async () => {
       try {
@@ -20,6 +19,7 @@ const SavSelect = (props) => {
           headers: {
             "Content-Type": "application/json",
           },
+          Authorization: `Bearer ${user?.token}`,
         });
   
         if (response.ok) {
@@ -34,7 +34,7 @@ const SavSelect = (props) => {
     };
   
     fetchSAVData();
-  }, [SAV]);
+  }, [user?.token]);
   useEffect(() => {
     const fetchAgentData = async () => {
       try {
@@ -43,6 +43,7 @@ const SavSelect = (props) => {
           headers: {
             "Content-Type": "application/json",
           },
+          Authorization: `Bearer ${user?.token}`,
         });
   
         if (response.ok) {
@@ -57,7 +58,7 @@ const SavSelect = (props) => {
     };
   
     fetchAgentData();
-  }, [Agent]);
+  }, [user?.token]);
   return (
     <div className='forminput'>
       <label>{props.label}</label>

@@ -30,9 +30,7 @@ export default function MyNavBar({ act, setAct }) {
     };
   
     fetchUserData();
-  }, [user?.id, user?.token, UserData]); 
-  
-  
+  }, [user?.id, user?.token]); 
   return (
     <div className="Navbar">
       <nav>

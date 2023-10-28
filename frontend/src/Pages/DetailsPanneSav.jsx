@@ -56,7 +56,7 @@ const DetailsPanneSav = () => {
   const [loading, setLoading] = useState(false); // State for CircularProgress
   const [lableACT, setlableACT] = useState('');
   const [CodePostal, setCodePostal] = useState('0');
-
+  const [PanneDataUpdated, setPanneDataUpdated] = useState('');
   //Upload image to server
   const uploadImage = async (e) => {
     e.preventDefault();
@@ -106,7 +106,8 @@ const DetailsPanneSav = () => {
     };
 
     fetchPanneData();
-  }, [id, PanneData, user?.token]);
+    setPanneDataUpdated('');
+  }, [id, user?.token, PanneDataUpdated]);
   //Get all pannes data of a product from server
   useEffect(() => {
     const fetchAllPannesDataOfProduct = async () => {
@@ -134,7 +135,7 @@ const DetailsPanneSav = () => {
     };
 
     fetchAllPannesDataOfProduct();
-  }, [id, user?.token, PanneData?.ReferanceProduit, ProductData]);
+  }, [PanneData?.ReferanceProduit, id, user?.token]);
   useEffect(() => {
     const fetchCodePostalData = async () => {
       try {
@@ -143,6 +144,7 @@ const DetailsPanneSav = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          Authorization: `Bearer ${user?.token}`,
         });
   
         if (response.ok) {
@@ -157,7 +159,7 @@ const DetailsPanneSav = () => {
     };
   
     fetchCodePostalData();
-  }, [CodePostal, PanneData?.Wilaya]);
+  }, [CodePostal, PanneData?.Wilaya, user?.token]);
   //create pdf file and download it
   const createAndDownloadPdf = async () => {
     setLoading(true); // show CircularProgress
@@ -256,6 +258,7 @@ const DetailsPanneSav = () => {
     if (reponse.ok) {
       setLoading(false); // Hide CircularProgress
       setOpenDialogPDF(false);
+      setPanneDataUpdated('Panne updated');
       if (val === 1) {
         notifySuccess(Act);
       } else if (val === 2) {

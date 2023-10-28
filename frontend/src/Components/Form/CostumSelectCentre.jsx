@@ -20,6 +20,7 @@ const CostumSelectCentre = (props) => {
           headers: {
             "Content-Type": "application/json",
           },
+          Authorization: `Bearer ${user?.token}`,
         });
   
         if (response.ok) {
@@ -34,7 +35,7 @@ const CostumSelectCentre = (props) => {
     };
   
     fetchSAVData();
-  }, [SAV]);
+  }, [user?.token]);
   useEffect(() => {
     const fetchAgentData = async () => {
       try {
@@ -43,6 +44,7 @@ const CostumSelectCentre = (props) => {
           headers: {
             "Content-Type": "application/json",
           },
+          Authorization: `Bearer ${user?.token}`,
         });
   
         if (response.ok) {
@@ -57,7 +59,7 @@ const CostumSelectCentre = (props) => {
     };
   
     fetchAgentData();
-  }, [Agent]);
+  }, [user?.token]);
   return (
     <div className='forminput'>
       <label>{props.label}</label>

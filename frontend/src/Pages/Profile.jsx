@@ -41,7 +41,7 @@ const Profile = () =>{
         };
     
         fetchUserData();
-    }, [id, UserData, user?.token]);
+    }, [id, user?.token]);
     useEffect(() => {
         const fetchAverageTime = async () => {
         try {
@@ -64,7 +64,7 @@ const Profile = () =>{
         }
         };
         fetchAverageTime();
-    }, [AverageTime, UserData?.id, user?.token]);
+    }, [UserData?.id, user?.token]);
     useEffect(() => {
         const fetchPanneByuser = async () => {
         try {
@@ -87,7 +87,7 @@ const Profile = () =>{
         }
         };
         fetchPanneByuser();
-    }, [PanneByuser, UserData?.id, user?.token]);
+    }, [UserData?.id, user?.token]);
     //Go back
     const GoBackPressed = () => {
         navigate(-1); 

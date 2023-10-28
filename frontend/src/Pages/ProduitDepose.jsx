@@ -66,7 +66,7 @@ const ProduitDepose = () => {
         if (PanneData?.Progres === 1) {
             navigate(`/DetailPanneSav/${id}`)
         }
-    }, [id, PanneData, user?.token, navigate]);
+    }, [PanneData?.Progres, id, navigate, user?.token]);
     useEffect(() => {
         const fetchCodePostalData = async () => {
           try {
@@ -75,6 +75,7 @@ const ProduitDepose = () => {
               headers: {
                 "Content-Type": "application/json",
               },
+              Authorization: `Bearer ${user?.token}`,
             });
       
             if (response.ok) {
@@ -89,7 +90,7 @@ const ProduitDepose = () => {
         };
       
         fetchCodePostalData();
-      }, [CodePostal, PanneData?.Wilaya]);
+    }, [PanneData?.Wilaya, user?.token]);
     const createAndDownloadPdf = async () => {
         setLoading(true); // Show CircularProgress
         try {

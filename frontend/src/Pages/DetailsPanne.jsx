@@ -40,7 +40,7 @@ const DetailsPanne = () => {
         };
     
         fetchPanneData();
-    }, [id, PanneData, user?.token]);
+    }, [id, user?.token]);
     //Go back to previous page
     const GoBackPressed =()=>{
         navigate(-1);

@@ -1,7 +1,9 @@
+import { useAuthContext } from '../../hooks/useAuthContext';
 import './FormInput.css'
 import React, { useEffect, useState } from 'react'
 
 const WilayaSelect = (props) => {
+  const { user } = useAuthContext();
   const handleChange = (event) => {
     const selectedValue = event.target.value;
     const selectedKey = event.target.selectedOptions[0].dataset.key;
@@ -19,6 +21,7 @@ const WilayaSelect = (props) => {
           headers: {
             "Content-Type": "application/json",
           },
+          Authorization: `Bearer ${user?.token}`,
         });
   
         if (response.ok) {
@@ -33,7 +36,7 @@ const WilayaSelect = (props) => {
     };
   
     fetchWillayaData();
-  }, [Willaya]);
+  }, [user?.token]);
   return (
     <div className='forminput'>
       <label>{props.label}</label>

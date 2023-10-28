@@ -36,7 +36,7 @@ export default function MyDashboradCalendar() {
       }
     };
     fetchTop3Products();
-  },[user?.token, Top3Products]);
+  },[user?.token]);
   useEffect(() => {
     const fetchTop3Pannes = async () => {
       try {
@@ -59,7 +59,7 @@ export default function MyDashboradCalendar() {
       }
     };
     fetchTop3Pannes();
-  },[user?.token, Top3Pannes]);
+  },[user?.token]);
   const Redirection = (ReferanceProduit) => {
     navigate(`/Details/${ReferanceProduit}`)
   }

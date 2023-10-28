@@ -1,7 +1,9 @@
+import { useAuthContext } from '../../hooks/useAuthContext';
 import './FormInput.css'
 import React, { useEffect, useState } from 'react'
 
 const ProductSelect = (props) => {
+  const { user } = useAuthContext();
   const handleChange = (event) => {
     if (props.onChange) {
       props.onChange(event.target.value);
@@ -16,6 +18,7 @@ const ProductSelect = (props) => {
           headers: {
             "Content-Type": "application/json",
           },
+          Authorization: `Bearer ${user?.token}`,
         });
   
         if (response.ok) {
@@ -30,7 +33,7 @@ const ProductSelect = (props) => {
     };
   
     fetchProductData();
-  }, [products]);
+  }, [user?.token]);
   return (
     <div className='forminput'>
       <label>{props.label}</label>

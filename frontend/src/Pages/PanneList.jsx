@@ -65,7 +65,7 @@ export const PanneList = () => {
       };
     
       fetchPannesData();
-    }, [ProduitenPanne, user?.token]);
+    }, [user?.Centre, user?.Role, user?.id, user?.token]);
     const handleNextPage = () => {
       if(ProduitenPanne !== null){
         if (currentPage < Math.ceil(ProduitenPanne.length / rowsPerPage)) {
@@ -74,13 +74,11 @@ export const PanneList = () => {
       }
       
     };
-    
     const handlePrevPage = () => {
       if (currentPage > 1) {
         setCurrentPage(currentPage - 1);
       }
     };
-
   return (
     <>
     <MyNavBar  act={act} setAct={setAct} />

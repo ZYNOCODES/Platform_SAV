@@ -76,7 +76,7 @@ export default function MyChart() {
       }
     };
     fetchDashboardDataWeekly();
-  },[user?.token, DashboardDataWeekly]);
+  },[user?.token]);
   useEffect(() => {
     const fetchDashboardDataMonthly = async () => {
       try {
@@ -99,7 +99,7 @@ export default function MyChart() {
       }
     };
     fetchDashboardDataMonthly();
-  },[user?.token, DashboardDataMonthly]);
+  },[user?.token]);
   useEffect(() => {
     const fetchDashboardDataYearly = async () => {
       try {
@@ -122,7 +122,7 @@ export default function MyChart() {
       }
     };
     fetchDashboardDataYearly();
-  },[user?.token, DashboardDataYearly]);
+  },[user?.token]);
   
   const labelWeekfr = ["Sam", "Dim", "Lun", "Mar", "Mer", "Jeu"];
   const labelMonthfr = ["Jan", "Fev", "Mar", "Avr", "Mai", "Juin", "Juil", "Aout", "Sep", "Oct", "Nov", "Dec"];

@@ -17,8 +17,8 @@ const ProductSelect = (props) => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
           },
-          Authorization: `Bearer ${user?.token}`,
         });
   
         if (response.ok) {

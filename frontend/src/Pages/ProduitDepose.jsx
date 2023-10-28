@@ -74,8 +74,8 @@ const ProduitDepose = () => {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${user?.token}`,
               },
-              Authorization: `Bearer ${user?.token}`,
             });
       
             if (response.ok) {
@@ -98,7 +98,7 @@ const ProduitDepose = () => {
                 const response = await fetch('http://localhost:8000/EmailGenerator/createPDF/BonV3', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
                         Nom: PanneData.Nom,
@@ -125,8 +125,8 @@ const ProduitDepose = () => {
                         const pdfResponse = await fetch(`http://localhost:8000/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
                             method: 'GET',
                             headers: {
-                                'Content-Type': 'application/pdf'
-                            }
+                                'Content-Type': 'application/pdf',
+                            },
                         });
                 
                         if (!pdfResponse.ok) {
@@ -143,9 +143,8 @@ const ProduitDepose = () => {
                         }
                     }
             }else{
-                UpdatePanne();
+              UpdatePanne();
             }
-            
         } catch (error) {
             console.error('Fetch error:', error);
         }
@@ -155,6 +154,7 @@ const ProduitDepose = () => {
           method: "PATCH",
           headers: {
             "content-type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
           },
           body: JSON.stringify({ 
             progres : 1, userID: user?.id, action: `deposer la panne ID= ${id}`,

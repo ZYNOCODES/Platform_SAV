@@ -9,9 +9,13 @@ const {
     UpdateUser,
 } = require('../controllers/UserController');
 const router = express.Router();
+const requireAuth = require('../middleware/requireAuth');
 
 //login
 router.post('/login', Login);
+
+//secure all routes below
+router.use(requireAuth);
 
 //signup
 router.post('/signup', Signup);

@@ -70,7 +70,10 @@ const DetailsPanneSav = () => {
       "http://localhost:8000/Pannes/IMG",
       formData,
       {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 
+          "Content-Type": "multipart/form-data",       
+          Authorization: `Bearer ${user?.token}`,
+        },
       }
     );
     if (result.status === 200) {
@@ -143,8 +146,8 @@ const DetailsPanneSav = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
           },
-          Authorization: `Bearer ${user?.token}`,
         });
   
         if (response.ok) {
@@ -197,7 +200,7 @@ const DetailsPanneSav = () => {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/pdf'
-                        }
+                        },
                     });
             
                     if (!pdfResponse.ok) {
@@ -243,6 +246,7 @@ const DetailsPanneSav = () => {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
       },
       body: JSON.stringify({
         progres: val,userID: user?.id, action: `Mettre à jour la Progression avec ${Act} pour la panne ID= ${id}`,
@@ -277,6 +281,7 @@ const DetailsPanneSav = () => {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
       },
       body: JSON.stringify({
         StatueGarantie: val,userID: user?.id, action: `Mettre à jour le Statut Garantie avec ${val} pour la panne ID= ${id}`
@@ -373,7 +378,12 @@ const DetailsPanneSav = () => {
   //download pdf directly 
   const downloadPDFFile = async (filename) => {
     try {
-      const response = await fetch(`http://localhost:8000/EmailGenerator/downloaderPDF/${filename}`);
+      const response = await fetch(`http://localhost:8000/EmailGenerator/downloaderPDF/${filename}`,{
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        }
+      });
       if (response.status === 200) {
         // If the file exists, trigger the download
         const blob = await response.blob();

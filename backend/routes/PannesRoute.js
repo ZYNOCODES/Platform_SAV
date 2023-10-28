@@ -16,8 +16,11 @@ const {
     calculateAverageRepairTime
 } = require('../controllers/PannesController');
 const router = express.Router();
+const requireAuth = require('../middleware/requireAuth');
 
-
+router.post('/', Create);
+//secure all routes below
+router.use(requireAuth);
 router.get('/', index);
 router.get('/Delivred', GetAllDelivred);
 router.get('/:id', GetByID);
@@ -25,7 +28,6 @@ router.get('/byuser/:id', GetByUserID);
 router.get('/All/:Ref/:id', GetByRefProduct);
 router.get('/Product/Top3', GetTop3Product);
 router.get('/Pannes/Top3', GetTop3Pannes);
-router.post('/', Create);
 router.post('/IMG',upload, UplaodIMG);
 router.delete('/:id', Remove);
 router.patch('/:id', Update);

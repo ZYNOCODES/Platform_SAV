@@ -82,6 +82,7 @@ const UpdateUser = () => {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
       },
       body: JSON.stringify({ 
         id: UserData.id,

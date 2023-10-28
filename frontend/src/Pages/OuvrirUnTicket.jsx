@@ -19,6 +19,7 @@ import MyAsideBar from '../Components/asideBar'
 import WilayaSelect from '../Components/Form/WilayaSelect';
 import { CircularProgress } from '@mui/material';
 import validator from 'validator';
+import { useAuthContext } from '../hooks/useAuthContext';
 
 const OuvrirUnTicket = () => {
     const notifyFailed = (message) => toast.error(message);
@@ -36,7 +37,7 @@ const OuvrirUnTicket = () => {
     const [DateDepot, setDateDepot] = useState('');
     const [open,setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-
+    const { user } = useAuthContext();
     const navigate = useNavigate();
 
     const handleClickOpen = () => {
@@ -121,7 +122,8 @@ const OuvrirUnTicket = () => {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/pdf'
-                        }
+                        },
+                        Authorization: `Bearer ${user?.token}`,
                     });
             
                     if (!pdfResponse.ok) {

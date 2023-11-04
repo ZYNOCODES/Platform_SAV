@@ -5,6 +5,7 @@ const {
     GetByID,
     GetByUserID,
     GetByRefProduct,
+    GetByBon,
     Create,
     Update,
     Remove,
@@ -19,6 +20,7 @@ const router = express.Router();
 const requireAuth = require('../middleware/requireAuth');
 
 router.post('/', Create);
+router.get('/BD/:BonRef', GetByBon);
 //secure all routes below
 router.use(requireAuth);
 router.get('/', index);

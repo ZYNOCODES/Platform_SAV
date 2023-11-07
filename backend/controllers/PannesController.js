@@ -439,6 +439,40 @@ const UpdateGarantie = async (req, res) => {
     res.status(500).send('Error updating panne');
   }
 }
+const UpdateNbrserie = async (req, res) => {
+  // Handle request to update a Panne
+  const { id } = req.params;
+  const { TypePanne, NbrSerie, Description, action } = req.body;
+  try {
+    if(!TypePanne && validator.isEmpty(NbrSerie) && validator.isEmpty(Description)) {
+      res.status(400).json({message: 'Un des champs doivent être remplis'});
+    }else{
+      //get user by id
+      const panne = await Panne.findByPk(id);
+      //check if panne exist
+      if (!panne) {
+          return res.status(404).json({ error: 'panne not found' });
+      }
+      // assign panne new values
+      if(TypePanne) panne.TypePanne = TypePanne;
+      if(NbrSerie) panne.NbrSerie = NbrSerie;
+      if(Description) panne.Description = Description;
+      // save panne
+      await panne.save().then(async () => {
+        await Transaction.create({
+          UserID : panne.UserID , Action : action
+        }).then(async () => {
+          console.log("Transaction created successfully");
+        }).catch((error) => console.log(error));
+      }).catch((error) => console.log(error));
+      // return updated panne
+      res.status(200).json({panne: panne});
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error updating panne');
+  }
+}
 const Remove = async (req, res) => {
   // Handle request to delete a Panne
   const { id } = req.params;
@@ -1053,5 +1087,6 @@ module.exports = {
   UplaodIMG,
   upload,
   UpdateGarantie,
-  calculateAverageRepairTime
+  calculateAverageRepairTime,
+  UpdateNbrserie
 };

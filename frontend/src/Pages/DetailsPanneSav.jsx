@@ -27,7 +27,9 @@ import Button from '@mui/material/Button';
 import moment from 'moment-timezone';
 import { Fa1 } from "react-icons/fa6";
 import { CircularProgress } from '@mui/material';
-
+import TypePanneSelect from "../Components/Form/TypePanneSelect";
+import Updatebutton from '../Components/Buttons/updatebutton'
+import { isEmpty  } from "validator";
 const DetailsPanneSav = () => {
   const notifyFailed = (message) => toast.error(message);
   const notifySuccess = (message) => toast.success(message);
@@ -50,6 +52,7 @@ const DetailsPanneSav = () => {
   const [horsGarantieChecked, setHorsGarantieChecked] = useState(false);
   const [sousReserveChecked, setSousReserveChecked] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDialog3, setOpenDialog3] = useState(false);
   const [openDialogPDF, setOpenDialogPDF] = useState(false);
   const [selectedCheckboxLabel, setSelectedCheckboxLabel] = useState('');
   const [open, setOpen] = useState(false);
@@ -57,6 +60,12 @@ const DetailsPanneSav = () => {
   const [lableACT, setlableACT] = useState('');
   const [CodePostal, setCodePostal] = useState('0');
   const [PanneDataUpdated, setPanneDataUpdated] = useState('');
+  const [TypePanne ,setTypePanne] = useState([]);
+  const [NbrSerie, setNbrSerie] = useState('');
+  const [Description, setDescription] = useState('');
+  const [ifTypePanneUpdated, setIfTypePanneUpdated] = useState(false);
+  const [ifNbrSerieUpdated, setIfNbrSerieUpdated] = useState(false);
+  const [ifDescriptionUpdated, setIfDescriptionUpdated] = useState(false);
   //Upload image to server
   const uploadImage = async (e) => {
     e.preventDefault();
@@ -423,9 +432,7 @@ const DetailsPanneSav = () => {
   // handle close button click of the dialog
   const handleCloseDialog = () => {
     setOpenDialog(false);
-  };
-  // handle open button click of the dialog
-  const handleCloseDialogPDF = () => {
+    setOpenDialog3(false);
     setOpenDialogPDF(false);
   };
   // handle the "Confirmer" button click of the dialog
@@ -454,15 +461,107 @@ const DetailsPanneSav = () => {
       UpdatePanneGarantie('Sous Reserve');
     }
   };
+  // handle type panne input change
+  const handleTypePanneInput = (newValue)=>{
+    setTypePanne(newValue);
+  }
+  // handle numero de serie change
+  const handleNbrSerieInputChange = (newValue)=>{
+    setNbrSerie(newValue);
+  }
+  // handle update (NbrSerie, Description, TypePanne)
+  const handleUpdate = async (val)=>{
+    const reponse = await fetch(`http://localhost:8000/Pannes/Version2/${id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+      body: JSON.stringify({
+        TypePanne: TypePanne.join('-'),
+        NbrSerie: NbrSerie,
+        Description: Description,
+        action: val,
+      }),
+    });
+
+    const json = await reponse.json();
+
+    if (!reponse.ok) {
+      setOpenDialog3(false);
+      notifyFailed(json.message);
+    }
+    if (reponse.ok) {
+      setOpenDialog3(false);
+      setPanneDataUpdated('Panne updated');
+      notifySuccess(`action : ${val}`);
+      setIfTypePanneUpdated(false);
+      setIfNbrSerieUpdated(false);
+      setIfDescriptionUpdated(false);
+      setDescription('');
+      setNbrSerie('');
+    }
+  }
+  // handle NbrSerie, Description, TypePanne change
+  useEffect(() => {
+    if(PanneData?.TypePanne.trim().toLowerCase() !== TypePanne.join('-').trim().toLowerCase()){
+      setIfTypePanneUpdated(true);
+    }else{
+      setIfTypePanneUpdated(false);
+    }
+    if(!isEmpty(NbrSerie) && PanneData?.NbrSerie !== NbrSerie){
+      setIfNbrSerieUpdated(true);
+    }else{
+      setIfNbrSerieUpdated(false);
+    }
+    if(!isEmpty(Description) && PanneData?.Description !== Description){
+      setIfDescriptionUpdated(true);
+    }else{
+      setIfDescriptionUpdated(false);
+    }
+  },[Description, NbrSerie, PanneData?.Description, PanneData?.NbrSerie, PanneData?.TypePanne, TypePanne]);
+  // handle actions (update NbrSerie, Description, TypePanne)
+  const handleActions = () => {
+    if (ifTypePanneUpdated) {
+      if (ifNbrSerieUpdated && ifDescriptionUpdated) {
+          handleUpdate(`Mettre à jour le Type de panne avec ${TypePanne.join('-')} et le N° de serie avec ${NbrSerie} et la description avec ${Description} pour la panne ID= ${id}`);
+        } else if (ifNbrSerieUpdated) {
+          handleUpdate(`Mettre à jour le Type de panne avec ${TypePanne.join('-')} et le N° de serie avec ${NbrSerie} pour la panne ID= ${id}`);
+        } else if (ifDescriptionUpdated) {
+          handleUpdate(`Mettre à jour le Type de panne avec ${TypePanne.join('-')} et la description avec ${Description} pour la panne ID= ${id}`);
+        } else {
+          handleUpdate(`Mettre à jour le Type de panne avec ${TypePanne.join('-')} pour la panne ID= ${id}`);
+        }
+    } else {
+        if (ifNbrSerieUpdated  && ifDescriptionUpdated) {
+            handleUpdate(`Mettre à jour le N° de serie avec ${NbrSerie} et la description avec ${Description} pour la panne ID= ${id}`);
+          } else if (ifNbrSerieUpdated ) {
+            handleUpdate(`Mettre à jour le N° de serie avec ${NbrSerie} pour la panne ID= ${id}`);
+          } else if (ifDescriptionUpdated) {
+            handleUpdate(`Mettre à jour la description avec ${Description} pour la panne ID= ${id}`);
+          }else{
+            notifyFailed('Aucune modification n\'a été effectuée');
+            setOpenDialog3(false);
+          }
+    }
+  }
+  const handleOpenDialog3 = () => {
+    setOpenDialog3(true);
+  }
   return (
     <>
       <MyNavBar act={act} setAct={setAct} />
       <div className="pannedetails-container">
-        <div className="pannedetails-title">
-          <div className="back-button" onClick={GoBackPressed}>
-            <IoIosArrowBack className="icon" size={33} fill="#fff" />
+        <div className="pannedetails-title-container">
+          <div className="pannedetails-title">
+            <div className="back-button" onClick={GoBackPressed}>
+              <IoIosArrowBack className="icon" size={33} fill="#fff" />
+            </div>
+            <h3>Details de panne :</h3>
           </div>
-          <h3>Details de panne :</h3>
+          <div className="Suspendbutton">
+              <h3>Suspend</h3>
+            </div>
         </div>
         <div className="pannedetails-info form-section">
           <form>
@@ -496,20 +595,6 @@ const DetailsPanneSav = () => {
               readOnly
               type="text"
             />
-          </form>
-          <form>
-            <FormInput
-              label="Referance de produit :"
-              value={PanneData?.ReferanceProduit}
-              readOnly
-              type="text"
-            />
-            <FormInput
-              label="Type de panne :"
-              value={PanneData?.TypePanne}
-              readOnly
-              type="text"
-            />
             <FormInput
               label="Centre de depot:"
               value={"SAV de " + PanneData?.CentreDepot}
@@ -522,12 +607,37 @@ const DetailsPanneSav = () => {
               readOnly
               type="text"
             />
+          </form>
+          <form>
+            
             <FormInput
-              label="Description:"
-              value={PanneData?.Description}
+              label="Reference de produit :"
+              value={PanneData?.ReferanceProduit}
               readOnly
               type="text"
             />
+            <FormInput 
+              label='N° de serie :' 
+              placeholder= 'Entrer le numero de serie de ce produit' 
+              type='text' 
+              defaultValue = {PanneData?.NbrSerie}
+              onChange={handleNbrSerieInputChange}
+              />
+
+            <div className='forminput'>
+              <label>Description :</label>
+              <textarea 
+                className="DescriptionInput" 
+                rows="5"
+                onChange={(e) => setDescription(e.target.value)}
+                defaultValue={PanneData?.Description}
+                placeholder= 'Entrer une description' >
+              </textarea>
+            </div>
+            <TypePanneSelect label='Type de panne :' placeholder=' Entrer la referance de votre produit' type='text' value={PanneData?.TypePanne} onChange={handleTypePanneInput} /> 
+            <div className="Updatebutton" onClick={handleOpenDialog3}>
+              <h3>Modifier</h3>
+            </div>
           </form>
         </div>
         <div className="pannedetails-title progress">
@@ -733,7 +843,7 @@ const DetailsPanneSav = () => {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleCloseDialogPDF} disabled={loading}>Annuler</Button>
+                <Button onClick={handleCloseDialog} disabled={loading}>Annuler</Button>
                 <Button onClick={createAndDownloadPdf} autoFocus disabled={loading}>
                     Confirmer
                 </Button>
@@ -749,6 +859,34 @@ const DetailsPanneSav = () => {
               <CircularProgress className="CircularProgress" />
             </div>
             )}
+        </Dialog>
+        <Dialog
+          open={openDialog3}
+          onClose={false}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{`Confirmation de mise a jour`}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Confirmer le mise à jour de la panne avec les informations suivantes : 
+            </DialogContentText>
+            <DialogContentText>
+              {NbrSerie.length > 0 ? `N° de serie : ${NbrSerie}` : ''}
+            </DialogContentText>
+            <DialogContentText>
+              {TypePanne.join('-').length > 0 ? `Type de panne : ${TypePanne.join('-')}` : ''}
+            </DialogContentText>
+            <DialogContentText>
+              {Description.length > 0 ? `Description : ${Description}` : ''}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Annuler</Button>
+            <Button onClick={handleActions} autoFocus>
+              Confirmer
+            </Button>
+          </DialogActions>
         </Dialog>
         <ToastContainer />
       </div>

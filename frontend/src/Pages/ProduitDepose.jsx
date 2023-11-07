@@ -95,7 +95,7 @@ const ProduitDepose = () => {
         setLoading(true); // Show CircularProgress
         try {
             if(PanneData?.BDPDFfile === null || PanneData?.BDPDFfile === undefined){
-                const response = await fetch('http://localhost:8000/EmailGenerator/createPDF/BonV3', {
+                const response = await fetch('http://sav-v2.streamsystem.com/EmailGenerator/createPDF/BonV3', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ const ProduitDepose = () => {
                     if(response.ok){
                         const uniqueFilename = await response.text();
             
-                        const pdfResponse = await fetch(`http://localhost:8000/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
+                        const pdfResponse = await fetch(`http://sav-v2.streamsystem.com/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
                             method: 'GET',
                             headers: {
                                 'Content-Type': 'application/pdf',

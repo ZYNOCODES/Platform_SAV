@@ -123,7 +123,7 @@ export const PanneList = () => {
                 <td className="table-patients-header-annee">Date</td>
                 <td className="table-patients-header-willaya">Centre</td>
                 <td className="table-patients-header-progress">Type de panne</td>
-                <td className="table-patients-header-progress">Statue de garantie</td>
+                <td className="table-patients-header-progress">Suspension</td>
                 <td className="table-patients-header-button">
                   <div className="pagination-buttons">
                     <button onClick={handlePrevPage} disabled={currentPage === 1}>

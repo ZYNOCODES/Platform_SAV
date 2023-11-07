@@ -473,6 +473,31 @@ const UpdateNbrserie = async (req, res) => {
     res.status(500).send('Error updating panne');
   }
 }
+const UpdateSuspendedStatus = async (req, res) => {
+  const {id} = req.params;
+  const {Etat, action} = req.body;
+  try{
+    //get user by id
+    const panne = await Panne.findByPk(id);
+    //check if panne exist
+    if (!panne) {
+        return res.status(404).json({ error: 'panne not found' });
+    }
+    // assign panne new values
+    panne.Etat = Etat;
+    // save panne
+    await panne.save().then(async () => {
+      await Transaction.create({
+        UserID : panne.UserID , Action : action
+      }).catch((error) => console.log(error));
+    }).catch((error) => console.log(error));
+    // return updated panne
+    res.status(200).json({panne: panne});
+  }catch (error) {
+    console.error(error);
+    res.status(500).send('Error updating panne');
+  }
+}
 const Remove = async (req, res) => {
   // Handle request to delete a Panne
   const { id } = req.params;
@@ -1088,5 +1113,6 @@ module.exports = {
   upload,
   UpdateGarantie,
   calculateAverageRepairTime,
-  UpdateNbrserie
+  UpdateNbrserie,
+  UpdateSuspendedStatus
 };

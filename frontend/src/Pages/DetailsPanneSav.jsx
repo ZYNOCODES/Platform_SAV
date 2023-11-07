@@ -23,6 +23,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import moment from 'moment-timezone';
 import { Fa1 } from "react-icons/fa6";
@@ -53,6 +54,9 @@ const DetailsPanneSav = () => {
   const [sousReserveChecked, setSousReserveChecked] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialog3, setOpenDialog3] = useState(false);
+  const [openDialog4, setOpenDialog4] = useState(false);
+  const [openDialog5, setOpenDialog5] = useState(false);
+  const [openDialog6, setOpenDialog6] = useState(false);
   const [openDialogPDF, setOpenDialogPDF] = useState(false);
   const [selectedCheckboxLabel, setSelectedCheckboxLabel] = useState('');
   const [open, setOpen] = useState(false);
@@ -66,6 +70,9 @@ const DetailsPanneSav = () => {
   const [ifTypePanneUpdated, setIfTypePanneUpdated] = useState(false);
   const [ifNbrSerieUpdated, setIfNbrSerieUpdated] = useState(false);
   const [ifDescriptionUpdated, setIfDescriptionUpdated] = useState(false);
+  const [CauseDescription, setCauseDescription] = useState('');
+  const [suspended, setsuspended] = useState(false);
+
   //Upload image to server
   const uploadImage = async (e) => {
     e.preventDefault();
@@ -434,6 +441,9 @@ const DetailsPanneSav = () => {
     setOpenDialog(false);
     setOpenDialog3(false);
     setOpenDialogPDF(false);
+    setOpenDialog4(false);
+    setOpenDialog5(false);
+    setOpenDialog6(false);
   };
   // handle the "Confirmer" button click of the dialog
   const handleChange = () => {
@@ -494,7 +504,7 @@ const DetailsPanneSav = () => {
     if (reponse.ok) {
       setOpenDialog3(false);
       setPanneDataUpdated('Panne updated');
-      notifySuccess(`action : ${val}`);
+      notifySuccess(`${val}`);
       setIfTypePanneUpdated(false);
       setIfNbrSerieUpdated(false);
       setIfDescriptionUpdated(false);
@@ -548,10 +558,64 @@ const DetailsPanneSav = () => {
   const handleOpenDialog3 = () => {
     setOpenDialog3(true);
   }
+  // handle suspend button click
+  const handleSuspendBTN = async () => {
+    if(isEmpty(CauseDescription)){
+      notifyFailed('Veuillez entrer une description');
+    }else{
+      handleUpdateSuspendedStatus(`La panne est suspendue avec succès PanneID= ${id}`,CauseDescription);
+    }
+  }
+  // handle unsuspend button click
+  const handleUnSuspendBTN = async () => {
+    handleUpdateSuspendedStatus(`L'annulation de la suspension de la panne a été effectuée avec succès PanneID= ${id}`,null);
+    setCauseDescription('');
+  }
+  // handle update status of the panne to suspended
+  const handleUpdateSuspendedStatus = async (val,CauseDescription)=>{
+    const reponse = await fetch(`http://localhost:8000/Pannes/SuspendedStatus/${id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+      body: JSON.stringify({
+        Etat: CauseDescription,
+        action: val,
+      }),
+    });
+
+    const json = await reponse.json();
+
+    if (!reponse.ok) {
+      setOpenDialog4(false);
+      setOpenDialog5(false);
+      notifyFailed(json.message);
+    }
+    if (reponse.ok) {
+      setOpenDialog4(false);
+      setOpenDialog5(false);
+      setPanneDataUpdated('Panne updated');
+      notifySuccess(`${val}`);
+    }
+  }
+  useEffect(() => {
+    (PanneData?.Etat === null || PanneData?.Etat === '') ? setsuspended(false) : setsuspended(true);
+  },[PanneData?.Etat, suspended]);
+  const handleActionCorrectiveBTN = async () => {
+
+  }
   return (
     <>
       <MyNavBar act={act} setAct={setAct} />
       <div className="pannedetails-container">
+        {suspended ?
+          <div className="pannedetails-suspended-container">
+            <h3>{PanneData?.Etat}</h3>
+          </div>
+          : 
+          ''
+        }
         <div className="pannedetails-title-container">
           <div className="pannedetails-title">
             <div className="back-button" onClick={GoBackPressed}>
@@ -559,86 +623,92 @@ const DetailsPanneSav = () => {
             </div>
             <h3>Details de panne :</h3>
           </div>
-          <div className="Suspendbutton">
-              <h3>Suspend</h3>
+          {suspended === false ?
+            <div className="Suspendbutton" onClick={setOpenDialog4}>
+              <h3>suspendre</h3>
             </div>
+            :
+            <div className="Suspendbutton" onClick={setOpenDialog5}>
+              <h3>Annuler la suspension</h3>
+            </div>
+          }
         </div>
         <div className="pannedetails-info form-section">
-          <form>
-            <FormInput
-              label="Nom :"
-              value={PanneData?.Nom}
-              readOnly
-              type="text"
-            />
-            <FormInput
-              label="Prenom :"
-              value={PanneData?.Prenom}
-              readOnly
-              type="text"
-            />
-            <FormInput
-              label="Email"
-              value={PanneData?.Email}
-              readOnly
-              type="text"
-            />
-            <FormInput
-              label="Num Tel:"
-              value={PanneData?.Telephone}
-              readOnly
-              type="text"
-            />
-            <FormInput
-              label="Wilaya:"
-              value={PanneData?.Wilaya}
-              readOnly
-              type="text"
-            />
-            <FormInput
-              label="Centre de depot:"
-              value={"SAV de " + PanneData?.CentreDepot}
-              readOnly
-              type="text"
-            />
-            <FormInput
-              label="Date de depot:"
-              value={formatDate(PanneData?.DateDepot)}
-              readOnly
-              type="text"
-            />
-          </form>
-          <form>
-            
-            <FormInput
-              label="Reference de produit :"
-              value={PanneData?.ReferanceProduit}
-              readOnly
-              type="text"
-            />
-            <FormInput 
-              label='N° de serie :' 
-              placeholder= 'Entrer le numero de serie de ce produit' 
-              type='text' 
-              defaultValue = {PanneData?.NbrSerie}
-              onChange={handleNbrSerieInputChange}
-              />
+                <form>
+                  <FormInput
+                    label="Nom :"
+                    value={PanneData?.Nom}
+                    readOnly
+                    type="text"
+                  />
+                  <FormInput
+                    label="Prenom :"
+                    value={PanneData?.Prenom}
+                    readOnly
+                    type="text"
+                  />
+                  <FormInput
+                    label="Email"
+                    value={PanneData?.Email}
+                    readOnly
+                    type="text"
+                  />
+                  <FormInput
+                    label="Num Tel:"
+                    value={PanneData?.Telephone}
+                    readOnly
+                    type="text"
+                  />
+                  <FormInput
+                    label="Wilaya:"
+                    value={PanneData?.Wilaya}
+                    readOnly
+                    type="text"
+                  />
+                  <FormInput
+                    label="Centre de depot:"
+                    value={"SAV de " + PanneData?.CentreDepot}
+                    readOnly
+                    type="text"
+                  />
+                  <FormInput
+                    label="Date de depot:"
+                    value={formatDate(PanneData?.DateDepot)}
+                    readOnly
+                    type="text"
+                  />
+                </form>
+                <form>
+                  
+                  <FormInput
+                    label="Reference de produit :"
+                    value={PanneData?.ReferanceProduit}
+                    readOnly
+                    type="text"
+                  />
+                  <FormInput 
+                    label='N° de serie :' 
+                    placeholder= 'Entrer le numero de serie de ce produit' 
+                    type='text' 
+                    defaultValue = {PanneData?.NbrSerie}
+                    onChange={handleNbrSerieInputChange}
+                    />
 
-            <div className='forminput'>
-              <label>Description :</label>
-              <textarea 
-                className="DescriptionInput" 
-                rows="5"
-                onChange={(e) => setDescription(e.target.value)}
-                defaultValue={PanneData?.Description}
-                placeholder= 'Entrer une description' >
-              </textarea>
-            </div>
-            <TypePanneSelect label='Type de panne :' placeholder=' Entrer la referance de votre produit' type='text' value={PanneData?.TypePanne} onChange={handleTypePanneInput} /> 
-            <div className="Updatebutton" onClick={handleOpenDialog3}>
-              <h3>Modifier</h3>
-            </div>
-          </form>
+                  <div className='forminput'>
+                    <label>Description :</label>
+                    <textarea 
+                      className="DescriptionInput" 
+                      rows="5"
+                      onChange={(e) => setDescription(e.target.value)}
+                      defaultValue={PanneData?.Description}
+                      placeholder= 'Entrer une description' >
+                    </textarea>
+                  </div>
+                  <TypePanneSelect label='Type de panne :' placeholder=' Entrer la referance de votre produit' type='text' value={PanneData?.TypePanne} onChange={handleTypePanneInput} /> 
+                  <div className="Updatebutton" onClick={handleOpenDialog3}>
+                    <h3>Modifier</h3>
+                  </div>
+                </form>
         </div>
         <div className="pannedetails-title progress">
           <h3>Statue Garantie :</h3>
@@ -716,6 +786,9 @@ const DetailsPanneSav = () => {
               onChange={handleProgressChange}
               disabled={disabledButtons[1]}
             />
+            <div className="Suspendbutton" onClick={setOpenDialog6}>
+              <h3>suspendre</h3>
+            </div>
             <Tooglebtn
               label="Produit réparé"
               value={3}
@@ -860,6 +933,7 @@ const DetailsPanneSav = () => {
             </div>
             )}
         </Dialog>
+        {/* Dialog mise a jour de (NbrSerie, Description, TypePanne) */}
         <Dialog
           open={openDialog3}
           onClose={false}
@@ -872,18 +946,106 @@ const DetailsPanneSav = () => {
               Confirmer le mise à jour de la panne avec les informations suivantes : 
             </DialogContentText>
             <DialogContentText>
-              {NbrSerie.length > 0 ? `N° de serie : ${NbrSerie}` : ''}
+              {!isEmpty(NbrSerie) ? `N° de serie : ${NbrSerie}` : ''}
             </DialogContentText>
             <DialogContentText>
-              {TypePanne.join('-').length > 0 ? `Type de panne : ${TypePanne.join('-')}` : ''}
+              {PanneData?.TypePanne.trim().toLowerCase() !== TypePanne.join('-').trim().toLowerCase()
+               ? `Type de panne : ${TypePanne.join('-')}` : ''}
             </DialogContentText>
             <DialogContentText>
-              {Description.length > 0 ? `Description : ${Description}` : ''}
+              {!isEmpty(Description) ? `Description : ${Description}` : ''}
+            </DialogContentText>
+            <DialogContentText>
+              {(isEmpty(Description) && isEmpty(NbrSerie) && PanneData?.TypePanne.trim().toLowerCase() === TypePanne.join('-').trim().toLowerCase())
+               ? `Aucune modification n'a été effectuée` : ''}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog}>Annuler</Button>
             <Button onClick={handleActions} autoFocus>
+              Confirmer
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {/* Dialog de suspension */}
+        <Dialog
+          open={openDialog4}
+          onClose={false}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{`Confirmer la suspendre de la panne avec la cause suivante`}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Cause :
+            </DialogContentText>
+            <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            type="text"
+            fullWidth
+            height="100px"
+            variant="standard"
+            onChange={(e) => setCauseDescription(e.target.value)}
+          />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Annuler</Button>
+            <Button onClick={handleSuspendBTN} autoFocus>
+              Confirmer
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {/* Dialog annulation de suspension */}
+        <Dialog
+          open={openDialog5}
+          onClose={false}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{`Confirmer l'annuler de la suspension`}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              motif de la suspension précédente :
+            </DialogContentText>
+            <DialogContentText id="alert-dialog-description">
+              {PanneData?.Etat}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Annuler</Button>
+            <Button onClick={handleUnSuspendBTN} autoFocus>
+              Confirmer
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {/* Dialog action corrective */}
+        <Dialog
+          open={openDialog6}
+          onClose={false}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{`Action cerrective`}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Remplire les champs suivants :
+            </DialogContentText>
+            <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            type="text"
+            fullWidth
+            helperText="Entrer une description"
+            variant="standard"
+            />
+            <TypePanneSelect label='Type de panne :' placeholder= 'Entrer l`action corrective pour cette panne' type='text' onChange={handleTypePanneInput} /> 
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Annuler</Button>
+            <Button onClick={handleActionCorrectiveBTN} autoFocus>
               Confirmer
             </Button>
           </DialogActions>

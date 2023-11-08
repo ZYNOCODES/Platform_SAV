@@ -31,6 +31,7 @@ import { CircularProgress } from '@mui/material';
 import TypePanneSelect from "../Components/Form/TypePanneSelect";
 import Updatebutton from '../Components/Buttons/updatebutton'
 import { isEmpty  } from "validator";
+import ActionCorrective from "../Components/Form/ActionCorrective";
 const DetailsPanneSav = () => {
   const notifyFailed = (message) => toast.error(message);
   const notifySuccess = (message) => toast.success(message);
@@ -609,13 +610,7 @@ const DetailsPanneSav = () => {
     <>
       <MyNavBar act={act} setAct={setAct} />
       <div className="pannedetails-container">
-        {suspended ?
-          <div className="pannedetails-suspended-container">
-            <h3>{PanneData?.Etat}</h3>
-          </div>
-          : 
-          ''
-        }
+       
         <div className="pannedetails-title-container">
           <div className="pannedetails-title">
             <div className="back-button" onClick={GoBackPressed}>
@@ -628,11 +623,34 @@ const DetailsPanneSav = () => {
               <h3>suspendre</h3>
             </div>
             :
-            <div className="Suspendbutton" onClick={setOpenDialog5}>
-              <h3>Annuler la suspension</h3>
-            </div>
+            ''
           }
         </div>
+
+        {suspended ?
+
+          <>
+            <div className="pannedetails-suspended-container">
+              <div className="back-button susp" onClick={GoBackPressed}>
+                <IoIosArrowBack className="icon" size={33} fill="#fff" />
+              </div>
+              <div className="raison">
+                <h3>Raison de suspension: </h3>
+                <h3>{PanneData?.Etat}</h3>
+              </div>
+              <div className="Suspendbutton" onClick={setOpenDialog5}>
+                <h3>Annuler la suspension</h3>
+              </div>
+
+              
+            </div>
+            
+          </>
+          : 
+          ''
+        }
+
+        
         <div className="pannedetails-info form-section">
                 <form>
                   <FormInput
@@ -786,8 +804,8 @@ const DetailsPanneSav = () => {
               onChange={handleProgressChange}
               disabled={disabledButtons[1]}
             />
-            <div className="Suspendbutton" onClick={setOpenDialog6}>
-              <h3>suspendre</h3>
+            <div className="Action-correctives-btn" onClick={setOpenDialog6}>
+              <h3>Actions Correctives</h3>
             </div>
             <Tooglebtn
               label="Produit réparé"
@@ -1027,21 +1045,26 @@ const DetailsPanneSav = () => {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{`Action cerrective`}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{`Ajouter les Actions correctives :`}</DialogTitle>
+        
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               Remplire les champs suivants :
             </DialogContentText>
+
+    
+            
             <TextField
             autoFocus
             margin="dense"
             id="name"
             type="text"
+            placeholder="Description"
             fullWidth
             helperText="Entrer une description"
             variant="standard"
             />
-            <TypePanneSelect label='Type de panne :' placeholder= 'Entrer l`action corrective pour cette panne' type='text' onChange={handleTypePanneInput} /> 
+            <ActionCorrective label='Actions Correctives :' placeholder= 'Entrer l`action corrective pour cette panne' type='text' onChange={handleTypePanneInput} /> 
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog}>Annuler</Button>

@@ -8,19 +8,47 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  position: absolute;
-  width: 100%; 
+  bottom: 20px;
+}
+
+.raison{
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  margin: 15px 0px;
+}
+
+.susp{
+  margin-left: 0px;
+}
+
+.Action-correctives-btn{
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #d4171b;
+  border-radius: 10px;
+  color: #fff;
+  padding: 7px 0px;
+  margin-top: 30px;
+}
+
+.Action-correctives-btn h3{
+  color: #fff;
 }
 .pannedetails-suspended-container{
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100vh;
-  background-color: #000;
-  position: absolute;
-  opacity: 0.5;
-  margin-top: 100px;
+  height: 100vh; /* Change this to 100vh to fill the full viewport height */
+  overflow: auto; /* Add scrollbars if content overflows */
+  background-color: rgba(0, 0, 0, 0.5); /* Use rgba to specify opacity */
+  position: fixed; /* Use fixed to cover the entire viewport */
+  top: 0;
+  left: 0;
 }
 .Suspendbutton h3{
   font-size: 15px;
@@ -93,7 +121,7 @@
 }
 .pannedetails-container {
   width: 100%;
-  height: calc(100vh - 80px);
+  height: 100vh;
   position: absolute;
   background-color: #f8f9fd;
   top: 82px;

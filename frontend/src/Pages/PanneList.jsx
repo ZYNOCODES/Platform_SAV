@@ -147,7 +147,7 @@ export const PanneList = () => {
                     item.ReferanceProduit.toLowerCase().includes(search.toLowerCase())||
                     item.TypePanne.toLowerCase().includes(search.toLowerCase())) &&
                   (datedepot == null || item.DateDepot.includes(datedepot)) &&
-                  (progres === "All" || item.Progres.toString().includes(progres.toString())) &&
+                  (progres === "All" || item.Progres.toString().includes(progres.toString())|| item.Etat?.toString()) &&
                   (centredepot === "All" || item.CentreDepot.toLowerCase().includes(centredepot.toLowerCase()))
                 ) {
                   return item;

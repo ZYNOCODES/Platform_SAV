@@ -45,7 +45,7 @@ export const PanneList = () => {
             UserID: user?.id,
           });
     
-          const response = await fetch(`http://localhost:8000/Pannes/?${queryParams}`, {
+          const response = await fetch(process.env.REACT_APP_URL_BASE+`/Pannes/?${queryParams}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -122,7 +122,7 @@ export const PanneList = () => {
                 <td className="table-patients-header-annee">Nom Complet</td>
                 <td className="table-patients-header-annee">Date</td>
                 <td className="table-patients-header-willaya">Centre</td>
-                <td className="table-patients-header-progress">Type de panne</td>
+                <td className="table-patients-header-progress">Statut garantie</td>
                 <td className="table-patients-header-progress">Suspension</td>
                 <td className="table-patients-header-button">
                   <div className="pagination-buttons">

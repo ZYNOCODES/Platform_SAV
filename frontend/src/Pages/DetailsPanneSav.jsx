@@ -31,7 +31,8 @@ import { CircularProgress } from '@mui/material';
 import TypePanneSelect from "../Components/Form/TypePanneSelect";
 import Updatebutton from '../Components/Buttons/updatebutton'
 import { isEmpty  } from "validator";
-import ActionCorrective from "../Components/Form/ActionCorrective";
+import ActionCorrectiveSelect from "../Components/Form/ActionCorrective";
+
 const DetailsPanneSav = () => {
   const notifyFailed = (message) => toast.error(message);
   const notifySuccess = (message) => toast.success(message);
@@ -73,7 +74,11 @@ const DetailsPanneSav = () => {
   const [ifDescriptionUpdated, setIfDescriptionUpdated] = useState(false);
   const [CauseDescription, setCauseDescription] = useState('');
   const [suspended, setsuspended] = useState(false);
-
+  const [IfActionCorrectiveIsUpdated, setIfActionCorrectiveIsUpdated] = useState(false);
+  const [ifDescriptionACUpdated, setIfDescriptionACUpdated] = useState(false);
+  const [ActionCorrective, setActionCorrective] = useState([]);
+  const [DescriptionAC, setDescriptionAC] = useState('');
+  const BL = 'BL';
   //Upload image to server
   const uploadImage = async (e) => {
     e.preventDefault();
@@ -84,7 +89,7 @@ const DetailsPanneSav = () => {
     formData.append("userID", user?.id);
 
     const result = await axios.post(
-      "http://localhost:8000/Pannes/IMG",
+      process.env.REACT_APP_URL_BASE+"/Pannes/IMG",
       formData,
       {
         headers: { 
@@ -104,7 +109,7 @@ const DetailsPanneSav = () => {
     const fetchPanneData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/Pannes/${id}`,
+          process.env.REACT_APP_URL_BASE+`/Pannes/${id}`,
           {
             method: "GET",
             headers: {
@@ -133,7 +138,7 @@ const DetailsPanneSav = () => {
     const fetchAllPannesDataOfProduct = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/Pannes/All/${PanneData?.ReferanceProduit}/${id}`,
+          process.env.REACT_APP_URL_BASE+`/Pannes/All/${PanneData?.ReferanceProduit}/${id}`,
           {
             method: "GET",
             headers: {
@@ -159,7 +164,7 @@ const DetailsPanneSav = () => {
   useEffect(() => {
     const fetchCodePostalData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/Willaya/${PanneData?.Wilaya}`, {
+        const response = await fetch(process.env.REACT_APP_URL_BASE+`/Willaya/${PanneData?.Wilaya}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -182,11 +187,11 @@ const DetailsPanneSav = () => {
   }, [CodePostal, PanneData?.Wilaya, user?.token]);
   //create pdf file and download it
   const createAndDownloadPdf = async () => {
-    setLoading(true); // show CircularProgress
     try {
-      if(ToggleValue === 3 || ToggleValue === 4 || ToggleValue === 5){
+      if(ToggleValue === 5){
         if(PanneData?.BLPDFfile === null || PanneData?.BLPDFfile === undefined){
-            const response = await fetch('http://localhost:8000/EmailGenerator/createPDF/BonV2', {
+            setLoading(true); // show CircularProgress
+            const response = await fetch(process.env.REACT_APP_URL_BASE+'/EmailGenerator/createPDF/BonV2', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -200,28 +205,31 @@ const DetailsPanneSav = () => {
                     TypePanne: PanneData.TypePanne,
                     Wilaya: PanneData.Wilaya,
                     CentreDepot: PanneData.CentreDepot,
+                    NbrSerie: PanneData.NbrSerie,
+                    ActinoCorrective: (PanneData.ActionCorrective || PanneData.DescriptionAC) ? true : false,
                     DateDepot: new Date().toISOString().slice(0, 10),
-                    type: 'BL',  
+                    type: BL,  
                     postalCode: CodePostal
                 })
                 });
-        
+                const data = await response.json();
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                  setOpenDialogPDF(false);
+                  setLoading(false); // Hide CircularProgress
+                  notifyFailed(data.message);
                 }
         
                 if(response.ok){
-                    const uniqueFilename = await response.text();
-        
-                    const pdfResponse = await fetch(`http://localhost:8000/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
+                    const uniqueFilename = data.uniqueFilename;
+                    const pdfResponse = await fetch(process.env.REACT_APP_URL_BASE+`/EmailGenerator/fetchPDF?filename=${uniqueFilename}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/pdf'
                         },
                     });
-            
                     if (!pdfResponse.ok) {
-                        throw new Error('Network response was not ok');
+                      setOpenDialogPDF(false);
+                      setLoading(false); // Hide CircularProgress
                     }
             
                     if(pdfResponse.ok){
@@ -230,27 +238,25 @@ const DetailsPanneSav = () => {
                         link.href = URL.createObjectURL(pdfBlob);
                         link.download = uniqueFilename;
                         link.click();
-                        if (ToggleValue === 3) {
-                          UpdatePanne(ToggleValue, "Panne En reparation au centre a été vérifiée avec succès.",uniqueFilename);
-                        } else if (ToggleValue === 4) {
-                          UpdatePanne(ToggleValue, "Panne en attente de pickup a été vérifiée avec succès.",uniqueFilename);
-                        } else if (ToggleValue === 5) {
+                        if (ToggleValue === 5) {
                           UpdatePanne(ToggleValue, "Panne livrée a été vérifiée avec succès.",uniqueFilename);
                         }
                     }
                 }
         }else{
-          if (ToggleValue === 4) {
-            UpdatePanne(ToggleValue, "Panne en attente de pickup a été vérifiée avec succès.");
-          } else if (ToggleValue === 5) {
-            UpdatePanne(ToggleValue, "Panne livrée a été vérifiée avec succès.");
-          }
+          UpdatePanne(ToggleValue, "Panne livrée a été vérifiée avec succès.");
         }
-      }else if(ToggleValue === 1 || ToggleValue === 2){
+      }else {
         if (ToggleValue === 1) {
           UpdatePanne(ToggleValue, "Panne en attente de depot a été vérifiée avec succès.");
         } else if (ToggleValue === 2) {
           UpdatePanne(ToggleValue, "Panne en attente de réparation a été vérifiée avec succès.");
+        }else if (ToggleValue === 4) {
+          UpdatePanne(ToggleValue, "Panne en attente de pickup a été vérifiée avec succès.");
+        } else if (ToggleValue === 3) {
+          UpdatePanne(ToggleValue, "Panne reparée a été vérifiée avec succès.");
+        }else if (ToggleValue === 5) {
+          UpdatePanne(ToggleValue, "Panne livrée a été vérifiée avec succès.");
         }
       }
     } catch (error) {
@@ -259,7 +265,7 @@ const DetailsPanneSav = () => {
   }
   //update pannes progress state
   const UpdatePanne = async (val, Act,uniqueFilename) => {
-    const reponse = await fetch(`http://localhost:8000/Pannes/${id}`, {
+    const reponse = await fetch(process.env.REACT_APP_URL_BASE+`/Pannes/${id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
@@ -294,7 +300,7 @@ const DetailsPanneSav = () => {
     }
   };
   const UpdatePanneGarantie = async (val) => {
-    const reponse = await fetch(`http://localhost:8000/Pannes/Garantie/${id}`, {
+    const reponse = await fetch(process.env.REACT_APP_URL_BASE+`/Pannes/Garantie/${id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
@@ -395,7 +401,7 @@ const DetailsPanneSav = () => {
   //download pdf directly 
   const downloadPDFFile = async (filename) => {
     try {
-      const response = await fetch(`http://localhost:8000/EmailGenerator/downloaderPDF/${filename}`,{
+      const response = await fetch(process.env.REACT_APP_URL_BASE+`/EmailGenerator/downloaderPDF/${filename}`,{
         method: 'GET',
         headers: {
           Authorization: `Bearer ${user?.token}`,
@@ -476,13 +482,17 @@ const DetailsPanneSav = () => {
   const handleTypePanneInput = (newValue)=>{
     setTypePanne(newValue);
   }
+  // handle Action corrective input change
+  const handleActionCorrectiveInput = (newValue)=>{
+    setActionCorrective(newValue);
+  }
   // handle numero de serie change
   const handleNbrSerieInputChange = (newValue)=>{
     setNbrSerie(newValue);
   }
   // handle update (NbrSerie, Description, TypePanne)
   const handleUpdate = async (val)=>{
-    const reponse = await fetch(`http://localhost:8000/Pannes/Version2/${id}`, {
+    const reponse = await fetch(process.env.REACT_APP_URL_BASE+`/Pannes/Version2/${id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
@@ -513,6 +523,33 @@ const DetailsPanneSav = () => {
       setNbrSerie('');
     }
   }
+  // handle update ActionCorrective
+  const handleUpdateActionCorrective = async (val)=>{
+    const reponse = await fetch(process.env.REACT_APP_URL_BASE+`/Pannes/ActionCorrective/${id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+      body: JSON.stringify({
+        ActionCorrective: ActionCorrective.join('-'),
+        DescriptionAC: DescriptionAC,
+        action: val,
+      }),
+    });
+
+    const json = await reponse.json();
+
+    if (!reponse.ok) {
+      notifyFailed(json.message);
+    }
+    if (reponse.ok) {
+      setOpenDialog6(false);
+      setPanneDataUpdated('Panne updated');
+      notifySuccess(`${val}`);
+      setDescriptionAC('');
+    }
+  }
   // handle NbrSerie, Description, TypePanne change
   useEffect(() => {
     if(PanneData?.TypePanne.trim().toLowerCase() !== TypePanne.join('-').trim().toLowerCase()){
@@ -530,7 +567,18 @@ const DetailsPanneSav = () => {
     }else{
       setIfDescriptionUpdated(false);
     }
-  },[Description, NbrSerie, PanneData?.Description, PanneData?.NbrSerie, PanneData?.TypePanne, TypePanne]);
+    if(ActionCorrective.length > 0 && PanneData?.ActionCorrective?.trim().toLowerCase() !== ActionCorrective.join('-').trim().toLowerCase()){
+      setIfActionCorrectiveIsUpdated(true);
+    }else{
+      setIfActionCorrectiveIsUpdated(false);
+    }
+    if(!isEmpty(DescriptionAC) && PanneData?.DescriptionAC !== DescriptionAC){
+      setIfDescriptionACUpdated(true);
+    }else{
+      setIfDescriptionACUpdated(false);
+      setDescriptionAC('');
+    }
+  },[ActionCorrective, Description, DescriptionAC, NbrSerie, PanneData?.ActionCorrective, PanneData?.Description, PanneData?.DescriptionAC, PanneData?.NbrSerie, PanneData?.TypePanne, TypePanne]);
   // handle actions (update NbrSerie, Description, TypePanne)
   const handleActions = () => {
     if (ifTypePanneUpdated) {
@@ -556,6 +604,21 @@ const DetailsPanneSav = () => {
           }
     }
   }
+  // handle actions ActionsCorrectives
+  const handleActionsForActionCorrective = () => {
+    if (IfActionCorrectiveIsUpdated === true && ifDescriptionACUpdated === true) {
+      handleUpdateActionCorrective(`Mettre à jour l'Action Corrective avec ${ActionCorrective.join('-')} et la description avec ${DescriptionAC} pour la panne ID= ${id}`);
+    } else {
+      if(IfActionCorrectiveIsUpdated === true){
+        handleUpdateActionCorrective(`Mettre à jour l'Action Corrective avec ${ActionCorrective.join('-')} pour la panne ID= ${id}`);
+      }else if(ifDescriptionACUpdated === true) {
+        handleUpdateActionCorrective(`Mettre à jour la description avec ${DescriptionAC} pour la panne ID= ${id}`);
+      }else{
+        notifyFailed('Aucune modification n\'a été effectuée');
+        setDescriptionAC('');
+      }
+    }
+  }
   const handleOpenDialog3 = () => {
     setOpenDialog3(true);
   }
@@ -574,7 +637,7 @@ const DetailsPanneSav = () => {
   }
   // handle update status of the panne to suspended
   const handleUpdateSuspendedStatus = async (val,CauseDescription)=>{
-    const reponse = await fetch(`http://localhost:8000/Pannes/SuspendedStatus/${id}`, {
+    const reponse = await fetch(process.env.REACT_APP_URL_BASE+`/Pannes/SuspendedStatus/${id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
@@ -603,9 +666,7 @@ const DetailsPanneSav = () => {
   useEffect(() => {
     (PanneData?.Etat === null || PanneData?.Etat === '') ? setsuspended(false) : setsuspended(true);
   },[PanneData?.Etat, suspended]);
-  const handleActionCorrectiveBTN = async () => {
-
-  }
+  
   return (
     <>
       <MyNavBar act={act} setAct={setAct} />
@@ -1044,6 +1105,7 @@ const DetailsPanneSav = () => {
           onClose={false}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
+          width="100%"
         >
           <DialogTitle id="alert-dialog-title">{`Ajouter les Actions correctives :`}</DialogTitle>
         
@@ -1051,9 +1113,6 @@ const DetailsPanneSav = () => {
             <DialogContentText id="alert-dialog-description">
               Remplire les champs suivants :
             </DialogContentText>
-
-    
-            
             <TextField
             autoFocus
             margin="dense"
@@ -1063,12 +1122,16 @@ const DetailsPanneSav = () => {
             fullWidth
             helperText="Entrer une description"
             variant="standard"
+            defaultValue={PanneData?.DescriptionAC}
+            onChange={(e) => setDescriptionAC(e.target.value)}
             />
-            <ActionCorrective label='Actions Correctives :' placeholder= 'Entrer l`action corrective pour cette panne' type='text' onChange={handleTypePanneInput} /> 
+            <DialogContentText id="alert-dialog-description">
+              <ActionCorrectiveSelect label='Actions Correctives :' placeholder= 'Entrer l`action corrective pour cette panne' value={PanneData?.ActionCorrective} type='text' onChange={handleActionCorrectiveInput} /> 
+            </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog}>Annuler</Button>
-            <Button onClick={handleActionCorrectiveBTN} autoFocus>
+            <Button onClick={handleActionsForActionCorrective} autoFocus>
               Confirmer
             </Button>
           </DialogActions>

@@ -201,7 +201,7 @@ try {
     if(PDFFilename){
       const newPanne = await Panne.create({ Nom, Prenom, Email, Telephone, 
         ReferanceProduit, TypePanne, Wilaya,
-        CentreDepot, DateDepot, [PDFFilename.startsWith('BD') ? 'BDPDFfile' : 'BLPDFfile']: PDFFilename }).then(async (Panne) => {
+        CentreDepot, DateDepot, [PDFFilename.startsWith('BD') ? 'BDPDFfile' : PDFFilename.startsWith('BL') ? 'BLPDFfile' : '']: PDFFilename }).then(async (Panne) => {
           const dashboard = await Dashboard.findOne({
             where: {
               createdAt : new Date().toISOString().slice(0, 10),
@@ -367,7 +367,7 @@ try {
 const Update = async (req, res) => {
   // Handle request to update a Panne
   const { id } = req.params;
-  const { progres, action, userID, PDFFilename } = req.body;
+  const { progres, action, userID, PDFFilename, NbrSerie } = req.body;
   try {
     //get user by id
     const panne = await Panne.findByPk(id);
@@ -379,6 +379,8 @@ const Update = async (req, res) => {
     // assign panne new values
     panne.Progres = progres;
     panne.UserID = userID;
+    panne.NbrSerie = NbrSerie; 
+  
     if(PDFFilename && PDFFilename.startsWith('BD')){
       panne.BDPDFfile = PDFFilename;
     }else if(PDFFilename && PDFFilename.startsWith('BL')){
@@ -485,14 +487,95 @@ const UpdateSuspendedStatus = async (req, res) => {
     }
     // assign panne new values
     panne.Etat = Etat;
+    // current date and time
+    panne.DateDepot = new Date().toISOString();
     // save panne
     await panne.save().then(async () => {
+      const Date = panne.DateDepot;
+      const centre = panne.CentreDepot;
+      if(Etat !== null && !validator.isEmpty(Etat)){
+        // update dashboard
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: Date },
+        });
+
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: Date },
+        });
+
+        if (dashboard) {
+          await Dashboard.update(
+            { ProduitSuspendu: dashboard.ProduitSuspendu + 1 },
+            { where: { createdAt: Date } }
+          );
+        }
+
+        if (sourceStatistics) {
+          await StatisticsCentre.update(
+            { ProduitSuspendu: sourceStatistics.ProduitSuspendu + 1 },
+            { where: { Centre: centre, createdAt: Date } }
+          );
+        }
+      }else if(Etat === null){
+        // update dashboard
+        const dashboard = await Dashboard.findOne({
+          where: { createdAt: Date },
+        });
+
+        const sourceStatistics = await StatisticsCentre.findOne({
+          where: { Centre: centre, createdAt: Date },
+        });
+
+        if (dashboard) {
+          await Dashboard.update(
+            { ProduitSuspendu: dashboard.ProduitSuspendu - 1 },
+            { where: { createdAt: Date } }
+          );
+        }
+
+        if (sourceStatistics) {
+          await StatisticsCentre.update(
+            { ProduitSuspendu: sourceStatistics.ProduitSuspendu - 1 },
+            { where: { Centre: centre, createdAt: Date } }
+          );
+        }
+      }
       await Transaction.create({
         UserID : panne.UserID , Action : action
       }).catch((error) => console.log(error));
     }).catch((error) => console.log(error));
     // return updated panne
     res.status(200).json({panne: panne});
+  }catch (error) {
+    console.error(error);
+    res.status(500).send('Error updating panne');
+  }
+}
+const UpdateActionCorrective = async (req, res) => {
+  const {id} = req.params;
+  const {ActionCorrective, DescriptionAC, action} = req.body;
+  try{
+    if(!validator.isEmail(ActionCorrective) || !validator.isEmpty(DescriptionAC)){
+      //get user by id
+      const panne = await Panne.findByPk(id);
+      //check if panne exist
+      if (!panne) {
+          return res.status(404).json({ error: 'panne not found' });
+      }
+      // assign panne new values
+      if(ActionCorrective) panne.ActionCorrective = ActionCorrective;
+      if(DescriptionAC) panne.DescriptionAC = DescriptionAC;
+      // save panne
+      await panne.save().then(async () => {
+        await Transaction.create({
+          UserID : panne.UserID , Action : action
+        }).catch((error) => console.log(error));
+      }).catch((error) => console.log(error));
+      // return updated panne
+      res.status(200).json({panne: panne});
+    }else{
+      res.status(400).json({message: 'Un des champs doivent être remplis'});
+    }
   }catch (error) {
     console.error(error);
     res.status(500).send('Error updating panne');
@@ -1114,5 +1197,6 @@ module.exports = {
   UpdateGarantie,
   calculateAverageRepairTime,
   UpdateNbrserie,
-  UpdateSuspendedStatus
+  UpdateSuspendedStatus,
+  UpdateActionCorrective
 };

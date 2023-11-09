@@ -65,6 +65,14 @@ const Panne = sequelize.define('pannes', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  ActionCorrective:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  DescriptionAC:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   Etat:{
     type: DataTypes.STRING,
     allowNull: true,

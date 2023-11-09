@@ -20,10 +20,11 @@ function UserRow(User){
 
   const DeleteUser = async () =>{
     handleClose();
-    const reponse = await fetch("http://localhost:8000/User", {
+    const reponse = await fetch(process.env.REACT_APP_URL_BASE+"/User", {
       method: "DELETE",
       headers: {
         "content-type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
       },
       body: JSON.stringify({ 
         id: User.User.id, userID: user?.id,

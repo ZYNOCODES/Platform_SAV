@@ -16,7 +16,8 @@ const {
     UpdateGarantie,
     calculateAverageRepairTime,
     UpdateNbrserie,
-    UpdateSuspendedStatus
+    UpdateSuspendedStatus,
+    UpdateActionCorrective
 } = require('../controllers/PannesController');
 const router = express.Router();
 const requireAuth = require('../middleware/requireAuth');
@@ -37,6 +38,7 @@ router.delete('/:id', Remove);
 router.patch('/:id', Update);
 router.patch('/Version2/:id', UpdateNbrserie);
 router.patch('/SuspendedStatus/:id', UpdateSuspendedStatus);
+router.patch('/ActionCorrective/:id', UpdateActionCorrective);
 router.patch('/Garantie/:id', UpdateGarantie);
 router.get('/Average/time/:id',calculateAverageRepairTime);
 

@@ -51,7 +51,7 @@ label{
     width: 70vh;
     font-size: 1em;
 }
-Select-panne-input-containeer
+
 .forminput-type-panne input:enabled,select:enabled{
     border: 2px solid #c4c2c2;
     transition: 0.5s;

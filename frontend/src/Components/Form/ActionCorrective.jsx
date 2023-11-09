@@ -1,5 +1,5 @@
 import { useAuthContext } from '../../hooks/useAuthContext';
-import './FormInput.css'
+import '../Style/ActionCorrective.css'
 import React, { useEffect, useState } from 'react';
 import { MdCancel } from "react-icons/md";
 import Updatebutton from '../Buttons/updatebutton'
@@ -67,11 +67,11 @@ const ActionCorrective = (props) => {
   };
   props.onChange(selectedOptions);
   return (
-    <div className="form-group-type-panne" >
+    <div className="form-Action-corrective-group" >
       <>
-        <div className='forminput-type-panne'>
+        <div className='forminput-Action-corrective'>
           <label>{props.label}</label>
-          <select onChange={handleChange} value={currentOption}>
+          <select className='forminput-Action-corrective-input' onChange={handleChange} value={currentOption}>
             <option value=''>
               Ajouter un action corrective
             </option>
@@ -82,11 +82,11 @@ const ActionCorrective = (props) => {
             ))}
           </select>
         </div>
-        <div className='Select-panne-input-containeer'>
+        <div className='Select-Action-corrective-containeer'>
           {selectedOptions.map((option, index) => (
-            <div className='Select-panne-input-row' key={index}>
+            <div className='Select-Action-corrective-row' key={index}>
               <input
-                className='Select-panne-input'
+                className='Select-Action-corrective'
                 onChange={(event) => handleInput(event, index)}
                 value={option}
                 type='text'

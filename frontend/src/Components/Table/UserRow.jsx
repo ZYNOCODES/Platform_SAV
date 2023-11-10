@@ -38,6 +38,7 @@ function UserRow(User){
     }
     if (reponse.ok) {
       notifySuccess(json.message);
+      window.location.reload();
     }
   }
   const navigate = useNavigate();

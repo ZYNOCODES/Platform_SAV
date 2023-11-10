@@ -201,7 +201,9 @@ try {
     if(PDFFilename){
       const newPanne = await Panne.create({ Nom, Prenom, Email, Telephone, 
         ReferanceProduit, TypePanne, Wilaya,
-        CentreDepot, DateDepot, [PDFFilename.startsWith('BD') ? 'BDPDFfile' : PDFFilename.startsWith('BL') ? 'BLPDFfile' : '']: PDFFilename }).then(async (Panne) => {
+        CentreDepot, DateDepot,
+        [PDFFilename.startsWith('BD') ? 'BDPDFfile' : PDFFilename.startsWith('BL') ? 'BLPDFfile' : '']: PDFFilename
+      }).then(async (Panne) => {
           const dashboard = await Dashboard.findOne({
             where: {
               createdAt : new Date().toISOString().slice(0, 10),

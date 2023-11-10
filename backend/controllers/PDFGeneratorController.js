@@ -84,7 +84,8 @@ const PDFSender = async (req, res) => {
         }
 
         const filePath = path.join(__dirname, '..', 'files', filename);
-        res.sendFile(filePath);
+
+        res.status(200).sendFile(filePath);
     } catch (err) {
         console.log(err);
         res.status(500).send("Error sending PDF");

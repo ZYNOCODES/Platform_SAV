@@ -65,7 +65,6 @@ const DetailsPanneSav = () => {
   const [loading, setLoading] = useState(false); // State for CircularProgress
   const [lableACT, setlableACT] = useState('');
   const [CodePostal, setCodePostal] = useState('0');
-  const [PanneDataUpdated, setPanneDataUpdated] = useState('');
   const [TypePanne ,setTypePanne] = useState([]);
   const [NbrSerie, setNbrSerie] = useState('');
   const [Description, setDescription] = useState('');
@@ -78,6 +77,7 @@ const DetailsPanneSav = () => {
   const [ifDescriptionACUpdated, setIfDescriptionACUpdated] = useState(false);
   const [ActionCorrective, setActionCorrective] = useState([]);
   const [DescriptionAC, setDescriptionAC] = useState('');
+
   const BL = 'BL';
   //Upload image to server
   const uploadImage = async (e) => {
@@ -105,34 +105,32 @@ const DetailsPanneSav = () => {
     }
   };
   //Get panne data from server
-  useEffect(() => {
-    const fetchPanneData = async () => {
-      try {
-        const response = await fetch(
-          process.env.REACT_APP_URL_BASE+`/Pannes/${id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user?.token}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          setPanneData(data);
-        } else {
-          console.error("Error receiving Panne data:", response.statusText);
+  const fetchPanneData = async () => {
+    try {
+      const response = await fetch(
+        process.env.REACT_APP_URL_BASE+`/Pannes/${id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
         }
-      } catch (error) {
-        console.error("Error fetching Panne data:", error);
-      }
-    };
+      );
 
+      if (response.ok) {
+        const data = await response.json();
+        setPanneData(data);
+      } else {
+        console.error("Error receiving Panne data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching Panne data:", error);
+    }
+  };
+  useEffect(() => {
     fetchPanneData();
-    setPanneDataUpdated('');
-  }, [id, user?.token, PanneDataUpdated]);
+  },[user?.token]);
   //Get all pannes data of a product from server
   useEffect(() => {
     const fetchAllPannesDataOfProduct = async () => {
@@ -285,7 +283,7 @@ const DetailsPanneSav = () => {
     if (reponse.ok) {
       setLoading(false); // Hide CircularProgress
       setOpenDialogPDF(false);
-      setPanneDataUpdated('Panne updated');
+      fetchPanneData();      
       if (val === 1) {
         notifySuccess(Act);
       } else if (val === 2) {
@@ -514,13 +512,14 @@ const DetailsPanneSav = () => {
     }
     if (reponse.ok) {
       setOpenDialog3(false);
-      setPanneDataUpdated('Panne updated');
+      fetchPanneData();
       notifySuccess(`${val}`);
       setIfTypePanneUpdated(false);
       setIfNbrSerieUpdated(false);
       setIfDescriptionUpdated(false);
       setDescription('');
       setNbrSerie('');
+      fetchPanneData();
     }
   }
   // handle update ActionCorrective
@@ -545,9 +544,10 @@ const DetailsPanneSav = () => {
     }
     if (reponse.ok) {
       setOpenDialog6(false);
-      setPanneDataUpdated('Panne updated');
+      fetchPanneData();
       notifySuccess(`${val}`);
       setDescriptionAC('');
+      fetchPanneData();
     }
   }
   // handle NbrSerie, Description, TypePanne change
@@ -659,7 +659,7 @@ const DetailsPanneSav = () => {
     if (reponse.ok) {
       setOpenDialog4(false);
       setOpenDialog5(false);
-      setPanneDataUpdated('Panne updated');
+      fetchPanneData();
       notifySuccess(`${val}`);
     }
   }

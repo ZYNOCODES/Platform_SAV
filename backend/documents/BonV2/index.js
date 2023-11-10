@@ -240,12 +240,14 @@ return `
                                  <th>Modèle</th>
                                  <th>N° série</th>
                                  <th>Observation</th>
+                                 <th>Montant a payer</th>
                               </tr>
                               <tr>
                                  <td>1</td>
                                  <td>${TypePanne}</td>
                                  <td>${ReferanceProduit}</td>
                                  <td>${NbrSerie}</td>
+                                 <td></td>
                                  <td></td>
                               </tr>
                         </tbody>

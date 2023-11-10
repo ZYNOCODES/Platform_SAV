@@ -352,7 +352,6 @@ module.exports = ({ Nom, Prenom, Email, Telephone,
       <div class="container">
           <div class="top-bar">
               <div class="top-bar-left">
-                  <img class="top-bar-img" src="/images/topPDF.png" alt="Logo-Stream-System" />
                   <div class="top-bar-left-title">
                       <h4 class="title">
                           BON DE DÉPÔT
@@ -735,7 +734,7 @@ module.exports = ({ Nom, Prenom, Email, Telephone,
                            ID
                      </th>
                      <th>
-
+                        ${BonID}
                      </th>
                   </tr>
                   </tbody>
@@ -760,7 +759,6 @@ module.exports = ({ Nom, Prenom, Email, Telephone,
                   <h4>E-mail : ecoute.client@bomarecompany.com / Page Facebook : @STREAM </h4>
               </div>
          </div>
-         <img class="bottom-bar-img" src="/images/bottomPDF.png" alt="Logo-Stream-System"/>
       </div>
       <script>
          var qrcode = new QRCode(document.getElementById("qrcode"), {
